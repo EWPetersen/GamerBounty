@@ -1,30 +1,27 @@
 import Link from 'next/link';
+import { Menu } from 'antd';
+import { HomeOutlined, DashboardOutlined, EyeOutlined, FormOutlined, UserOutlined } from '@ant-design/icons';
 
-const NavBar = () => {
+const Navbar = () => {
   return (
-    <header>
-      <h1>GamerBounty</h1>
-      <nav>
-        <ul>
-          <li>
-            <Link href="/">
-              <a>Home</a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/submit">
-              <a>Submit</a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/my-profile">
-              <a>My Profile</a>
-            </Link>
-          </li>
-        </ul>
-      </nav>
-    </header>
+    <Menu mode="horizontal">
+      <Menu.Item key="main" icon={<HomeOutlined />}>
+        <Link href="/">gamerBounty</Link>
+      </Menu.Item>
+      <Menu.Item key="dashboard" icon={<DashboardOutlined />}>
+        <Link href="/dashboard">liveDashboard</Link>
+      </Menu.Item>
+      <Menu.Item key="view" icon={<EyeOutlined />}>
+        <Link href="/openContracts">openContracts</Link>
+      </Menu.Item>
+      <Menu.Item key="submit" icon={<FormOutlined />}>
+        <Link href="/submitContract">submitContract</Link>
+      </Menu.Item>
+      <Menu.Item key="profile" icon={<UserOutlined />}>
+        <Link href="/profile">myProfile</Link>
+      </Menu.Item>
+    </Menu>
   );
 };
 
-export default NavBar;
+export default Navbar;
