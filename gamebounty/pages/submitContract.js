@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession} from 'next-auth/react';
 import axios from 'axios';
 import { Form, Input, Button } from 'antd';
 import { SmileOutlined, FrownOutlined } from '@ant-design/icons';
@@ -7,9 +7,9 @@ import Navbar from '../components/Navbar';
 
 
 const Submit = () => {
-  const { data: session } = useSession();
   const [form] = Form.useForm();
   const [formErrors, setFormErrors] = useState({});
+  const {data: session} = useSession();
 
   const onFinish = async (values) => {
     try {
@@ -122,8 +122,9 @@ const Submit = () => {
           rules={[{ required: true, message: 'Please enter the username of the requester' }]}
           validateStatus={formErrors.requestedBy ? 'error' : ''}
           help={formErrors.requestedBy && 'This field is required'}
+          initialValue={session?.user?.email}
         >
-          <Input value={session?.user?.email} readOnly />
+          <Input readOnly />
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" icon={<SmileOutlined />}>

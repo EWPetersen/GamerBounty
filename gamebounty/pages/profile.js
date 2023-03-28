@@ -2,6 +2,7 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table } from 'antd';
+import Navbar from '../components/Navbar';
 
 const columns = [
   {
@@ -70,6 +71,7 @@ const Profile = () => {
 
   return (
     <div>
+      <Navbar />
       <h1>Welcome, {session.user.name}!</h1>
       <p>Email: {session.user.email}</p>
       <button onClick={() => signOut()}>Sign out</button>
