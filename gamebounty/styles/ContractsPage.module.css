@@ -1,0 +1,37 @@
+.container {
+    padding: 2rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .table {
+    width: 100%;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .gameNameColumn {
+      width: 30%;
+    }
+    .targetPlayerColumn {
+      width: 30%;
+    }
+    .bidAmountColumn {
+      width: 40%;
+    }
+  }
+  
+  @media screen and (max-width: 576px) {
+    .gameNameColumn {
+      width: 50%;
+    }
+    .targetPlayerColumn {
+      width: 40%;
+    }
+    .bidAmountColumn {
+      width: 10%;
+    }
+  }
+  

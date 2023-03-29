@@ -54,7 +54,7 @@ function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/viewContract');
+        const response = await axios.get('/api/viewContracts');
         setEntries(response.data.filter(entry => entry.contractStatus === 'closed'));
       } catch (error) {
         console.log(error);
