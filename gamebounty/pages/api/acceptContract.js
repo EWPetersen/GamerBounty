@@ -16,12 +16,14 @@ export default async function handler(req, res) {
         ':isAccepted': { S: isAccepted },
         ':acceptedBy': { S: acceptedBy },
       },
+      ReturnValues: 'ALL_NEW', // Return the updated attributes of the item
     };
 
-    await dynamodbClient.send(new UpdateItemCommand(updateParams));
-    res.status(200).json({ message: `Contract ${uid} successfully updated` });
+    const { Attributes } = await dynamodbClient.send(new UpdateItemCommand(updateParams));
+    console.log(`Contract ${uid} successfully updated`);
+    res.status(200).json({ message: `Contract ${uid} successfully updated`, contract: Attributes });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error updating contract' });
+    console.error(`Error updating contract ${uid}: ${error}`);
+    res.status(500).json({ message: `Error updating contract ${uid}` });
   }
 }
