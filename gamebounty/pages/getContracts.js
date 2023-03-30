@@ -40,8 +40,17 @@ export default function ContractsPage() {
   const getDataFromDynamoDB = async () => {
     const res = await fetch('/api/readContracts');
     const data = await res.json();
-    return data;
+    return data.map((item) => ({
+      key: item.key,
+      gameName: item.gameName,
+      targetPlayer: item.targetPlayer,
+      bidAmount: item.bidAmount,
+      contractStatus: item.contractStatus,
+      requestedBy: item.requestedBy,
+      contractNumber: item.contractNumber,
+    }));
   };
+  
 
   const showModal = (contract) => {
     setSelectedContract(contract);
@@ -52,33 +61,31 @@ export default function ContractsPage() {
     setModalVisible(false);
   };
 
-  const handleAcceptContract = async (contract) => {
-    const acceptedBy = 'test';
-    const isAccepted = 'y';
+  const handleAcceptContract = async (uid) => {
+    
+    const isAssigned = 'yes';
   
     const payload = {
-      TableName: process.env.DYNAMODB_TABLE_NAME,
-      Key: { uid: contract.uid },
-      UpdateExpression: 'set isAccepted = :a, acceptedBy = :b',
+      TableName: 'bountyContracts',
+      Key: { uid: uid },
+      UpdateExpression: 'set isAssigned = :a',
       ExpressionAttributeValues: {
-        ':a': isAccepted,
-        ':b': acceptedBy,
-      },
+        ':a': isAssigned,
+             },
     };
   
     try {
       const dynamoDB = new AWS.DynamoDB.DocumentClient();
       await dynamoDB.update(payload).promise();
-      setContracts(
-        contracts.map((c) =>
-          c.uid === contract.uid ? { ...c, isAccepted, acceptedBy } : c
-        )
+      setContracts((prevContracts) =>
+        prevContracts.map((c) => (c.uid === uid ? { ...c, isAssigned } : c))
       );
       setModalVisible(false);
     } catch (err) {
       console.error('Unable to update contract', err);
     }
   };
+  
   
 
   useEffect(() => {
@@ -127,7 +134,7 @@ export default function ContractsPage() {
         {selectedContract && selectedContract.contractStatus !== 'expired' && (
             <Button type="primary" onClick={() => handleAcceptContract(selectedContract.uid)}>
             Accept Contract
-            </Button>
+          </Button>
         )}
         </Modal>
     </div>
