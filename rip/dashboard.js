@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table, Tag } from 'antd';
-import Navbar from '../components/Navbar';
+import Navbar from '../gamebounty/components/Navbar';
 
 const columns = [
   {

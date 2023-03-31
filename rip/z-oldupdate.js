@@ -3,8 +3,8 @@ import { DynamoDBClient, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
 const client = new DynamoDBClient({ region: 'us-west-2' });
 
 export default async function handler(req, res) {
-  const { uid, contractNumber, gameName, targetPlayer, bidAmount } = req.body;
-  console.log(`Received request to update contract ${contractNumber}:`, { uid, gameName, targetPlayer, bidAmount });
+  const { uid, contractNumber, gameName, targetPlayer, bidAmount, isAccepted, acceptedBy, multiBid, multiSubmit, contractStatus} = req.body;
+  console.log(`Received request to update contract ${contractNumber}:`, { uid, gameName, targetPlayer, bidAmount, isAccepted, acceptedBy, multiBid, multiSubmit, contractStatus });
 
   const params = {
     TableName: 'bountyContracts',
@@ -12,11 +12,16 @@ export default async function handler(req, res) {
       uid: { S: uid },
       contractNumber: { S: contractNumber },
     },
-    UpdateExpression: 'SET gameName = :gameName, targetPlayer = :targetPlayer, bidAmount = :bidAmount',
+    UpdateExpression: 'SET gameName = :gameName, targetPlayer = :targetPlayer, bidAmount = :bidAmount, isAccepted = :isAccepted, acceptedBy = :acceptedBy, multiBid = :multiBid, multiSubmit = :multiSubmit, contractStatus = :contractStatus',
     ExpressionAttributeValues: {
       ':gameName': { S: gameName },
       ':targetPlayer': { S: targetPlayer },
       ':bidAmount': { S: bidAmount },
+      ':isAccepted': { S: isAccepted },
+      ':acceptedBy': { S: acceptedBy },
+      ':multiBid': { S: multiBid || '' },
+      ':multiSubmit': { S: multiSubmit || '' },
+      ':contractStatus': { S: contractStatus || '' },
     },
     ReturnValues: 'ALL_NEW',
   };
@@ -30,4 +35,4 @@ export default async function handler(req, res) {
     console.error(`Error updating contract ${contractNumber}`, error);
     res.status(500).json({ success: false, message: error.message });
   }
-};
+}

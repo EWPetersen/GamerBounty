@@ -1,31 +1,38 @@
 import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
 
-const client = new DynamoDBClient({ region: 'us-west-2' });
+const dynamoDBClient = new DynamoDBClient({ region: 'us-west-2' });
 
-const writeContracts = async (uid, contractNumber, gameName, targetPlayer, bidAmount) => {
+export default async function writeContracts(req, res) {
+  const { gameTitle, targetPlayer, contractConditions, bidAmount, expDate, acceptedBy, isVerified, verifyLink, contractStatus } = req.body;
+  const id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15); // generates a random id
+
+  console.log('Request body:', req.body);
+
   const params = {
-    TableName: 'bountyContracts',
+    TableName: 'contractsDb', // Updated table name
     Item: {
-      uid: { S: uid },
-      contractNumber: { S: contractNumber },
-      gameName: { S: gameName },
+      id: { S: id },
+      gameTitle: { S: gameTitle },
       targetPlayer: { S: targetPlayer },
-      bidAmount: { S: bidAmount },
+      contractConditions: { S: contractConditions },
+      bidAmount: { N: bidAmount.toString() },
+      expDate: { S: expDate },
+      acceptedBy: { S: 'create' },
+      verifyLink: { S: verifyLink },
+      isVerified: { BOOL: false },
+      contractStatus: { S: contractStatus },
     },
-  };
+  }; 
+
+  console.log('params:', params);
 
   try {
     const command = new PutItemCommand(params);
-    await client.send(command);
-    console.log(`Successfully created bounty for contractNumber ${contractNumber}`);
-    return { success: true };
+    const response = await dynamoDBClient.send(new PutItemCommand(params));
+    console.log('Successfully created contract:', response);
+    res.status(200).json({ success: true, message: 'Successfully created contract.' });
   } catch (error) {
-    console.error(`Error creating bounty for contractNumber ${contractNumber}`, error);
-    return { success: false, message: error.message };
+    console.error('Error creating contract:', error);
+    res.status(500).json({ success: false, message: 'Error creating contract.' });
   }
-};
-
-// Example usage
-// writeContracts('123456', '666', 'World of Warcraft', 'John Doe', '20')
-//  .then((data) => console.log(data))
-// .catch((error) => console.error(error));
+}

@@ -2,7 +2,7 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Card, Button, Modal, Table } from 'antd';
-import Navbar from '../components/Navbar';
+import Navbar from '../gamebounty/components/Navbar';
 import { LoadingOutlined, CloseOutlined, CheckOutlined } from '@ant-design/icons';
 
 const { confirm } = Modal;

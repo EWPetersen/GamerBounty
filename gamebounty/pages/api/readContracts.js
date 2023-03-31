@@ -6,7 +6,8 @@ export default async function readContracts(req, res) {
   console.log('Received request to get all contracts');
   
   const params = {
-    TableName: 'bountyContracts',
+    TableName: 'contractsDb', // Updated table name
+    // Add any filter or projection expressions if needed
   };
 
   try {
