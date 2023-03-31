@@ -1,5 +1,4 @@
 import { DynamoDBClient, PutItemCommand, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
-import updateContract from './updateContract';
 
 const client = new DynamoDBClient({ region: 'us-west-2' });
 
@@ -14,14 +13,8 @@ export default async function handler(req, res) {
     default:
       res.setHeader('Allow', ['POST', 'PUT']);
       res.status(405).end(`Method ${method} Not Allowed`);
-      if (req.method === 'PUT') {
-        await updateContract(req, res);
-      } else {
-        res.status(400).json({ success: false, message: 'Invalid HTTP method' });
-      }
-    }
   }
-
+}
 
 const createBounty = async ({ uid, contractNumber, gameName, targetPlayer, bidAmount }, res) => {
   const params = {

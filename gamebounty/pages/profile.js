@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Card, Button, Modal, Table } from 'antd';
 import Navbar from '../components/Navbar';
-import { LoadingOutlined, CloseOutlined } from '@ant-design/icons';
+import { LoadingOutlined, CloseOutlined, CheckOutlined } from '@ant-design/icons';
 
 const { confirm } = Modal;
 
@@ -61,7 +61,7 @@ const Profile = () => {
     },
   ];
 
-  const fetchContracts = async () => {
+  const fetchContracts = useCallback(async () => {
     try {
       const response = await axios.get('/api/viewContract');
       const filteredData = response.data.filter(
@@ -71,13 +71,15 @@ const Profile = () => {
     } catch (error) {
       console.log(error);
     }
-  };
-
+  }, [session]);
+  
   useEffect(() => {
     if (session) {
       fetchContracts();
     }
-  }, [session]);
+  }, [session, fetchContracts]);
+  
+  
 
   const confirmDeleteContract = async (contractNumber) => {
     setContractDeleteStatus((prevStatus) => ({

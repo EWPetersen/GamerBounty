@@ -26,7 +26,7 @@ const Navbar = () => {
     if (status !== 'authenticated') {
       router.push('/');
     }
-  }, [status]);
+  }, [status, router]);
 
   const showDrawer = () => {
     setVisible(true);

@@ -1,0 +1,20 @@
+/* styles/global.css */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  a {
+    color: #1DA57A;
+  }
+  
+  a:hover {
+    color: #0D8C61;
+  }
+  
+  /* Add any other global styles here */
+  

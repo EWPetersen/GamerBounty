@@ -1,14 +1,13 @@
-import { SessionProvider } from "next-auth/react";
+import 'tailwindcss/tailwind.css';
+import 'antd/dist/reset.css';
+import { ConfigProvider } from 'antd';
 
-
-export default function App({
-  Component,
-  pageProps: { session, ...pageProps },
-}) {
+function MyApp({ Component, pageProps }) {
   return (
-    <SessionProvider session={session}>
-      
+    <ConfigProvider theme={{ dark: true }}>
       <Component {...pageProps} />
-    </SessionProvider>
+    </ConfigProvider>
   );
 }
+
+export default MyApp;

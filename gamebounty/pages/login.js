@@ -2,7 +2,7 @@ import { providers, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-export default function Login({ providers }) {
+export default function Login({ providers, session }) {
   const router = useRouter();
   const { error, provider } = router.query;
 
@@ -15,7 +15,7 @@ export default function Login({ providers }) {
     if (error) {
       alert(error);
     }
-  }, [error, session]);
+  }, [session, error, router]);
 
   const handleSignIn = async (provider) => {
     await signIn(provider.id, {

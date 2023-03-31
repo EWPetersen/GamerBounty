@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-const test = () => {
+const WriteTest = () => {
   const [formData, setFormData] = useState({
     uid: '',
     contractNumber: '',
@@ -40,4 +40,4 @@ const test = () => {
   );
 };
 
-export default test;
+export default WriteTest;
