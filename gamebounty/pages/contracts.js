@@ -286,7 +286,7 @@ const sortedContracts = sort.field
             <Form.Control
               className="bg-gray-700 border-gray-600 focus:border-blue-500 focus:ring-blue-500 text-white"
               type="text"
-              placeholder="Search by game name"
+              placeholder="Search by game title"
               onChange={handleSearch}
             />
           </Form.Group>
@@ -294,10 +294,10 @@ const sortedContracts = sort.field
         <Table responsive bordered hover variant="dark">
           <thead>
             <tr>
-              <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game Name {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>Player Target {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Bid Amount {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th>Actions</th>
+              <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th>Grab a Contract!</th>
             </tr>
           </thead>
           <tbody>
@@ -352,7 +352,7 @@ const sortedContracts = sort.field
             <Modal.Title>Contract Details</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <h5>Game Name:</h5>
+            <h5>Game Title:</h5>
             <p>{selectedContract?.gameTitle.S}</p>
             <h5>Target Player:</h5>
             <p>{selectedContract?.targetPlayer.S}</p>

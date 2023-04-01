@@ -1,17 +1,59 @@
-import Head from 'next/head'
+import { signIn, signOut, useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
+import { useState } from 'react';
+import CreateContractForm from './createContractForm';
+// import Navbar from '../components/Navbar';
 
-const Home = () => {
+const GoogleButton = dynamic(() => import("react-google-button"), {
+  ssr: false,
+});
+
+export default function Index() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  
+  const [showCreateForm, setShowCreateForm] = useState(false);
+
+  function handleCloseCreateForm() {
+    setShowCreateForm(false);
+  }
+
+  function handleCreateContract(newContract) {
+    console.log("New contract created:", newContract);
+  }
+
+  const isAuthenticated = status === "authenticated";
+
   return (
-    <>
-      <Head>
-        <title>Home</title>
-        <meta name="description" content="This is the home page of the Gamer Bounty app." />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-            <h1>Welcome to Gamer Bounty!</h1>
-      <p>Create a profile to get started and view bounties posted by other gamers.</p>
-    </>
+    <div className="bg-gray-900 min-h-screen text-white">
+      
+      <div className="container mx-auto">
+        <h1 className="text-4xl font-bold mb-8 text-center pt-10">
+          Bounty Board
+        </h1>
+        <p className="text-center mb-10">
+          {isAuthenticated
+            ? "Do you have a mark? Create a contract and a bid amount. Check out the dashboard to see closed out marks."
+            : "Sign in to get started."}
+        </p>
+        <div className="flex justify-center">
+          {isAuthenticated && (
+            <button
+              onClick={() => setShowCreateForm(true)}
+              className="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 ml-4 rounded"
+            >
+              Create Contract
+            </button>
+          )}
+        </div>
+      </div>
+      <CreateContractForm
+        show={showCreateForm}
+        handleClose={handleCloseCreateForm}
+        handleCreate={handleCreateContract}
+        setShowCreateForm={setShowCreateForm}
+      />
+    </div>
   );
-};
-
-export default Home;
+}
