@@ -26,6 +26,16 @@ function GetContracts() {
   const [requestedContracts, setRequestedContracts] = useState([]);
   const [acceptedContracts, setAcceptedContracts] = useState([]);
 
+  const paginatedRequestedContracts = requestedContracts.slice(
+    (requestedPagination.current - 1) * requestedPagination.pageSize,
+    requestedPagination.current * requestedPagination.pageSize
+  );
+  
+  const paginatedAcceptedContracts = acceptedContracts.slice(
+    (acceptedPagination.current - 1) * acceptedPagination.pageSize,
+    acceptedPagination.current * acceptedPagination.pageSize
+  );
+
  
 
   useEffect(() => {
@@ -345,7 +355,7 @@ const sortedContracts = sort.field
             </tr>
           </thead>
           <tbody>
-            {paginatedContracts.map((contract) => (
+          {paginatedRequestedContracts.map((contract) => (
               <tr key={contract.id.S}>
                 <td>{contract.gameTitle.S}</td>
                 <td>{contract.targetPlayer.S}</td>
@@ -360,28 +370,28 @@ const sortedContracts = sort.field
         </Table>
         <div className="d-flex justify-content-center">
           <Pagination className="my-4">
-            <Pagination.Prev
-              onClick={() =>
-                pagination.current > 1 &&
-                setPagination({ ...pagination, current: pagination.current - 1 })
-              }
-            />
-            {[...Array(Math.ceil(requestedContracts.length / pagination.pageSize))].map((x, i) => (
-              <Pagination.Item
-                key={i + 1}
-                active={i + 1 === pagination.current}
-                onClick={() => setPagination({ ...pagination, current: i + 1 })}
-              >
-                {i + 1}
-              </Pagination.Item>
-            ))}
-            <Pagination.Next
-              onClick={() =>
-                pagination.current < Math.ceil(requestedContracts.length / pagination.pageSize) &&
-                setPagination({ ...pagination, current: pagination.current + 1 })
-              }
-            />
-          </Pagination>
+  <Pagination.Prev
+    onClick={() =>
+      requestedPagination.current > 1 &&
+      setRequestedPagination({ ...requestedPagination, current: requestedPagination.current - 1 })
+    }
+  />
+  {[...Array(Math.ceil(requestedContracts.length / requestedPagination.pageSize))].map((x, i) => (
+    <Pagination.Item
+      key={i + 1}
+      active={i + 1 === requestedPagination.current}
+      onClick={() => setRequestedPagination({ ...requestedPagination, current: i + 1 })}
+    >
+      {i + 1}
+    </Pagination.Item>
+  ))}
+  <Pagination.Next
+    onClick={() =>
+      requestedPagination.current < Math.ceil(requestedContracts.length / requestedPagination.pageSize) &&
+      setRequestedPagination({ ...requestedPagination, current: requestedPagination.current + 1 })
+    }
+  />
+</Pagination>
           </div>
           <div className="text-center my-4">
             {successMessage && (
@@ -395,12 +405,6 @@ const sortedContracts = sort.field
             </div>
           )}
         </div>
-        <h1 className="text-3xl font-bold mb-8 text-center">My Jobs</h1>      
-        <CreateContractForm
-          show={showCreateForm}
-          handleClose={handleCloseCreateForm}
-          handleCreate={handleCreate}
-        />
         <Form className="mb-4">
           <Form.Group controlId="search">
             <Form.Control
@@ -422,7 +426,7 @@ const sortedContracts = sort.field
             </tr>
           </thead>
           <tbody>
-            {paginatedContracts.map((contract) => (
+            {paginatedAcceptedContracts.map((contract) => (
               <tr key={contract.id.S}>
                 <td>{contract.gameTitle.S}</td>
                 <td>{contract.targetPlayer.S}</td>
@@ -436,29 +440,30 @@ const sortedContracts = sort.field
           </tbody>
         </Table>
         <div className="d-flex justify-content-center">
-          <Pagination className="my-4">
-            <Pagination.Prev
-              onClick={() =>
-                pagination.current > 1 &&
-                setPagination({ ...pagination, current: pagination.current - 1 })
-              }
-            />
-            {[...Array(Math.ceil(acceptedContracts.length / pagination.pageSize))].map((x, i) => (
-              <Pagination.Item
-                key={i + 1}
-                active={i + 1 === pagination.current}
-                onClick={() => setPagination({ ...pagination, current: i + 1 })}
-              >
-                {i + 1}
-              </Pagination.Item>
-            ))}
-            <Pagination.Next
-              onClick={() =>
-                pagination.current < Math.ceil(acceptedContracts.length / pagination.pageSize) &&
-                setPagination({ ...pagination, current: pagination.current + 1 })
-              }
-            />
-          </Pagination>
+        <Pagination className="my-4">
+  <Pagination.Prev
+    onClick={() =>
+      acceptedPagination.current > 1 &&
+      setAcceptedPagination({ ...acceptedPagination, current: acceptedPagination.current - 1 })
+    }
+  />
+  {[...Array(Math.ceil(acceptedContracts.length / acceptedPagination.pageSize))].map((x, i) => (
+    <Pagination.Item
+      key={i + 1}
+      active={i + 1 === acceptedPagination.current}
+      onClick={() => setAcceptedPagination({ ...acceptedPagination, current: i + 1 })}
+    >
+      {i + 1}
+    </Pagination.Item>
+  ))}
+  <Pagination.Next
+    onClick={() =>
+      acceptedPagination.current < Math.ceil(acceptedContracts.length / acceptedPagination.pageSize) &&
+      setAcceptedPagination({ ...acceptedPagination, current: acceptedPagination.current + 1 })
+    }
+  />
+</Pagination>
+
           </div>
         <div className="mt-4 mb-4 text-center">
         <Button
