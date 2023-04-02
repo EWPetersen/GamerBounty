@@ -335,8 +335,22 @@ const sortedContracts = sort.field
       <Navbar />
       <CreateContractForm show={showCreateForm} handleClose={handleCloseCreateForm} handleCreate={handleCreate} />
       <Container className="bg-gray-900">
-      <h1 className="text-3xl font-bold mb-8 text-center">My Contracts</h1>      
-        <CreateContractForm
+      <h1 className="text-3xl font-bold mb-8 text-center">Profile</h1>
+      <div>
+        <h3 className="text-center"> Manage Contracts</h3>
+        </div>
+      <h1 className="text-3xl font-bold mb-8 text-left">My Contracts</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <div>
+            <h3>Total Hits Completed</h3>
+                <p>0</p> {/* Replace with the actual amount when you have the database code */}
+        </div>
+        <div>
+            <h3>Contract rating</h3>
+                <p>0%</p> {/* Replace with the actual rating when you have the database code */}
+                </div>
+        </div>
+         <CreateContractForm
           show={showCreateForm}
           handleClose={handleCloseCreateForm}
           handleCreate={handleCreate}
@@ -414,8 +428,18 @@ const sortedContracts = sort.field
             </div>
           )}
         </div>
-        <h1 className="text-3xl font-bold mb-8 text-center">My Jobs</h1>
+        <h1 className="text-3xl font-bold mb-8 text-left">My Jobs</h1>
         <Form className="mb-4">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <div>
+                <h3>Money made from hits</h3>
+                    <p>$0.00</p> {/* Replace with the actual amount when you have the database code */}
+            </div>
+            <div>
+                <h3>Assassin rating</h3>
+                    <p>0%</p> {/* Replace with the actual rating when you have the database code */}
+            </div>
+        </div>
           <Form.Group controlId="search">
             <Form.Control
               className="bg-gray-700 border-gray-600 focus:border-blue-500 focus:ring-blue-500 text-white"
