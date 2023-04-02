@@ -99,6 +99,12 @@ if (loading) {
     );
   }
 
+  const handleReviewClick = (contract) => {
+    setModalVisible(true);
+    setSelectedContract(contract);
+  };
+  
+
    function handlePaginationChange(newPagination) {
     setPagination(newPagination);
   }
@@ -211,8 +217,19 @@ const sortedContracts = sort.field
     }).format(amount);
   }
 
+  const handleVerify = () => {
+    // 1. Call the API or database function to update the "isVerified" boolean to 'true' for the selected contract
+    // 2. Update the local state (requestedContracts) with the updated contract information
+    // 3. Close the modal by calling `handleClose()`
+  };
+
+  const handleReject = () => {
+    // 1. Call the API or database function to update the "isVerified" boolean to 'true' for the selected contract
+    // 2. Update the local state (requestedContracts) with the updated contract information
+    // 3. Close the modal by calling `handleClose()`
+  };
   
-  
+ 
   return (
        <div className="bg-gray-900 min-h-screen text-white">
       <Navbar />
@@ -263,7 +280,7 @@ const sortedContracts = sort.field
                 <td>{contract.contractConditions.S}</td>
                 <td>{contract.expDate.S}</td>
                 <td>
-                  <Button variant="success" onClick={() => handleAcceptContract(contract)}>Accept</Button>
+                <Button onClick={() => handleReviewClick(contract)}>Review</Button>
                 </td>
               </tr>
             ))}
@@ -383,7 +400,7 @@ const sortedContracts = sort.field
         </div>
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Contract Details</Modal.Title>
+            <Modal.Title>Review Contract</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <h5>Game Title:</h5>
@@ -397,14 +414,13 @@ const sortedContracts = sort.field
             <h5>Bid Amount:</h5>
             <p>${selectedContract?.bidAmount.N}</p>
            </Modal.Body>
-           <Modal.Footer>
-  <Button variant="success" onClick={handleAccept}>
-    Accept
-  </Button>
-  <Button variant="secondary" onClick={handleClose}>
-    Close
-  </Button>
-  </Modal.Footer>
+          <Modal.Footer>
+           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+                <Button onClick={handleVerify} type="primary">Verify</Button>
+                <Button onClick={handleReject} danger>Reject</Button>
+                <Button onClick={handleClose}>Close</Button>
+            </div>
+          </Modal.Footer>
         </Modal>
       </Container>
       <style global jsx>{`
