@@ -8,6 +8,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from '../components/Navbar';
 
 function GetContracts() {
+  const [requestedContracts, setRequestedContracts] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
   const { data: session, status } = useSession();
   const router = useRouter();
   const [contracts, setContracts] = useState([]);
@@ -23,7 +25,7 @@ function GetContracts() {
   const [errorMessage, setErrorMessage] = useState('');
   const [items, setItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
-  const [requestedContracts, setRequestedContracts] = useState([]);
+ 
   
   const requestedPagination = {
     current: 1,
