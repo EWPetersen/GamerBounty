@@ -28,3 +28,10 @@ a {
     background: black;
   }
 }
+
+.modal-content {
+  background-color: #1f2937; /* Tailwind bg-gray-900 color */
+}
+
+
+

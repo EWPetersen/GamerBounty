@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "antd": "^5.3.3"
+    "antd": "^5.3.3",
+    "dynamic": "^4.2.2"
   },
   "devDependencies": {
     "jest": "^29.5.0"

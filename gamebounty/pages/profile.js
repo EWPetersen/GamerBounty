@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Container, Table, Pagination, Spinner, Modal, Form, Button } from 'react-bootstrap';
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import axios from 'axios';
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from '../components/Navbar';
 
 function GetContracts() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [contracts, setContracts] = useState([]);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   const [loading, setLoading] = useState(false);
@@ -17,27 +21,66 @@ function GetContracts() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [items, setItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [requestedContracts, setRequestedContracts] = useState([]);
+  const [acceptedContracts, setAcceptedContracts] = useState([]);
 
+ 
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get('/api/readContracts');
-        console.log('Contracts data:', response.data.data);
-        const filteredData = response.data.data.filter(
-          (contract) => contract.contractStatus?.S === 'open'
-        );
-        setContracts(filteredData);
-      } catch (error) {
-        console.error('Error fetching contracts', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchData(); // Added this line
-  }, []);
+    if (session) {
+      const fetchData = async () => {
+        setLoading(true);
+        try {
+          const response = await axios.get('/api/readContracts');
+          console.log('Contracts data:', response.data.data);
+  
+          const requestedData = response.data.data.filter(
+            (contract) => contract.requestedBy?.S === 'eric.p.mail@gmail.com'
+          );
+          setRequestedContracts(requestedData);
+  
+          const acceptedData = response.data.data.filter(
+            (contract) => contract.acceptedBy?.S === 'eric.p.mail@gmail.com'
+          );
+          setAcceptedContracts(acceptedData);
+  
+        } catch (error) {
+          console.error('Error fetching contracts', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchData();
+    }
+  }, [session]);
+  
+
+if (loading) {
+    return (
+      <div className="bg-gray-900 min-h-screen text-white text-center">
+        <Navbar />
+        <h1 className="text-3xl font-bold mt-8">Loading...</h1>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return (
+      <div className="bg-gray-900 min-h-screen text-white text-center">
+        <Navbar />
+        <h1 className="text-3xl font-bold mt-8">Please sign in</h1>
+        <button
+          onClick={() => signIn()}
+          className="text-xl px-8 py-2 rounded-lg mt-4 bg-blue-600 text-white"
+        >
+          Sign In
+        </button>
+      </div>
+    );
+  }
 
    function handlePaginationChange(newPagination) {
     setPagination(newPagination);
@@ -58,7 +101,9 @@ function GetContracts() {
   async function handleAcceptContract(contract) {
     setSelectedContract(contract);
     setShow(true);
+    await handleAccept();
   }
+  
 
   function handleOk() {
     handleClose();
@@ -265,31 +310,20 @@ const sortedContracts = sort.field
       currency: 'USD',
     }).format(amount);
   }
+
+  
   
   return (
-    <div className="bg-gray-900 min-h-screen text-white">
+       <div className="bg-gray-900 min-h-screen text-white">
       <Navbar />
       <CreateContractForm show={showCreateForm} handleClose={handleCloseCreateForm} handleCreate={handleCreate} />
       <Container className="bg-gray-900">
-        <div className="text-center my-4">
-            {successMessage && (
-            <div className="alert alert-success" role="alert">
-              {successMessage}
-            </div>
-          )}
-          {errorMessage && (
-            <div className="alert alert-danger" role="alert">
-              {errorMessage}
-            </div>
-          )}
-        </div>
-        <h1 className="text-3xl font-bold mb-8 text-center">Open Contracts</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center">My Contracts</h1>      
         <CreateContractForm
           show={showCreateForm}
           handleClose={handleCloseCreateForm}
           handleCreate={handleCreate}
         />
-
         <Form className="mb-4">
           <Form.Group controlId="search">
             <Form.Control
@@ -300,7 +334,7 @@ const sortedContracts = sort.field
             />
           </Form.Group>
         </Form>
-        <Table responsive bordered hover variant="dark">
+        <Table data={requestedContracts} responsive bordered hover variant="dark">
           <thead>
             <tr>
               <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
@@ -315,7 +349,7 @@ const sortedContracts = sort.field
               <tr key={contract.id.S}>
                 <td>{contract.gameTitle.S}</td>
                 <td>{contract.targetPlayer.S}</td>
-                <td> {formatCurrency(contract.bidAmount.N)}</td> {/* Changed this line */}
+                <td> {(contract.bidAmount.N)}</td> {/* Changed this line */}
                 <td>{contract.contractConditions.S}</td>
                 <td>
                   <Button variant="success" onClick={() => handleAcceptContract(contract)}>Accept</Button>
@@ -332,7 +366,7 @@ const sortedContracts = sort.field
                 setPagination({ ...pagination, current: pagination.current - 1 })
               }
             />
-            {[...Array(Math.ceil(filteredContracts.length / pagination.pageSize))].map((x, i) => (
+            {[...Array(Math.ceil(requestedContracts.length / pagination.pageSize))].map((x, i) => (
               <Pagination.Item
                 key={i + 1}
                 active={i + 1 === pagination.current}
@@ -343,7 +377,84 @@ const sortedContracts = sort.field
             ))}
             <Pagination.Next
               onClick={() =>
-                pagination.current < Math.ceil(filteredContracts.length / pagination.pageSize) &&
+                pagination.current < Math.ceil(requestedContracts.length / pagination.pageSize) &&
+                setPagination({ ...pagination, current: pagination.current + 1 })
+              }
+            />
+          </Pagination>
+          </div>
+          <div className="text-center my-4">
+            {successMessage && (
+            <div className="alert alert-success" role="alert">
+              {successMessage}
+            </div>
+          )}
+          {errorMessage && (
+            <div className="alert alert-danger" role="alert">
+              {errorMessage}
+            </div>
+          )}
+        </div>
+        <h1 className="text-3xl font-bold mb-8 text-center">My Jobs</h1>      
+        <CreateContractForm
+          show={showCreateForm}
+          handleClose={handleCloseCreateForm}
+          handleCreate={handleCreate}
+        />
+        <Form className="mb-4">
+          <Form.Group controlId="search">
+            <Form.Control
+              className="bg-gray-700 border-gray-600 focus:border-blue-500 focus:ring-blue-500 text-white"
+              type="text"
+              placeholder="Search by game title"
+              onChange={handleSearch}
+            />
+          </Form.Group>
+        </Form>
+        <Table data={acceptedContracts} responsive bordered hover variant="dark">
+          <thead>
+            <tr>
+              <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Conditions {sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th>Grab a Contract!</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedContracts.map((contract) => (
+              <tr key={contract.id.S}>
+                <td>{contract.gameTitle.S}</td>
+                <td>{contract.targetPlayer.S}</td>
+                <td> {(contract.bidAmount.N)}</td> 
+                <td>{contract.contractConditions.S}</td>
+                <td>
+                  <Button variant="success" onClick={() => handleAcceptContract(contract)}>Accept</Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+        <div className="d-flex justify-content-center">
+          <Pagination className="my-4">
+            <Pagination.Prev
+              onClick={() =>
+                pagination.current > 1 &&
+                setPagination({ ...pagination, current: pagination.current - 1 })
+              }
+            />
+            {[...Array(Math.ceil(acceptedContracts.length / pagination.pageSize))].map((x, i) => (
+              <Pagination.Item
+                key={i + 1}
+                active={i + 1 === pagination.current}
+                onClick={() => setPagination({ ...pagination, current: i + 1 })}
+              >
+                {i + 1}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next
+              onClick={() =>
+                pagination.current < Math.ceil(acceptedContracts.length / pagination.pageSize) &&
                 setPagination({ ...pagination, current: pagination.current + 1 })
               }
             />
@@ -409,6 +520,7 @@ const sortedContracts = sort.field
       `}</style>
     </div>
   );
+
 }
 
 export default GetContracts;

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Container, Table, Pagination, Spinner, Modal, Form, Button } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import 'tailwindcss/tailwind.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Navbar from '../components/Navbar';
 
 function ClosedContracts() {
   const [contracts, setContracts] = useState([]);
@@ -95,8 +96,23 @@ function ClosedContracts() {
     }).format(amount);
   }
 
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('en-US').format(date);
+  }
+  
+  function getYoutubeEmbedUrl(url) {
+    const regex = /(?:https?:\/\/)?(?:www\.)?youtu(?:\.be\/|be\.com\/watch\?v=)([\w-]{11})/;
+    const match = url.match(regex);
+    if (match && match[1]) {
+      return `https://www.youtube.com/embed/${match[1]}`;
+    }
+    return null;
+  }
+
   return (
     <div className="bg-gray-900 min-h-screen text-white">
+      <Navbar />
       <Container className="bg-gray-900">
         <h1 className="text-3xl font-bold mb-8 text-center">Closed Contracts</h1>
   
@@ -114,16 +130,32 @@ function ClosedContracts() {
           <thead>
             <tr>
               <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th className="cursor-pointer" onClick={() => handleSort('verifyLink')}>Proof of Hit{sort.field === 'verifyLink' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark{sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Contract Conditions{sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {paginatedContracts.map((contract) => (
-              <tr key={contract.expDate.S}>
+              <tr key={contract.id.S}>
                 <td>{contract.gameTitle.S}</td>
+                <td>
+                    {contract.verifyLink && (
+                      <iframe
+                        width="100%"
+                        height="100"
+                        src={getYoutubeEmbedUrl(contract.verifyLink.S)}
+                        title="YouTube video player"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      ></iframe>
+                    )}
+                  </td>
                 <td>{contract.targetPlayer.S}</td>
+                <td>{contract.contractConditions.S}</td>
                 <td>{formatCurrency(contract.bidAmount.N)}</td>
                 <td>
                 <Button variant="info" onClick={() => handleViewContract(contract)}>View Contract</Button>
@@ -162,16 +194,18 @@ function ClosedContracts() {
               <Modal.Title>Contract Details</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <h5>Game Name:</h5>
-              <p>{selectedContract?.gameTitle.S}</p>
-              <h5>Target Player:</h5>
-              <p>{selectedContract?.targetPlayer.S}</p>
-              <h5>Bid Amount:</h5>
-              <p>{selectedContract && formatCurrency(selectedContract.bidAmount.N)}</p>
-              <h5>Expiration Date:</h5>
-              <p>{selectedContract && formatDate(selectedContract.expDate.S)}</p>
-              <h5>Contract Status:</h5>
-              <p>{selectedContract?.status.S}</p>
+                <h5>Game Name:</h5>
+                <p>{selectedContract?.gameTitle?.S}</p>
+                <h5>Target Player:</h5>
+                <p>{selectedContract?.targetPlayer?.S}</p>
+                <h5>Contract Conditions</h5>
+                <p>{selectedContract?.contractConditions?.S}</p>
+                <h5>Proof of Hit</h5>
+                <p>{selectedContract?.verifyLink?.S}</p>
+                <h5>Bid Amount:</h5>
+                <p>{selectedContract && formatCurrency(selectedContract.bidAmount?.N)}</p>
+                <h5>Expiration Date:</h5>
+                <p>{selectedContract && formatDate(selectedContract.expDate?.S)}</p>
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={handleClose}>

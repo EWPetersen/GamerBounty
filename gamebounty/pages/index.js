@@ -2,12 +2,11 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useState } from 'react';
-import CreateContractForm from './createContractForm';
-// import Navbar from '../components/Navbar';
+import 'tailwindcss/tailwind.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const GoogleButton = dynamic(() => import("react-google-button"), {
-  ssr: false,
-});
+import Navbar from '../components/Navbar';
+import CreateContractForm from './createContractForm';
 
 export default function Index() {
   const { data: session, status } = useSession();
@@ -27,7 +26,7 @@ export default function Index() {
 
   return (
     <div className="bg-gray-900 min-h-screen text-white">
-      
+      <Navbar />
       <div className="container mx-auto">
         <h1 className="text-4xl font-bold mb-8 text-center pt-10">
           Bounty Board
