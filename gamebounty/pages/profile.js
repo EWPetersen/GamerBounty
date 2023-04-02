@@ -24,7 +24,16 @@ function GetContracts() {
   const [items, setItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
   const [requestedContracts, setRequestedContracts] = useState([]);
-  const [acceptedContracts, setAcceptedContracts] = useState([]);
+  
+  const requestedPagination = {
+    current: 1,
+    pageSize: 10,
+  };
+
+  const acceptedPagination = {
+    current: 1,
+    pageSize: 10,
+  };const [acceptedContracts, setAcceptedContracts] = useState([]);
 
   const paginatedRequestedContracts = requestedContracts.slice(
     (requestedPagination.current - 1) * requestedPagination.pageSize,
@@ -34,9 +43,7 @@ function GetContracts() {
   const paginatedAcceptedContracts = acceptedContracts.slice(
     (acceptedPagination.current - 1) * acceptedPagination.pageSize,
     acceptedPagination.current * acceptedPagination.pageSize
-  );
-
- 
+  ); 
 
   useEffect(() => {
     if (session) {
@@ -347,11 +354,12 @@ const sortedContracts = sort.field
         <Table data={requestedContracts} responsive bordered hover variant="dark">
           <thead>
             <tr>
-              <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Conditions {sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th>Grab a Contract!</th>
+              <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th>Review</th>
             </tr>
           </thead>
           <tbody>
@@ -359,8 +367,9 @@ const sortedContracts = sort.field
               <tr key={contract.id.S}>
                 <td>{contract.gameTitle.S}</td>
                 <td>{contract.targetPlayer.S}</td>
-                <td> {(contract.bidAmount.N)}</td> {/* Changed this line */}
+                <td> {(contract.bidAmount.N)}</td> 
                 <td>{contract.contractConditions.S}</td>
+                <td>{contract.expDate.S}</td>
                 <td>
                   <Button variant="success" onClick={() => handleAcceptContract(contract)}>Accept</Button>
                 </td>
@@ -405,6 +414,7 @@ const sortedContracts = sort.field
             </div>
           )}
         </div>
+        <h1 className="text-3xl font-bold mb-8 text-center">My Jobs</h1>
         <Form className="mb-4">
           <Form.Group controlId="search">
             <Form.Control
@@ -422,7 +432,8 @@ const sortedContracts = sort.field
               <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Conditions {sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th>Grab a Contract!</th>
+              <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th>Submit Proof</th>
             </tr>
           </thead>
           <tbody>
@@ -432,6 +443,7 @@ const sortedContracts = sort.field
                 <td>{contract.targetPlayer.S}</td>
                 <td> {(contract.bidAmount.N)}</td> 
                 <td>{contract.contractConditions.S}</td>
+                <td>{contract.expDate.S}</td>
                 <td>
                   <Button variant="success" onClick={() => handleAcceptContract(contract)}>Accept</Button>
                 </td>
