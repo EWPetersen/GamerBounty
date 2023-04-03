@@ -4,6 +4,7 @@ import axios from 'axios';
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from '../components/Navbar';
+import { Row, Col, List } from 'antd';
 
 function ClosedContracts() {
   const [contracts, setContracts] = useState([]);
@@ -114,7 +115,41 @@ function ClosedContracts() {
     <div className="bg-gray-900 min-h-screen text-white">
       <Navbar />
       <Container className="bg-gray-900">
-        <h1 className="text-3xl font-bold mb-8 text-center">Closed Contracts</h1>
+          <Row gutter={16}>
+      <Col span={12}>
+        <h2>Top Contractor</h2>
+        <List
+          dataSource={[
+            { name: 'Profile 1', rank: 1 },
+            { name: 'Profile 2', rank: 2 },
+            { name: 'Profile 3', rank: 3 },
+          ]}
+          renderItem={item => (
+            <List.Item>
+              <span>{item.rank}. {item.name}</span>
+            </List.Item>
+          )}
+        />
+      </Col>
+      <Col span={12}>
+      <div style={{ textAlign: 'right' }}>
+        <h2>Top Producer</h2>
+        <List
+          dataSource={[
+            { name: 'Profile 1', rank: 1 },
+            { name: 'Profile 2', rank: 2 },
+            { name: 'Profile 3', rank: 3 },
+          ]}
+          renderItem={item => (
+            <List.Item style={{ justifyContent: 'flex-end', display: 'flex' }}> {/* Apply style to List.Item */}
+              <span>{item.rank}. {item.name}</span>
+            </List.Item>
+          )}
+        />
+        </div>
+      </Col>
+    </Row>
+        <h1 className="text-3xl font-bold mb-8 text-center">Contract Feed</h1>
   
         <Form className="mb-4">
           <Form.Group controlId="search">
@@ -134,7 +169,7 @@ function ClosedContracts() {
               <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark{sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Contract Conditions{sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th>Actions</th>
+              
             </tr>
           </thead>
           <tbody>
@@ -157,9 +192,7 @@ function ClosedContracts() {
                 <td>{contract.targetPlayer.S}</td>
                 <td>{contract.contractConditions.S}</td>
                 <td>{formatCurrency(contract.bidAmount.N)}</td>
-                <td>
-                <Button variant="info" onClick={() => handleViewContract(contract)}>View Contract</Button>
-                </td>
+               
               </tr>
             ))}
           </tbody>

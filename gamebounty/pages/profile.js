@@ -123,10 +123,10 @@ if (loading) {
     }
   }
 
-  async function handleAcceptContract(contract) {
+  async function handleVerifyContract(contract) {
     setSelectedContract(contract);
     setShow(true);
-    await handleAccept();
+    await handleVerify();
   }
   
 
@@ -147,19 +147,14 @@ if (loading) {
     setErrorMessage('');
   }
 
-  async function handleAccept() {
+  async function handleVerify() {
     try {
       const response = await axios.post('/api/updateContracts', {
         id: selectedContract?.id.S,
-        gameTitle: selectedContract?.gameTitle.S,
-        targetPlayer: selectedContract?.targetPlayer.S,
-        contractConditions: selectedContract?.contractConditions.S,
-        expDate: selectedContract?.expDate.S,
         bidAmount: selectedContract?.bidAmount.N,
-        acceptedBy: 'accepted',
         verifyLink: selectedContract?.verifyLink.S,
-        isVerified: 'false',
-        contractStatus: 'accepted',
+        isVerified: 'true',
+        contractStatus: 'closed',
                 
       });
       console.log(response.data.data);
@@ -219,12 +214,7 @@ const sortedContracts = sort.field
     }).format(amount);
   }
 
-  const handleVerify = () => {
-    // 1. Call the API or database function to update the "isVerified" boolean to 'true' for the selected contract
-    // 2. Update the local state (requestedContracts) with the updated contract information
-    // 3. Close the modal by calling `handleClose()`
-  };
-
+ 
   const handleReject = () => {
     // 1. Call the API or database function to update the "isVerified" boolean to 'true' for the selected contract
     // 2. Update the local state (requestedContracts) with the updated contract information
@@ -270,7 +260,7 @@ const sortedContracts = sort.field
               <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Conditions {sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th>Review</th>
+              <th>Action Needed</th>
             </tr>
           </thead>
           <tbody>
@@ -366,7 +356,7 @@ const sortedContracts = sort.field
                 <td>{contract.contractConditions.S}</td>
                 <td>{contract.expDate.S}</td>
                 <td>
-                  <Button variant="success" onClick={() => handleAcceptContract(contract)}>Accept</Button>
+                  <Button variant="success" onClick={() => handleVerifyContract(contract)}>Verify</Button>
                 </td>
               </tr>
             ))}
