@@ -9,7 +9,7 @@ import Navbar from '../components/Navbar';
 
 function GetContracts() {
   const [requestedContracts, setRequestedContracts] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
+
   const { data: session, status } = useSession();
   const router = useRouter();
   const [contracts, setContracts] = useState([]);
@@ -151,7 +151,6 @@ if (loading) {
     try {
       const response = await axios.post('/api/updateContracts', {
         id: selectedContract?.id.S,
-        bidAmount: selectedContract?.bidAmount.N,
         verifyLink: selectedContract?.verifyLink.S,
         isVerified: 'true',
         contractStatus: 'closed',
@@ -160,7 +159,7 @@ if (loading) {
       console.log(response.data.data);
       const newContracts = contracts.map((contract) => {
         if (contract.id.S === selectedContract.id.S) {
-          return { ...contract, contractStatus: { S: 'accepted' } };
+          return { ...contract, contractStatus: { S: 'closed' } };
         } else {
           return contract;
         }
@@ -414,6 +413,7 @@ const sortedContracts = sort.field
             </div>
           </Modal.Footer>
         </Modal>
+        
       </Container>
       <style global jsx>{`
         .modal-content,
