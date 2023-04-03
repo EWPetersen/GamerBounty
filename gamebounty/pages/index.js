@@ -6,7 +6,7 @@ import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Navbar from '../components/Navbar';
-import CreateContractForm from './createContractForm';
+import CreateContractForm from '../components/createContractForm';
 
 export default function Index() {
   const { data: session, status } = useSession();
