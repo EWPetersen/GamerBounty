@@ -10,6 +10,8 @@ function VerifyContractForm({ show, handleClose, handleVerify, setShowVerifyForm
   const [expDate, setExpDate] = useState('');
   const [verifyNotes, setVerifyNotes] = useState('');
   const [bidAmount, setBidAmount] = useState('');
+  const [submitStatus, setSubmitStatus] = useState(null);
+  const [verifyLink, setVerifyLink] = useState('');
 
   if (!show) {
     return null;
@@ -17,79 +19,93 @@ function VerifyContractForm({ show, handleClose, handleVerify, setShowVerifyForm
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    handleVerify({
-      gameTitle,
-      targetPlayer,
-      contractConditions,
-      expDate,
-      bidAmount,
-      acceptedBy: 'verify',
-      verifyLink,
-      verifyNotes,
-      isVerified: 'false',
-      contractStatus: 'open',
-    });
-    handleClose();
-  };
+    const isSuccess = true;
+    if (isSuccess) {
+        setSubmitStatus('success');
+        setTimeout(() => {
+          handleVerify({
+            gameTitle,
+            targetPlayer,
+            contractConditions,
+            expDate,
+            bidAmount,
+            acceptedBy: 'verify',
+            verifyLink,
+            verifyNotes,
+            isVerified: 'false',
+            contractStatus: 'open',
+          });
+          handleClose();
+          setSubmitStatus(null);
+        }, 2000);
+      } else {
+        setSubmitStatus('failure');
+        setTimeout(() => {
+          setSubmitStatus(null);
+        }, 2000);
+      }
+    };
 
   return (
     <>
-    <Modal show={show} onHide={handleClose} className="bg-gray-900">
-      <Modal.Header closeButton>
-        <Modal.Title>Verify Contract</Modal.Title>
-      </Modal.Header>
-      <div className="bg-gray-900">
-        <Modal.Body>
-          <Form onSubmit={handleFormSubmit}>
+      <Modal show={show} onHide={handleClose} className="bg-gray-900">
+        <Modal.Header closeButton>
+          <Modal.Title>Verify Contract</Modal.Title>
+        </Modal.Header>
+        <div className="bg-gray-900">
+          <Modal.Body>
+            {submitStatus === 'success' && (
+              <Alert variant="success">Contract successfully verified!</Alert>
+            )}
+            {submitStatus === 'failure' && (
+              <Alert variant="danger">Failed to verify contract. Please try again.</Alert>
+            )}
+            <Form onSubmit={handleFormSubmit}>
             <Form.Group controlId="gameTitle">
               <Form.Label>Game Title</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Which game does their character live in?"
+                readOnly
                 value={gameTitle}
-                onChange={(event) => setgameTitle(event.target.value)}
               />
             </Form.Group>
             <Form.Group controlId="targetPlayer">
               <Form.Label>Target Player</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="What is the name of your target?"
+                readOnly
                 value={targetPlayer}
-                onChange={(event) => setTargetPlayer(event.target.value)}
               />
             </Form.Group>
             <Form.Group controlId="expDate">
               <Form.Label>Expiriation Date</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="When will this contract expire?"
+                readOnly
                 value={expDate}
-                onChange={(event) => setExpDate(event.target.value)}
               />
             </Form.Group>
             <Form.Group controlId="contractConditions">
               <Form.Label>Conditions</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Are there any additional requirements? (under 100char)"
+                readOnly
                 value={contractConditions}
-                onChange={(event) => setContractConditions(event.target.value)}
               />
             </Form.Group>
             <Form.Group controlId="bidAmount">
               <Form.Label>Bid Amount</Form.Label>
               <Form.Control
                 type="number"
-                placeholder="Enter bid amount"
+                readOnly
                 value={bidAmount}
-                onChange={(event) => setBidAmount(event.target.value)}
               />
             </Form.Group>
             <Form.Group controlId="verifyLink">
               <Form.Label>Proof Verification</Form.Label>
               <Form.Control
                 type="string"
+                required
                 placeholder="YouTube, Twitch, Vimeo - Upload date must be newer than contract date, and 60s or less."
                 value={verifyLink}
                 onChange={(event) => setVerifyLink(event.target.value)}
@@ -104,21 +120,21 @@ function VerifyContractForm({ show, handleClose, handleVerify, setShowVerifyForm
                 onChange={(event) => setVerifyNotes(event.target.value)}
               />
             </Form.Group>
-            <Form.Group>
-              ---
-            </Form.Group>
             <Button variant="primary" type="submit">
               Verify
             </Button>
+            <Button variant="primary" type="submit">
+              Reject
+            </Button>
           </Form>
-        </Modal.Body>
-      </div>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-      </Modal.Footer>
-    </Modal>
+       </Modal.Body>
+        </div>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <style jsx>{`
         .modal-content {
           --bs-modal-bg: #1f2937;

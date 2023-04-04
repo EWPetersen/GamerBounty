@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Table, Pagination, Spinner, Modal, Form, Button } from 'react-bootstrap';
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+
 import axios from 'axios';
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -12,6 +13,7 @@ import VerifyContractForm from '../components/verifyContractForm';
 
 function GetContracts() {
   const [requestedContracts, setRequestedContracts] = useState([]);
+  const [verifyLink, setVerifyLink] = useState('');
 
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -52,7 +54,25 @@ function GetContracts() {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [showVerifyForm, setShowVerifyForm] = useState(false);
 
- 
+  const handleReviewClick = (contract) => {
+    setSelectedContract(contract);
+    setShowReviewForm(true);
+  };
+
+  const handleVerifyClick = (contract) => {
+    setSelectedContract(contract);
+    setShowVerifyForm(true);
+  };
+
+  const handleCloseVerifyForm = () => {
+    setShowVerifyForm(false);
+    setSelectedContract(null);
+  };
+
+  function handleVerifyContract() {
+    console.log("Contract:", 'verified');
+  };
+  
   useEffect(() => {
     if (session) {
       const fetchData = async () => {
@@ -90,7 +110,7 @@ if (loading) {
         <h1 className="text-3xl font-bold mt-8">Loading...</h1>
       </div>
     );
-  }
+  };
 
   if (!session) {
     return (
@@ -105,15 +125,15 @@ if (loading) {
         </button>
       </div>
     );
-  }
+  };
 
    function handlePaginationChange(newPagination) {
     setPagination(newPagination);
-  }
+  };
 
   function handleSearch(event) {
     setSearchTerm(event.target.value);
-  }
+  };
 
   function handleSort(field) {
     if (sort.field === field) {
@@ -121,16 +141,9 @@ if (loading) {
     } else {
       setSort({ field, order: 'asc' });
     }
-  }
-
-  const handleReviewClick = () => {
-    setShowReviewForm(true);
   };
 
-  const handleVerifyClick = () => {
-    setShowVerifyForm(true);
-  };
-  
+ 
 
   async function handleVerify() {
     try {
@@ -160,7 +173,7 @@ if (loading) {
       setShow(false);
       setSuccess(false);
     }
-  }
+  };
 
   const filteredContracts = contracts.filter((contract) =>
   contract &&
@@ -197,18 +210,33 @@ const sortedContracts = sort.field
       style: 'currency',
       currency: 'USD',
     }).format(amount);
-  }
+  };
+
   return (
-       <div className="bg-gray-900 min-h-screen text-white">
-      <Navbar />
-      <Container className="bg-gray-900">
-      {showReviewForm && <ReviewContractForm />}
-      {showVerifyForm && <VerifyContractForm />}
-      <h1 className="text-3xl font-bold mb-8 text-center">Profile</h1>
+    <div className="bg-gray-900 min-h-screen text-white">
+    <Navbar />
+    <Container className="bg-gray-900">
+      <Modal show={showReviewForm} onHide={() => setShowReviewForm(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Review Contract</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <ReviewContractForm selectedContract={selectedContract} />
+        </Modal.Body>
+      </Modal>
+      <Modal show={showVerifyForm} onHide={() => setShowVerifyForm(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Verify Contract</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <VerifyContractForm selectedContract={selectedContract} />
+        </Modal.Body>
+      </Modal>
+    <h1 className="text-3xl font-bold mb-8 text-center">Profile</h1>
       <div>
         <h3 className="text-center"> Manage Contracts</h3>
-        </div>
-      <h1 className="text-3xl font-bold mb-8 text-left">My Contracts</h1>
+      </div>
+    <h1 className="text-3xl font-bold mb-8 text-left">My Contracts</h1>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <div>
             <h3>Total Hits Completed</h3>
@@ -219,82 +247,81 @@ const sortedContracts = sort.field
                 <p>0%</p> {/* Replace with the actual rating when you have the database code */}
                 </div>
         </div>
-        
-        <Form className="mb-4">
-          <Form.Group controlId="search">
-            <Form.Control
-              className="bg-gray-700 border-gray-600 focus:border-blue-500 focus:ring-blue-500 text-white"
-              type="text"
-              placeholder="Search by game title"
-              onChange={handleSearch}
-            />
-          </Form.Group>
-        </Form>
-        <Table data={requestedContracts} responsive bordered hover variant="dark">
-          <thead>
-            <tr>
-            <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Conditions {sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th>Action Needed</th>
+      <Form className="mb-4">
+        <Form.Group controlId="search">
+          <Form.Control
+            className="bg-gray-700 border-gray-600 focus:border-blue-500 focus:ring-blue-500 text-white"
+            type="text"
+            placeholder="Search by game title"
+            onChange={handleSearch}
+          />
+        </Form.Group>
+      </Form>
+      <Table data={requestedContracts} responsive bordered hover variant="dark">
+        <thead>
+          <tr>
+          <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Conditions {sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th>Action Needed</th>
+          </tr>
+        </thead>
+        <tbody>
+        {paginatedRequestedContracts.map((contract) => (
+            <tr key={contract.id.S}>
+              <td>{contract.gameTitle.S}</td>
+              <td>{contract.targetPlayer.S}</td>
+              <td> {(contract.bidAmount.N)}</td> 
+              <td>{contract.contractConditions.S}</td>
+              <td>{contract.expDate.S}</td>
+              <td>
+              <Button onClick={() => handleReviewClick(contract)}>Review</Button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-          {paginatedRequestedContracts.map((contract) => (
-              <tr key={contract.id.S}>
-                <td>{contract.gameTitle.S}</td>
-                <td>{contract.targetPlayer.S}</td>
-                <td> {(contract.bidAmount.N)}</td> 
-                <td>{contract.contractConditions.S}</td>
-                <td>{contract.expDate.S}</td>
-                <td>
-                <Button onClick={() => handleReviewClick(contract)}>Review</Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-        <div className="d-flex justify-content-center">
-          <Pagination className="my-4">
-  <Pagination.Prev
-    onClick={() =>
-      requestedPagination.current > 1 &&
-      setRequestedPagination({ ...requestedPagination, current: requestedPagination.current - 1 })
-    }
-  />
-  {[...Array(Math.ceil(requestedContracts.length / requestedPagination.pageSize))].map((x, i) => (
-    <Pagination.Item
-      key={i + 1}
-      active={i + 1 === requestedPagination.current}
-      onClick={() => setRequestedPagination({ ...requestedPagination, current: i + 1 })}
-    >
-      {i + 1}
-    </Pagination.Item>
-  ))}
-  <Pagination.Next
-    onClick={() =>
-      requestedPagination.current < Math.ceil(requestedContracts.length / requestedPagination.pageSize) &&
-      setRequestedPagination({ ...requestedPagination, current: requestedPagination.current + 1 })
-    }
-  />
-</Pagination>
+          ))}
+        </tbody>
+      </Table>
+      <div className="d-flex justify-content-center">
+        <Pagination className="my-4">
+        <Pagination.Prev
+          onClick={() =>
+            requestedPagination.current > 1 &&
+            setRequestedPagination({ ...requestedPagination, current: requestedPagination.current - 1 })
+          }
+        />
+        {[...Array(Math.ceil(requestedContracts.length / requestedPagination.pageSize))].map((x, i) => (
+          <Pagination.Item
+            key={i + 1}
+            active={i + 1 === requestedPagination.current}
+            onClick={() => setRequestedPagination({ ...requestedPagination, current: i + 1 })}
+          >
+            {i + 1}
+          </Pagination.Item>
+        ))}
+        <Pagination.Next
+          onClick={() =>
+            requestedPagination.current < Math.ceil(requestedContracts.length / requestedPagination.pageSize) &&
+            setRequestedPagination({ ...requestedPagination, current: requestedPagination.current + 1 })
+          }
+        />
+        </Pagination>
+      </div>
+        <div className="text-center my-4">
+          {successMessage && (
+          <div className="alert alert-success" role="alert">
+            {successMessage}
           </div>
-          <div className="text-center my-4">
-            {successMessage && (
-            <div className="alert alert-success" role="alert">
-              {successMessage}
-            </div>
-          )}
-          {errorMessage && (
-            <div className="alert alert-danger" role="alert">
-              {errorMessage}
-            </div>
-          )}
-        </div>
-        <h1 className="text-3xl font-bold mb-8 text-left">My Jobs</h1>
-        <Form className="mb-4">
+        )}
+        {errorMessage && (
+          <div className="alert alert-danger" role="alert">
+            {errorMessage}
+          </div>
+        )}
+      </div>
+      <h1 className="text-3xl font-bold mb-8 text-left">My Jobs</h1>
+      <Form className="mb-4">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <div>
                 <h3>Money made from hits</h3>
@@ -305,90 +332,101 @@ const sortedContracts = sort.field
                     <p>0%</p> {/* Replace with the actual rating when you have the database code */}
             </div>
         </div>
-          <Form.Group controlId="search">
-            <Form.Control
+      <Form.Group controlId="search">
+      <Form.Control
               className="bg-gray-700 border-gray-600 focus:border-blue-500 focus:ring-blue-500 text-white"
               type="text"
               placeholder="Search by game title"
               onChange={handleSearch}
             />
-          </Form.Group>
-        </Form>
-        <Table data={acceptedContracts} responsive bordered hover variant="dark">
-          <thead>
-            <tr>
-              <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Conditions {sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th>Submit Proof</th>
+      </Form.Group>
+      </Form>
+      <Table data={acceptedContracts} responsive bordered hover variant="dark">
+        <thead>
+          <tr>
+            <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Conditions {sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th>Submit Proof</th>
+          </tr>
+        </thead>
+        <tbody>
+          {paginatedAcceptedContracts.map((contract) => (
+            <tr key={contract.id.S}>
+              <td>{contract.gameTitle.S}</td>
+              <td>{contract.targetPlayer.S}</td>
+              <td>{(contract.bidAmount.N)}</td> 
+              <td>{contract.contractConditions.S}</td>
+              <td>{contract.expDate.S}</td>
+              <td>
+                  <button onClick={() => onVerifyClick(contract)}>Verify</button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {paginatedAcceptedContracts.map((contract) => (
-              <tr key={contract.id.S}>
-                <td>{contract.gameTitle.S}</td>
-                <td>{contract.targetPlayer.S}</td>
-                <td> {(contract.bidAmount.N)}</td> 
-                <td>{contract.contractConditions.S}</td>
-                <td>{contract.expDate.S}</td>
-                <td>
-                <Button onClick={() => handleVerifyClick(contract)}>Verify</Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+          ))}
+        </tbody>
+      </Table>
         <div className="d-flex justify-content-center">
         <Pagination className="my-4">
-  <Pagination.Prev
-    onClick={() =>
-      acceptedPagination.current > 1 &&
-      setAcceptedPagination({ ...acceptedPagination, current: acceptedPagination.current - 1 })
-    }
-  />
-  {[...Array(Math.ceil(acceptedContracts.length / acceptedPagination.pageSize))].map((x, i) => (
-    <Pagination.Item
-      key={i + 1}
-      active={i + 1 === acceptedPagination.current}
-      onClick={() => setAcceptedPagination({ ...acceptedPagination, current: i + 1 })}
-    >
-      {i + 1}
-    </Pagination.Item>
-  ))}
-  <Pagination.Next
-    onClick={() =>
-      acceptedPagination.current < Math.ceil(acceptedContracts.length / acceptedPagination.pageSize) &&
-      setAcceptedPagination({ ...acceptedPagination, current: acceptedPagination.current + 1 })
-    }
-  />
-</Pagination>
-     </div>
-</Container>
-      <style global jsx>{`
-        .modal-content,
-        .form-control {
-          background-color: #1f2937;
-          color: #ffffff;
-        }
-        .alert-success {
-          background-color: #10b981;
-          color: #ffffff;
-        }
-        .alert-danger {
-          background-color: #ef4444;
-          color: #ffffff;
-        }
-        table thead th {
-          cursor: pointer;
-          font-weight: 600;
-          text-transform: uppercase;
-        }
-        table tbody tr:hover {
-          background-color: rgba(255, 255, 255, 0.1);
-        }
-      `}</style>
+          <Pagination.Prev
+            onClick={() =>
+              acceptedPagination.current > 1 &&
+              setAcceptedPagination({ ...acceptedPagination, current: acceptedPagination.current - 1 })
+            }
+          />
+          {[...Array(Math.ceil(acceptedContracts.length / acceptedPagination.pageSize))].map((x, i) => (
+            <Pagination.Item
+              key={i + 1}
+              active={i + 1 === acceptedPagination.current}
+              onClick={() => setAcceptedPagination({ ...acceptedPagination, current: i + 1 })}
+            >
+              {i + 1}
+            </Pagination.Item>
+          ))}
+          <Pagination.Next
+            onClick={() =>
+              acceptedPagination.current < Math.ceil(acceptedContracts.length / acceptedPagination.pageSize) &&
+              setAcceptedPagination({ ...acceptedPagination, current: acceptedPagination.current + 1 })
+            }
+          />
+        </Pagination>
+        </div>
+      </Container>
+          <style global jsx>{`
+            .modal-content,
+            .form-control {
+              background-color: #1f2937;
+              color: #ffffff;
+            }
+            .alert-success {
+              background-color: #10b981;
+              color: #ffffff;
+            }
+            .alert-danger {
+              background-color: #ef4444;
+              color: #ffffff;
+            }
+            table thead th {
+              cursor: pointer;
+              font-weight: 600;
+              text-transform: uppercase;
+            }
+            table tbody tr:hover {
+              background-color: rgba(255, 255, 255, 0.1);
+            }
+          `}</style>
+        <VerifyContractForm
+          show={showVerifyForm}
+          handleClose={handleCloseVerifyForm}
+          handleVerify={handleVerifyContract}
+          setShowVerifyForm={setShowVerifyForm}
+          gameTitle={selectedContract?.gameTitle}
+          targetPlayer={selectedContract?.targetPlayer}
+          contractConditions={selectedContract?.contractConditions}
+          expDate={selectedContract?.expDate}
+          bidAmount={selectedContract?.bidAmount}
+        />
     </div>
   );
 

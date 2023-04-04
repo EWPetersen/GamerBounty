@@ -1,4 +1,4 @@
-<div className="mt-4 mb-4 text-center">
+ /* <div className="mt-4 mb-4 text-center">
         </div>
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
@@ -23,4 +23,4 @@
                 <Button onClick={handleClose}>Close</Button>
             </div>
           </Modal.Footer>
-        </Modal>
+        </Modal> */
