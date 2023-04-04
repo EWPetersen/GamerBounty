@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Table, Pagination, Spinner, Modal, Form, Button } from 'react-bootstrap';
+import { Container, Table, Pagination, Spinner, Modal, Form, Button, Alert } from 'react-bootstrap';
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
@@ -8,13 +8,12 @@ import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from '../components/Navbar';
 
-import ReviewContractForm from '../components/reviewContractForm';
+import ReviewContractForm from '../components/rejectContractForm';
 import VerifyContractForm from '../components/verifyContractForm';
 
-function GetContracts() {
+function Profile() {
   const [requestedContracts, setRequestedContracts] = useState([]);
-  const [verifyLink, setVerifyLink] = useState('');
-
+  const [show, setShow] = useState(false);
   const { data: session, status } = useSession();
   const router = useRouter();
   const [contracts, setContracts] = useState([]);
@@ -22,13 +21,10 @@ function GetContracts() {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [sort, setSort] = useState({ field: '', order: '' });
-  const [show, setShow] = useState(false);
-  const [selectedContract, setSelectedContract] = useState(null);
-  const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [items, setItems] = useState([]);
-  const [filteredItems, setFilteredItems] = useState([]);
+  const [selectedContract, setSelectedContract] = useState(null);
+
  
   
   const requestedPagination = {
@@ -69,10 +65,6 @@ function GetContracts() {
     setSelectedContract(null);
   };
 
-  function handleVerifyContract() {
-    console.log("Contract:", 'verified');
-  };
-  
   useEffect(() => {
     if (session) {
       const fetchData = async () => {
@@ -144,38 +136,7 @@ if (loading) {
   };
 
  
-
-  async function handleVerify() {
-    try {
-      const response = await axios.post('/api/updateContracts', {
-        id: selectedContract?.id.S,
-        verifyLink: selectedContract?.verifyLink.S,
-        verifyNotes: selectedContract?.verifyNotes.S,
-        isVerified: 'true',
-        contractStatus: 'Verified',
-                
-      });
-      console.log(response.data.data);
-      const newContracts = contracts.map((contract) => {
-        if (contract.id.S === selectedContract.id.S) {
-          return { ...contract, contractStatus: { S: 'closed' } };
-        } else {
-          return contract;
-        }
-      });
-      setContracts(newContracts);
-      setSelectedContract(null);
-      setShow(false);
-      setSuccess(true);
-    } catch (error) {
-      console.error('Error updating contract', error);
-      setSelectedContract(null);
-      setShow(false);
-      setSuccess(false);
-    }
-  };
-
-  const filteredContracts = contracts.filter((contract) =>
+const filteredContracts = contracts.filter((contract) =>
   contract &&
   contract.gameTitle.S.toLowerCase().includes(searchTerm.toLowerCase())
 );
@@ -221,7 +182,7 @@ const sortedContracts = sort.field
           <Modal.Title>Review Contract</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <ReviewContractForm selectedContract={selectedContract} />
+          <ReviewContractForm selectedContract={selectedContract} />
         </Modal.Body>
       </Modal>
       <Modal show={showVerifyForm} onHide={() => setShowVerifyForm(false)}>
@@ -273,7 +234,7 @@ const sortedContracts = sort.field
             <tr key={contract.id.S}>
               <td>{contract.gameTitle.S}</td>
               <td>{contract.targetPlayer.S}</td>
-              <td> {(contract.bidAmount.N)}</td> 
+              <td>{(contract.bidAmount.N)}</td> 
               <td>{contract.contractConditions.S}</td>
               <td>{contract.expDate.S}</td>
               <td>
@@ -361,7 +322,13 @@ const sortedContracts = sort.field
               <td>{contract.contractConditions.S}</td>
               <td>{contract.expDate.S}</td>
               <td>
-                  <button onClick={() => onVerifyClick(contract)}>Verify</button>
+              <Button
+                variant="outline-primary"
+                className="mr-2"
+                onClick={() => handleVerifyClick(contract)}
+              >
+                Verify
+              </Button>
               </td>
             </tr>
           ))}
@@ -417,11 +384,16 @@ const sortedContracts = sort.field
             }
           `}</style>
         <VerifyContractForm
+          show={showVerifyForm}
+          handleClose={handleCloseVerifyForm}
+          setShow={setShow}
+          setShowVerifyForm={setShowVerifyForm}
           selectedContract={selectedContract}
+          setSelectedContract={setSelectedContract}
         />
     </div>
   );
 
 }
 
-export default GetContracts;
+export default Profile;

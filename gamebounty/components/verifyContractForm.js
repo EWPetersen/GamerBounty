@@ -1,39 +1,61 @@
 import React, { useState } from 'react';
-import { Modal, Form, Button } from 'react-bootstrap';
+import { Modal, Form, Button, Alert } from 'react-bootstrap';
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function VerifyContractForm({ show, handleClose, handleVerify, setShowVerifyForm, selectedContract }) {
-  const [gameTitle, setgameTitle] = useState('');
-  const [targetPlayer, setTargetPlayer] = useState('');
-  const [contractConditions, setContractConditions] = useState('');
+function VerifyContractForm({ show, handleClose, setShow, setShowVerifyForm, selectedContract, setSelectedContract }) {
   const [expDate, setExpDate] = useState('');
   const [verifyNotes, setVerifyNotes] = useState('');
-  const [bidAmount, setBidAmount] = useState('');
   const [submitStatus, setSubmitStatus] = useState(null);
   const [verifyLink, setVerifyLink] = useState('');
+  const [success, setSuccess] = useState(false);
+
 
   if (!show) {
     return null;
   }
 
-  const handleFormSubmit = (event) => {
+async function handleVerify() {
+  try {
+    const response = await axios.post('/api/updateContracts', {
+      id: selectedContract?.id.S,
+      verifyLink: selectedContract?.verifyLink.S,
+      verifyNotes: selectedContract?.verifyNotes.S,
+      isVerified: 'true',
+      contractStatus: 'Verified',
+              
+    });
+    console.log(response.data.data);
+    const newContracts = contracts.map((contract) => {
+      if (contract.id.S === selectedContract.id.S) {
+        return { ...contract, contractStatus: { S: 'closed' } };
+      } else {
+        return contract;
+      }
+    });
+    setContracts(newContracts);
+    setSelectedContract(null);
+    setShow(false);
+    setSuccess(true);
+  } catch (error) {
+    console.error('Error updating contract', error);
+    setSelectedContract(null);
+    setShow(false);
+    setSuccess(false);
+  }
+};  
+  
+const handleFormSubmit = (event) => {
     event.preventDefault();
     const isSuccess = true;
     if (isSuccess) {
         setSubmitStatus('success');
         setTimeout(() => {
           handleVerify({
-            gameTitle,
-            targetPlayer,
-            contractConditions,
-            expDate,
-            bidAmount,
-            acceptedBy: 'verify',
             verifyLink,
-            verifyNotes,
+            verifyNotes, 
             isVerified: 'false',
-            contractStatus: 'open',
+            contractStatus,
           });
           handleClose();
           setSubmitStatus(null);
@@ -63,51 +85,31 @@ function VerifyContractForm({ show, handleClose, handleVerify, setShowVerifyForm
             <Form onSubmit={handleFormSubmit}>
             <Form.Group controlId="gameTitle">
               <Form.Label>Game</Form.Label>
-              <Form.Control
-                type="text"
-                readOnly
-                value={selectedContract?.gameTitle.S}
-              />
+              <p>{selectedContract?.gameTitle.S}</p>
             </Form.Group>
             <Form.Group controlId="targetPlayer">
               <Form.Label>Target Player</Form.Label>
-              <Form.Control
-                type="text"
-                readOnly
-                value={selectedContract?.targetPlayer.S}
-              />
+              <p>{selectedContract?.targetPlayer.S}</p>
             </Form.Group>
             <Form.Group controlId="expDate">
               <Form.Label>Expiriation Date</Form.Label>
-              <Form.Control
-                type="text"
-                readOnly
-                value={selectedContract?.expDate.S}
-              />
+              <p>{selectedContract?.expDate.S}</p>
             </Form.Group>
             <Form.Group controlId="contractConditions">
               <Form.Label>Conditions</Form.Label>
-              <Form.Control
-                type="text"
-                readOnly
-                value={selectedContract?.contractConditions.S}
-              />
+              <p>{selectedContract?.contractConditions.S}</p>
             </Form.Group>
             <Form.Group controlId="bidAmount">
               <Form.Label>Bid Amount</Form.Label>
-              <Form.Control
-                type="number"
-                readOnly
-                value={selectedContract?.bidAmount.N}
-              />
+              <p>{selectedContract?.bidAmount.N}</p>
             </Form.Group>
             <Form.Group controlId="verifyLink">
-              <Form.Label>Proof Verification</Form.Label>
+              <Form.Label>Proof Link</Form.Label>
               <Form.Control
                 type="string"
                 required
                 placeholder="YouTube, Twitch, Vimeo - Upload date must be newer than contract date, and 60s or less."
-                value={selectedContract?.verifyLink.S || ''}
+                value={verifyLink.S}
                 onChange={(event) => setVerifyLink(event.target.value)}
               />
             </Form.Group>
@@ -116,17 +118,12 @@ function VerifyContractForm({ show, handleClose, handleVerify, setShowVerifyForm
               <Form.Control
                 type="string"
                 placeholder="Anything interesting about this contract? (under 100char)"
-                value={selectedContract?.verifyNotes.S}
+                value={verifyNotes.S}
                 onChange={(event) => setVerifyNotes(event.target.value)}
               />
             </Form.Group>
-            <Button variant="primary" type="submit">
-              Verify
-            </Button>
-            <Button variant="primary" type="submit">
-              Reject
-            </Button>
-          </Form>
+            <Button variant="primary" onClick={handleVerify}>Verify</Button>
+            </Form>
        </Modal.Body>
         </div>
         <Modal.Footer>
