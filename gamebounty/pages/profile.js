@@ -417,15 +417,7 @@ const sortedContracts = sort.field
             }
           `}</style>
         <VerifyContractForm
-          show={showVerifyForm}
-          handleClose={handleCloseVerifyForm}
-          handleVerify={handleVerifyContract}
-          setShowVerifyForm={setShowVerifyForm}
-          gameTitle={selectedContract?.gameTitle}
-          targetPlayer={selectedContract?.targetPlayer}
-          contractConditions={selectedContract?.contractConditions}
-          expDate={selectedContract?.expDate}
-          bidAmount={selectedContract?.bidAmount}
+          selectedContract={selectedContract}
         />
     </div>
   );

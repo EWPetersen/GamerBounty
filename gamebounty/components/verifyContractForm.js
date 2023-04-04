@@ -3,7 +3,7 @@ import { Modal, Form, Button } from 'react-bootstrap';
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function VerifyContractForm({ show, handleClose, handleVerify, setShowVerifyForm }) {
+function VerifyContractForm({ show, handleClose, handleVerify, setShowVerifyForm, selectedContract }) {
   const [gameTitle, setgameTitle] = useState('');
   const [targetPlayer, setTargetPlayer] = useState('');
   const [contractConditions, setContractConditions] = useState('');
@@ -62,11 +62,11 @@ function VerifyContractForm({ show, handleClose, handleVerify, setShowVerifyForm
             )}
             <Form onSubmit={handleFormSubmit}>
             <Form.Group controlId="gameTitle">
-              <Form.Label>Game Title</Form.Label>
+              <Form.Label>Game</Form.Label>
               <Form.Control
                 type="text"
                 readOnly
-                value={gameTitle}
+                value={selectedContract?.gameTitle.S}
               />
             </Form.Group>
             <Form.Group controlId="targetPlayer">
@@ -74,7 +74,7 @@ function VerifyContractForm({ show, handleClose, handleVerify, setShowVerifyForm
               <Form.Control
                 type="text"
                 readOnly
-                value={targetPlayer}
+                value={selectedContract?.targetPlayer.S}
               />
             </Form.Group>
             <Form.Group controlId="expDate">
@@ -82,7 +82,7 @@ function VerifyContractForm({ show, handleClose, handleVerify, setShowVerifyForm
               <Form.Control
                 type="text"
                 readOnly
-                value={expDate}
+                value={selectedContract?.expDate.S}
               />
             </Form.Group>
             <Form.Group controlId="contractConditions">
@@ -90,7 +90,7 @@ function VerifyContractForm({ show, handleClose, handleVerify, setShowVerifyForm
               <Form.Control
                 type="text"
                 readOnly
-                value={contractConditions}
+                value={selectedContract?.contractConditions.S}
               />
             </Form.Group>
             <Form.Group controlId="bidAmount">
@@ -98,7 +98,7 @@ function VerifyContractForm({ show, handleClose, handleVerify, setShowVerifyForm
               <Form.Control
                 type="number"
                 readOnly
-                value={bidAmount}
+                value={selectedContract?.bidAmount.N}
               />
             </Form.Group>
             <Form.Group controlId="verifyLink">
@@ -107,7 +107,7 @@ function VerifyContractForm({ show, handleClose, handleVerify, setShowVerifyForm
                 type="string"
                 required
                 placeholder="YouTube, Twitch, Vimeo - Upload date must be newer than contract date, and 60s or less."
-                value={verifyLink}
+                value={selectedContract?.verifyLink.S || ''}
                 onChange={(event) => setVerifyLink(event.target.value)}
               />
             </Form.Group>
@@ -116,7 +116,7 @@ function VerifyContractForm({ show, handleClose, handleVerify, setShowVerifyForm
               <Form.Control
                 type="string"
                 placeholder="Anything interesting about this contract? (under 100char)"
-                value={verifyNotes}
+                value={selectedContract?.verifyNotes.S}
                 onChange={(event) => setVerifyNotes(event.target.value)}
               />
             </Form.Group>
