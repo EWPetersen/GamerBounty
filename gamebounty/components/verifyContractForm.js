@@ -3,7 +3,7 @@ import { Modal, Form, Button, Alert } from 'react-bootstrap';
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function VerifyContractForm({ show, handleClose, setShow, setShowVerifyForm, selectedContract, setSelectedContract }) {
+function VerifyContractForm({ show, handleClose, handleVerify, setShow, setShowVerifyForm, selectedContract, setSelectedContract }) {
   const [expDate, setExpDate] = useState('');
   const [verifyNotes, setVerifyNotes] = useState('');
   const [submitStatus, setSubmitStatus] = useState(null);
@@ -15,7 +15,7 @@ function VerifyContractForm({ show, handleClose, setShow, setShowVerifyForm, sel
     return null;
   }
 
-async function handleVerify() {
+async function submitVerification() {
   try {
     const response = await axios.post('/api/updateContracts', {
       id: selectedContract?.id.S,
@@ -48,6 +48,7 @@ async function handleVerify() {
 const handleFormSubmit = (event) => {
   event.preventDefault();
   console.log('handleFormSubmit called'); // Add this line
+  submitVerification();
   const isSuccess = true;
   if (isSuccess) {
     setSubmitStatus('success');
@@ -123,7 +124,7 @@ const handleFormSubmit = (event) => {
                 onChange={(event) => setVerifyNotes(event.target.value)}
               />
             </Form.Group>
-            <Button variant="primary" onClick={handleVerify}>Verify</Button>
+            <Button variant="primary" onClick={handleFormSubmit}>Verify</Button>
             </Form>
        </Modal.Body>
         </div>

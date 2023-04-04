@@ -8,8 +8,8 @@ import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from '../components/Navbar';
 
-import ReviewContractForm from '../components/rejectContractForm';
-import VerifyContractForm from '../components/verifyContractForm';
+import ReviewContractForm from '../components/RejectContractForm';
+import VerifyContractForm from '../components/VerifyContractForm';
 
 function Profile() {
   const [requestedContracts, setRequestedContracts] = useState([]);
@@ -386,6 +386,7 @@ const sortedContracts = sort.field
         <VerifyContractForm
           show={showVerifyForm}
           handleClose={handleCloseVerifyForm}
+          
           setShow={setShow}
           setShowVerifyForm={setShowVerifyForm}
           selectedContract={selectedContract}
