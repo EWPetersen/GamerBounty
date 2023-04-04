@@ -46,27 +46,28 @@ async function handleVerify() {
 };  
   
 const handleFormSubmit = (event) => {
-    event.preventDefault();
-    const isSuccess = true;
-    if (isSuccess) {
-        setSubmitStatus('success');
-        setTimeout(() => {
-          handleVerify({
-            verifyLink,
-            verifyNotes, 
-            isVerified: 'false',
-            contractStatus,
-          });
-          handleClose();
-          setSubmitStatus(null);
-        }, 2000);
-      } else {
-        setSubmitStatus('failure');
-        setTimeout(() => {
-          setSubmitStatus(null);
-        }, 2000);
-      }
-    };
+  event.preventDefault();
+  console.log('handleFormSubmit called'); // Add this line
+  const isSuccess = true;
+  if (isSuccess) {
+    setSubmitStatus('success');
+    setTimeout(() => {
+      handleVerify({
+        verifyLink,
+        verifyNotes,
+        isVerified: 'false',
+        contractStatus,
+      });
+      handleClose();
+      setSubmitStatus(null);
+    }, 2000);
+  } else {
+    setSubmitStatus('failure');
+    setTimeout(() => {
+      setSubmitStatus(null);
+    }, 2000);
+  }
+};
 
   return (
     <>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Table, Pagination, Spinner, Modal, Form, Button, Alert } from 'react-bootstrap';
-import { signIn, signOut, useSession } from "next-auth/react";
+import { Container, Table, Pagination, Modal, Form, Button } from 'react-bootstrap';
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 import axios from 'axios';
