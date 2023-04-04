@@ -7,6 +7,9 @@ import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from '../components/Navbar';
 
+import ReviewContractForm from '../components/reviewContractForm';
+import VerifyContractForm from '../components/verifyContractForm';
+
 function GetContracts() {
   const [requestedContracts, setRequestedContracts] = useState([]);
 
@@ -20,7 +23,6 @@ function GetContracts() {
   const [show, setShow] = useState(false);
   const [selectedContract, setSelectedContract] = useState(null);
   const [success, setSuccess] = useState(false);
-  const [showCreateForm, setShowCreateForm] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [items, setItems] = useState([]);
@@ -47,6 +49,10 @@ function GetContracts() {
     acceptedPagination.current * acceptedPagination.pageSize
   ); 
 
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [showVerifyForm, setShowVerifyForm] = useState(false);
+
+ 
   useEffect(() => {
     if (session) {
       const fetchData = async () => {
@@ -101,12 +107,6 @@ if (loading) {
     );
   }
 
-  const handleReviewClick = (contract) => {
-    setModalVisible(true);
-    setSelectedContract(contract);
-  };
-  
-
    function handlePaginationChange(newPagination) {
     setPagination(newPagination);
   }
@@ -123,37 +123,23 @@ if (loading) {
     }
   }
 
-  async function handleVerifyContract(contract) {
-    setSelectedContract(contract);
-    setShow(true);
-    await handleVerify();
-  }
+  const handleReviewClick = () => {
+    setShowReviewForm(true);
+  };
+
+  const handleVerifyClick = () => {
+    setShowVerifyForm(true);
+  };
   
-
-  function handleOk() {
-    handleClose();
-  }
-
-  function handleClose() {
-    setSelectedContract(null);
-    setShow(false);
-    setSuccessMessage('');
-    setErrorMessage('');
-  }
-
-  function handleCloseCreateForm() {
-    setShowCreateForm(false);
-    setSuccessMessage('');
-    setErrorMessage('');
-  }
 
   async function handleVerify() {
     try {
       const response = await axios.post('/api/updateContracts', {
         id: selectedContract?.id.S,
         verifyLink: selectedContract?.verifyLink.S,
+        verifyNotes: selectedContract?.verifyNotes.S,
         isVerified: 'true',
-        contractStatus: 'closed',
+        contractStatus: 'Verified',
                 
       });
       console.log(response.data.data);
@@ -212,19 +198,12 @@ const sortedContracts = sort.field
       currency: 'USD',
     }).format(amount);
   }
-
- 
-  const handleReject = () => {
-    // 1. Call the API or database function to update the "isVerified" boolean to 'true' for the selected contract
-    // 2. Update the local state (requestedContracts) with the updated contract information
-    // 3. Close the modal by calling `handleClose()`
-  };
-  
- 
   return (
        <div className="bg-gray-900 min-h-screen text-white">
       <Navbar />
       <Container className="bg-gray-900">
+      {showReviewForm && <ReviewContractForm />}
+      {showVerifyForm && <VerifyContractForm />}
       <h1 className="text-3xl font-bold mb-8 text-center">Profile</h1>
       <div>
         <h3 className="text-center"> Manage Contracts</h3>
@@ -355,7 +334,7 @@ const sortedContracts = sort.field
                 <td>{contract.contractConditions.S}</td>
                 <td>{contract.expDate.S}</td>
                 <td>
-                  <Button variant="success" onClick={() => handleVerifyContract(contract)}>Verify</Button>
+                <Button onClick={() => handleVerifyClick(contract)}>Verify</Button>
                 </td>
               </tr>
             ))}
@@ -385,36 +364,8 @@ const sortedContracts = sort.field
     }
   />
 </Pagination>
-
-          </div>
-        <div className="mt-4 mb-4 text-center">
-        </div>
-        <Modal show={show} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Review Contract</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <h5>Game Title:</h5>
-            <p>{selectedContract?.gameTitle.S}</p>
-            <h5>Target Player:</h5>
-            <p>{selectedContract?.targetPlayer.S}</p>
-            <h5>Conditions:</h5>
-            <p>{selectedContract?.contractConditions.S}</p>
-            <h5>Expiriation Date:</h5>
-            <p>{selectedContract?.expDate.S}</p>
-            <h5>Bid Amount:</h5>
-            <p>${selectedContract?.bidAmount.N}</p>
-           </Modal.Body>
-          <Modal.Footer>
-           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-                <Button onClick={handleVerify} type="primary">Verify</Button>
-                <Button onClick={handleReject} danger>Reject</Button>
-                <Button onClick={handleClose}>Close</Button>
-            </div>
-          </Modal.Footer>
-        </Modal>
-        
-      </Container>
+     </div>
+</Container>
       <style global jsx>{`
         .modal-content,
         .form-control {

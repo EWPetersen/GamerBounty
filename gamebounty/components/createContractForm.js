@@ -24,6 +24,7 @@ function CreateContractForm({ show, handleClose, handleCreate, setShowCreateForm
       bidAmount,
       acceptedBy: 'create',
       verifyLink: 'create',
+      verifyNotes: 'create',
       isVerified: 'false',
       contractStatus: 'open',
     });
