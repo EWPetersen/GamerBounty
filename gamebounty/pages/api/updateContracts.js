@@ -1,17 +1,15 @@
 import { DynamoDBClient, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
 
 export default async function handler(req, res) {
-  const dynamodbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
+  const dynamodbClient = new DynamoDBClient({ region: 'us-west-2' });
 
   const {
     id = '',
-    gameTitle = '',
-    targetPlayer = '',
     bidAmount = '0',
-    expDate = '',
     acceptedBy = '',
-    isVerified = 'false',
+    isVerified = '',
     verifyLink = '',
+    verifyNotes = '',
     contractStatus = '',
   } = req.body;
 
@@ -20,17 +18,21 @@ export default async function handler(req, res) {
     return;
   }
   
+  console.log('Received id:', id);
+
   const updateExpressionItems = [
-    'targetPlayer = :targetPlayer',
     'acceptedBy = :acceptedBy',
     'isVerified = :isVerified',
+    'verify = :verifyLink',
+    'verifyNotes = :verifyNotes',
     'contractStatus = :contractStatus',
   ];
 
   const expressionAttributeValues = {
-    ':targetPlayer': { S: targetPlayer },
     ':acceptedBy': { S: acceptedBy },
     ':isVerified': { BOOL: isVerified },
+    ':verifyLink': { S: verifyLink }, 
+    ':verifyNotes': { S: verifyNotes }, 
     ':contractStatus': { S: contractStatus },
   };
 
@@ -39,10 +41,6 @@ export default async function handler(req, res) {
     expressionAttributeValues[':bidAmount'] = { N: bidAmount.toString() };
   }
 
-  if (expDate) {
-    updateExpressionItems.push('expDate = :expDate',);
-    expressionAttributeValues[':expDate'] = { S: expDate };
-  }
 
   const params = {
     TableName: 'contractsDb',
