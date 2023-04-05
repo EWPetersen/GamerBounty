@@ -4,8 +4,7 @@ import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
-function VerifyContractForm({ show, handleClose, handleVerify, setShow, setShowVerifyForm, selectedContract, setSelectedContract }) {
-  const [expDate, setExpDate] = useState('');
+function VerifyContractForm({ show, handleClose, setShow, selectedContract, setSelectedContract }) {
   const [verifyNotes, setVerifyNotes] = useState('');
   const [submitStatus, setSubmitStatus] = useState(null);
   const [verifyLink, setVerifyLink] = useState('');
@@ -19,16 +18,15 @@ function VerifyContractForm({ show, handleClose, handleVerify, setShow, setShowV
 async function submitVerification() {
   try {
     const response = await axios.post('/api/updateContracts', {
-      verifyLink: selectedContract?.verifyLink.S,
-      isVerified: selectedContract?.isVerified.BOOL,
-      verifyNotes: selectedContract?.verifyNotes.S,
-      contractStatus: selectedContract?.contractStatus.S,
-              
+      verifyLink: contract.verifyLink.S,
+      isVerified: 'true',
+      verifyNotes: contract.verifyNotes.S,
+      contractStatus: 'verified',
     });
     console.log(response.data.data);
     const newContracts = contracts.map((contract) => {
       if (contract.id.S === selectedContract.id.S) {
-        return { ...contract, contractStatus: { S: 'closed' } };
+        return { ...contract, contractStatus: { S: 'verified' } };
       } else {
         return contract;
       }
@@ -52,7 +50,7 @@ const handleFormSubmit = (event) => {
         verifyLink,
         verifyNotes,
         isVerified: 'true',
-        contractStatus: 'Verified',
+        contractStatus: 'verified',
        });
       }
 
