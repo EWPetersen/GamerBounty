@@ -8,7 +8,8 @@ import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from '../components/Navbar';
 
-import ReviewContractForm from '../components/RejectContractForm';
+import ReviewContractForm from '../components/ReviewContractForm';
+import RejectContractForm from '../components/RejectContractForm';
 import VerifyContractForm from '../components/VerifyContractForm';
 
 function Profile() {
