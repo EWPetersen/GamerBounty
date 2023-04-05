@@ -50,6 +50,20 @@ function Profile() {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [showVerifyForm, setShowVerifyForm] = useState(false);
 
+  const renderActionButton = (contractStatus) => {
+    if (contractStatus === 'open') {
+      return (
+        <button className="your-button-class">View Contract</button>
+      );
+    } else if (contractStatus === 'verified') {
+      return (
+        <button className="your-button-class">Review Proof</button>
+      );
+    } else {
+      return null;
+    }
+  };
+
   const handleReviewClick = (contract) => {
     setSelectedContract(contract);
     setShowReviewForm(true);
@@ -74,12 +88,16 @@ function Profile() {
           console.log('Contracts data:', response.data.data);
   
           const requestedData = response.data.data.filter(
-            (contract) => contract.requestedBy?.S === 'eric.p.mail@gmail.com'
+            (contract) => contract.requestedBy?.S === 'eric.p.mail@gmail.com' &&
+            contract.contractStatus?.S === 'open' ||
+            contract.contractStatus?.S === 'verified'
           );
           setRequestedContracts(requestedData);
   
           const acceptedData = response.data.data.filter(
-            (contract) => contract.acceptedBy?.S === 'eric.p.mail@gmail.com'
+            (contract) =>
+              contract.acceptedBy?.S === 'eric.p.mail@gmail.com' &&
+              contract.contractStatus?.S === 'accepted'
           );
           setAcceptedContracts(acceptedData);
   

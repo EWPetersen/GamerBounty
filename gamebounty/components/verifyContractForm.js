@@ -8,41 +8,40 @@ function VerifyContractForm({ show, handleClose, selectedContract }) {
   const [verifyNotes, setVerifyNotes] = useState('');
   const [submitStatus, setSubmitStatus] = useState(null);
   const [verifyLink, setVerifyLink] = useState('');
-  const [success, setSuccess] = useState(false);
-
+  const [loading, setLoading] = useState(false);
 
   if (!show) {
     return null;
   }
 
   const submitVerification = async () => {
+    setLoading(true);
     try {
       await axios.post('/api/updateContracts', {
         id: selectedContract?.id.S,
         gameTitle: selectedContract?.gameTitle.S,
         acceptedBy: selectedContract?.acceptedBy.S,
-        gameTitle: selectedContract?.gameTitle.S,
         verifyLink: verifyLink,
         isVerified: true,
         verifyNotes: verifyNotes,
         contractStatus: 'verified'
       });
-      // Add any additional code to handle successful submission
+      setLoading(false);
+      setSubmitStatus('success');
+      setTimeout(() => {
+        handleClose(); // Close the form after a short delay
+      }, 2000);
     } catch (error) {
+      setLoading(false);
+      setSubmitStatus('failure');
       console.error('Error updating contract', error);
     }
   };
-  
-const handleFormSubmit = (event) => {
-  event.preventDefault();
-  console.log('handleFormSubmit called'); // Add this line
-  submitVerification({
-        verifyLink,
-        verifyNotes,
-        isVerified: 'true',
-        contractStatus: 'verified',
-       });
-      }
+
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    submitVerification();
+  };
 
   return (
     <>
@@ -98,9 +97,11 @@ const handleFormSubmit = (event) => {
                 onChange={(event) => setVerifyNotes(event.target.value)}
               />
             </Form.Group>
-            <Button variant="primary" onClick={handleFormSubmit}>Verify</Button>
+            <Button variant="primary" type="submit" disabled={loading}>
+                {loading ? 'Verifying...' : 'Verify'}
+              </Button>
             </Form>
-       </Modal.Body>
+          </Modal.Body>
         </div>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

@@ -55,11 +55,6 @@ function GetContracts() {
     }
   }
 
-  async function handleAcceptContract(contract) {
-    setSelectedContract(contract);
-    setShow(true);
-  }
-
   function handleOk() {
     handleClose();
   }
@@ -193,37 +188,6 @@ function GetContracts() {
     );
   }
 
-
-
-  async function handleAccept() {
-    try {
-      const response = await axios.post('/api/updateContracts', {
-        id: selectedContract?.id.S,
-        gameTitle: selectedContract?.gameTitle.S,
-        acceptedBy: 'accepted',
-        contractStatus: 'accepted',
-                
-      });
-      console.log(response.data.data);
-      const newContracts = contracts.map((contract) => {
-        if (contract.id.S === selectedContract.id.S) {
-          return { ...contract, contractStatus: { S: 'accepted' } };
-        } else {
-          return contract;
-        }
-      });
-      setContracts(newContracts);
-      setSelectedContract(null);
-      setShow(false);
-      setSuccess(true);
-    } catch (error) {
-      console.error('Error updating contract', error);
-      setSelectedContract(null);
-      setShow(false);
-      setSuccess(false);
-    }
-  }
-
   const filteredContracts = contracts.filter((contract) =>
   contract &&
   contract.gameTitle.S.toLowerCase().includes(searchTerm.toLowerCase())
@@ -313,7 +277,7 @@ const sortedContracts = sort.field
                 <td> {formatCurrency(contract.bidAmount.N)}</td> {/* Changed this line */}
                 <td>{contract.contractConditions.S}</td>
                 <td>
-                  <Button variant="success" onClick={() => handleAcceptContract(contract)}>Accept</Button>
+                  <h3>button here</h3>
                 </td>
               </tr>
             ))}
@@ -370,9 +334,6 @@ const sortedContracts = sort.field
             <p>${selectedContract?.bidAmount.N}</p>
            </Modal.Body>
            <Modal.Footer>
-  <Button variant="success" onClick={handleAccept}>
-    Accept
-  </Button>
   <Button variant="secondary" onClick={handleClose}>
     Close
   </Button>
