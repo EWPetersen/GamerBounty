@@ -8,7 +8,7 @@ import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from '../components/Navbar';
 
-import ReviewContractForm from '../components/ReviewContractForm';
+import ViewContractForm from '../components/ViewContractForm';
 import RejectContractForm from '../components/RejectContractForm';
 import VerifyContractForm from '../components/VerifyContractForm';
 
@@ -25,7 +25,8 @@ function Profile() {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedContract, setSelectedContract] = useState(null);
-
+  const [showViewForm, setShowViewForm] = useState(false);
+  const [showVerifyForm, setShowVerifyForm] = useState(false);
  
   
   const requestedPagination = {
@@ -48,9 +49,6 @@ function Profile() {
     acceptedPagination.current * acceptedPagination.pageSize
   ); 
 
-  const [showReviewForm, setShowReviewForm] = useState(false);
-  const [showVerifyForm, setShowVerifyForm] = useState(false);
-
   const renderActionButton = (contractStatus) => {
     if (contractStatus === 'open') {
       return (
@@ -65,9 +63,14 @@ function Profile() {
     }
   };
 
-  const handleReviewClick = (contract) => {
+  const handleViewContractClick = (contract) => {
     setSelectedContract(contract);
-    setShowReviewForm(true);
+    setShowViewForm(true);
+  };
+
+  const handleCloseViewForm = () => {
+    setShowVerifyForm(false);
+    setSelectedContract(null);
   };
 
   const handleVerifyClick = (contract) => {
@@ -196,12 +199,12 @@ const sortedContracts = sort.field
     <div className="bg-gray-900 min-h-screen text-white">
     <Navbar />
     <Container className="bg-gray-900">
-      <Modal show={showReviewForm} onHide={() => setShowReviewForm(false)}>
+      <Modal show={showViewForm} onHide={() => setShowViewForm(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Review Contract</Modal.Title>
+          <Modal.Title>View Contract</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <ReviewContractForm selectedContract={selectedContract} />
+          <ViewContractForm selectedContract={selectedContract} />
         </Modal.Body>
       </Modal>
       <Modal show={showVerifyForm} onHide={() => setShowVerifyForm(false)}>
@@ -245,7 +248,7 @@ const sortedContracts = sort.field
             <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Conditions {sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-            <th>Action Needed</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -257,7 +260,13 @@ const sortedContracts = sort.field
               <td>{contract.contractConditions.S}</td>
               <td>{contract.expDate.S}</td>
               <td>
-              <Button onClick={() => handleReviewClick(contract)}>Review</Button>
+              <td>
+                {contract.contractStatus.S === 'open' ? (
+                  <Button onClick={() => handleViewContractClick(contract)}>View Contract</Button>
+                ) : contract.contractStatus.S === 'verified' ? (
+                  <Button onClick={() => handleViewProofClick(contract)}>Review Proof</Button>
+                ) : null}
+              </td>
               </td>
             </tr>
           ))}
@@ -407,6 +416,14 @@ const sortedContracts = sort.field
           handleClose={handleCloseVerifyForm}
           setShow={setShow}
           setShowVerifyForm={setShowVerifyForm}
+          selectedContract={selectedContract}
+          setSelectedContract={setSelectedContract}
+        />
+        <ViewContractForm
+          show={showViewForm}
+          handleClose={handleCloseViewForm}
+          setShow={setShow}
+          setShowViewForm={setShowViewForm}
           selectedContract={selectedContract}
           setSelectedContract={setSelectedContract}
         />
