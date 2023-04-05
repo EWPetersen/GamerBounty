@@ -151,6 +151,11 @@ function Profile() {
     setShowReviewForm(true);
   };
 
+  const handleCloseReviewForm = () => {
+    setShowReviewForm(false);
+    setSelectedContract(null);
+  };
+
   const handleApprove = async () => {
     console.log('Approve clicked');
     // Your implementation for approving the contract
@@ -514,10 +519,11 @@ const sortedContracts = sort.field
         />
         <ReviewContractForm
           show={showReviewForm}
-          contract={selectedReviewContract}
-          onApprove={handleApprove}
-          onReject={handleReject}
-          onClose={() => setShowReviewForm(false)}
+          handleClose={handleCloseReviewForm}
+          setShow={setShow}
+          setShowReviewForm={setShowReviewForm}
+          selectedContract={selectedContract}
+          setSelectedContract={setSelectedContract}
         />
     </div>
   );
