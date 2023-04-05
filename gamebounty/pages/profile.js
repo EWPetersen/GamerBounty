@@ -65,6 +65,7 @@ function Profile() {
 
   const handleViewContractClick = (contract) => {
     setSelectedContract(contract);
+    console.log('Selected contract:', contract);
     setShowViewForm(true);
   };
 
@@ -72,6 +73,11 @@ function Profile() {
     setShowVerifyForm(false);
     setSelectedContract(null);
   };
+
+  const handleDeleteClick = () => {
+    
+  };
+
 
   const handleVerifyClick = (contract) => {
     setSelectedContract(contract);
@@ -200,12 +206,16 @@ const sortedContracts = sort.field
     <Navbar />
     <Container className="bg-gray-900">
       <Modal show={showViewForm} onHide={() => setShowViewForm(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>View Contract</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <ViewContractForm selectedContract={selectedContract} />
-        </Modal.Body>
+      <Modal.Header closeButton>
+        <Modal.Title>View Contract</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <ViewContractForm contract={selectedContract} />
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="danger" onClick={handleDeleteClick}>Delete</Button>
+        <Button variant="secondary" onClick={handleCloseViewForm}>Close</Button>
+      </Modal.Footer>
       </Modal>
       <Modal show={showVerifyForm} onHide={() => setShowVerifyForm(false)}>
         <Modal.Header closeButton>
