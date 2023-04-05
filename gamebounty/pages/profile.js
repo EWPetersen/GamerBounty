@@ -74,8 +74,24 @@ function Profile() {
     setSelectedContract(null);
   };
 
-  const handleDeleteClick = () => {
-    
+  const handleDeleteClick = async () => {
+    try {
+      if (!selectedContract) return;
+  
+      const response = await axios.post('/api/updateContracts', {
+        id: selectedContract.id.S,
+        gameTitle: selectedContract.gameTitle.S,
+        isDeleted: true,
+      });
+  
+      console.log('Delete contract response:', response.data);
+  
+      // Close the modal and refresh the contracts data
+      handleCloseClick();
+      fetchData();
+    } catch (error) {
+      console.error('Error deleting contract:', error);
+    }
   };
 
 
@@ -98,7 +114,8 @@ function Profile() {
           console.log('Contracts data:', response.data.data);
   
           const requestedData = response.data.data.filter(
-            (contract) => contract.requestedBy?.S === 'eric.p.mail@gmail.com' &&
+            (contract) => contract.requestedBy?.S === 'eric.p.mail@gmail.com'  &&
+            !contract.hasOwnProperty('isDeleted') &&
             contract.contractStatus?.S === 'open' ||
             contract.contractStatus?.S === 'verified'
           );
@@ -106,7 +123,8 @@ function Profile() {
   
           const acceptedData = response.data.data.filter(
             (contract) =>
-              contract.acceptedBy?.S === 'eric.p.mail@gmail.com' &&
+              contract.acceptedBy?.S  === 'eric.p.mail@gmail.com'  &&
+              !contract.hasOwnProperty('isDeleted') &&
               contract.contractStatus?.S === 'accepted'
           );
           setAcceptedContracts(acceptedData);
@@ -270,15 +288,13 @@ const sortedContracts = sort.field
               <td>{contract.contractConditions.S}</td>
               <td>{contract.expDate.S}</td>
               <td>
-              <td>
                 {contract.contractStatus.S === 'open' ? (
                   <Button onClick={() => handleViewContractClick(contract)}>View Contract</Button>
                 ) : contract.contractStatus.S === 'verified' ? (
                   <Button onClick={() => handleViewProofClick(contract)}>Review Proof</Button>
                 ) : null}
               </td>
-              </td>
-            </tr>
+              </tr>
           ))}
         </tbody>
       </Table>
