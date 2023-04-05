@@ -93,11 +93,14 @@ console.log('these are the params from UpdateItemCommand:', {
 
   
   try {
+    // This sends the data request to dynamodb
     const command = updateContractCommand;
     const response = await dynamodbClient.send(command);
-    res.status(200).json({ updatedContract: response.Attributes });
+    // This is the response back to the console if an HTTP 200 success message is returned
+    res.status(200).json({ status: 'success', updatedContract: response.Attributes });
   } catch (error) {
     console.error('Error updating contract:', error);
+    // This is the response back to the console if an HTTP 500 error is returned from the database
     res.status(500).json({ error: 'Failed to update contract' });
   }
 

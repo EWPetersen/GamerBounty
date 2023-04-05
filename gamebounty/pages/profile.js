@@ -16,7 +16,7 @@ import Navbar from '../components/Navbar';
 
 // Import all the forms the buttons need
 import ViewContractForm from '../components/ViewContractForm';
-import RejectContractForm from '../components/RejectContractForm';
+import ReviewContractForm from '../components/ReviewContractForm';
 import VerifyContractForm from '../components/VerifyContractForm';
 
 // This is the main function, everything the 'return (' is using is in here somewhere. It is also what is being exported (very last line)  
@@ -36,6 +36,8 @@ function Profile() {
   const [showViewForm, setShowViewForm] = useState(false);
   const [showVerifyForm, setShowVerifyForm] = useState(false);
   const [deleteStatus, setDeleteStatus] = useState(null);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [selectedReviewContract, setSelectedReviewContract] = useState(null);
  
   // Pagination code
   const requestedPagination = {
@@ -83,43 +85,52 @@ function Profile() {
     console.log('Selected contract:', contract);
     setShowViewForm(true);
   };
+
   // This button closes the 'View Contract' form pop-up
   const handleCloseViewForm = () => {
     setShowViewForm(false);
     setSelectedContract(null);
   };
+
    // This button sends an API call to updateContracts.js to write 'true' to the 'isDeleted' attribute in the db
-  const handleDeleteClick = async () => {
-    try {
-      if (!selectedContract) return;
+   const handleDeleteClick = async () => {
+    if (!selectedContract) return;
   
-      const response = await axios.post('/api/updateContracts', {
-        id: selectedContract.id.S,
-        gameTitle: selectedContract.gameTitle.S,
-        isDeleted: true,
-      });
+    // Show a confirmation dialog
+    const confirmation = window.confirm("Are you sure you want to delete this?");
   
-      console.log('Delete contract response:', response.data);
+    if (confirmation) {
+      try {
+        const response = await axios.post('/api/updateContracts', {
+          id: selectedContract.id.S,
+          gameTitle: selectedContract.gameTitle.S,
+          isDeleted: true,
+        });
   
-      if (response.status === 200) {
-        setDeleteStatus('success');
-      } else {
+        console.log('Delete contract response:', response.data);
+  
+        if (response.data.status === 'success') {
+          setDeleteStatus('success');
+          console.log('Contract marked deleted');
+  
+          // Close the modal and refresh the contracts data
+          handleCloseViewForm();
+          } else {
+          setDeleteStatus('error');
+  
+          // Display a detailed error message
+          alert('Failed to delete contract. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error deleting contract:', error);
         setDeleteStatus('error');
-      }
-    } catch (error) {
-      console.error('Error deleting contract:', error);
-      setDeleteStatus('error');
-    }
   
-    if (deleteStatus === 'success') {
-      // Close the modal and refresh the contracts data
-      handleCloseViewForm();
-      fetchData();
-    } else {
-      // Display a detailed error message
-      alert('Failed to delete contract. Please try again.');
+        // Display a detailed error message
+        alert('Failed to delete contract. Please try again.');
+      }
     }
   };
+  
  
   // These are button actions for submitting verification links.  This form is from ViewContractForm.js -
   
@@ -133,6 +144,19 @@ function Profile() {
   const handleCloseVerifyForm = () => {
     setShowVerifyForm(false);
     setSelectedContract(null);
+  };
+
+  const handleReviewProofClick = (contract) => {
+    setSelectedReviewContract(contract);
+    setShowReviewForm(true);
+  };
+
+  const handleApprove = async () => {
+    // Your implementation for approving the contract
+  };
+  
+  const handleReject = async () => {
+    // Your implementation for rejecting the contract
   };
 
   // This is the API call that shows contract data to table displays inside the profile page
@@ -324,7 +348,7 @@ const sortedContracts = sort.field
                 {contract.contractStatus.S === 'open' ? (
                   <Button onClick={() => handleViewContractClick(contract)}>View Contract</Button>
                 ) : contract.contractStatus.S === 'verified' ? (
-                  <Button onClick={() => handleViewProofClick(contract)}>Review Proof</Button>
+                  <button onClick={() => handleReviewProofClick(contract)}>Review Proof</button>
                 ) : null}
               </td>
               </tr>
@@ -485,6 +509,13 @@ const sortedContracts = sort.field
           setShowViewForm={setShowViewForm}
           selectedContract={selectedContract}
           setSelectedContract={setSelectedContract}
+        />
+        <ReviewContractForm
+          show={showReviewForm}
+          contract={selectedReviewContract}
+          onApprove={handleApprove}
+          onReject={handleReject}
+          onClose={() => setShowReviewForm(false)}
         />
     </div>
   );
