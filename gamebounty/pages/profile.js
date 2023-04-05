@@ -152,10 +152,12 @@ function Profile() {
   };
 
   const handleApprove = async () => {
+    console.log('Approve clicked');
     // Your implementation for approving the contract
   };
   
   const handleReject = async () => {
+    console.log('Reject clicked');
     // Your implementation for rejecting the contract
   };
 
@@ -348,7 +350,7 @@ const sortedContracts = sort.field
                 {contract.contractStatus.S === 'open' ? (
                   <Button onClick={() => handleViewContractClick(contract)}>View Contract</Button>
                 ) : contract.contractStatus.S === 'verified' ? (
-                  <button onClick={() => handleReviewProofClick(contract)}>Review Proof</button>
+                  <Button onClick={() => handleReviewProofClick(contract)}>Review Proof</Button>
                 ) : null}
               </td>
               </tr>
@@ -438,7 +440,7 @@ const sortedContracts = sort.field
                 className="mr-2"
                 onClick={() => handleVerifyClick(contract)}
               >
-                Verify
+                Link Your Proof
               </Button>
               </td>
             </tr>
