@@ -386,7 +386,6 @@ const sortedContracts = sort.field
         <VerifyContractForm
           show={showVerifyForm}
           handleClose={handleCloseVerifyForm}
-          
           setShow={setShow}
           setShowVerifyForm={setShowVerifyForm}
           selectedContract={selectedContract}

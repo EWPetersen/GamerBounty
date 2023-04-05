@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Form, Button, Alert } from 'react-bootstrap';
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 
 function VerifyContractForm({ show, handleClose, handleVerify, setShow, setShowVerifyForm, selectedContract, setSelectedContract }) {
   const [expDate, setExpDate] = useState('');
@@ -57,7 +58,7 @@ const handleFormSubmit = (event) => {
         verifyLink,
         verifyNotes,
         isVerified: 'false',
-        contractStatus,
+        contractStatus: 'Verified',
       });
       handleClose();
       setSubmitStatus(null);
