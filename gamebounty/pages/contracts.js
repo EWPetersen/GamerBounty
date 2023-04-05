@@ -109,6 +109,7 @@ function GetContracts() {
   
     const handleFormSubmit = (event) => {
       event.preventDefault();
+      console.log('handleFormSubmit called');
       handleCreate({
         gameTitle,
         targetPlayer,

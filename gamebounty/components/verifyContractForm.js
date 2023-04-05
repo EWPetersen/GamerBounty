@@ -19,11 +19,10 @@ function VerifyContractForm({ show, handleClose, handleVerify, setShow, setShowV
 async function submitVerification() {
   try {
     const response = await axios.post('/api/updateContracts', {
-      id: selectedContract?.id.S,
       verifyLink: selectedContract?.verifyLink.S,
+      isVerified: selectedContract?.isVerified.BOOL,
       verifyNotes: selectedContract?.verifyNotes.S,
-      isVerified: 'true',
-      contractStatus: 'Verified',
+      contractStatus: selectedContract?.contractStatus.S,
               
     });
     console.log(response.data.data);
@@ -49,27 +48,13 @@ async function submitVerification() {
 const handleFormSubmit = (event) => {
   event.preventDefault();
   console.log('handleFormSubmit called'); // Add this line
-  submitVerification();
-  const isSuccess = true;
-  if (isSuccess) {
-    setSubmitStatus('success');
-    setTimeout(() => {
-      handleVerify({
+  submitVerification({
         verifyLink,
         verifyNotes,
-        isVerified: 'false',
+        isVerified: 'true',
         contractStatus: 'Verified',
-      });
-      handleClose();
-      setSubmitStatus(null);
-    }, 2000);
-  } else {
-    setSubmitStatus('failure');
-    setTimeout(() => {
-      setSubmitStatus(null);
-    }, 2000);
-  }
-};
+       });
+      }
 
   return (
     <>

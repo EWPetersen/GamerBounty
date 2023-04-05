@@ -2,6 +2,7 @@ import { DynamoDBClient, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
 
 export default async function handler(req, res) {
   const dynamodbClient = new DynamoDBClient({ region: 'us-west-2' });
+  console.log(req.body);
 
   const {
     id = '',
@@ -39,6 +40,7 @@ export default async function handler(req, res) {
   if (bidAmount) {
     updateExpressionItems.push('bidAmount = :bidAmount');
     expressionAttributeValues[':bidAmount'] = { N: bidAmount.toString() };
+    console.log(bidAmount);
   }
 
 
