@@ -200,13 +200,7 @@ function GetContracts() {
       const response = await axios.post('/api/updateContracts', {
         id: selectedContract?.id.S,
         gameTitle: selectedContract?.gameTitle.S,
-        targetPlayer: selectedContract?.targetPlayer.S,
-        contractConditions: selectedContract?.contractConditions.S,
-        expDate: selectedContract?.expDate.S,
-        bidAmount: selectedContract?.bidAmount.N,
         acceptedBy: 'accepted',
-        verifyLink: selectedContract?.verifyLink.S,
-        isVerified: 'false',
         contractStatus: 'accepted',
                 
       });

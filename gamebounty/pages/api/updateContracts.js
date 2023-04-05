@@ -1,18 +1,10 @@
 import { DynamoDBClient, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
 
-export default async function handler(req, res) {
-  const dynamodbClient = new DynamoDBClient({ region: 'us-west-2' });
-  console.log(req.body);
+const dynamodbClient = new DynamoDBClient({ region: 'us-west-2' });
 
-  const {
-    id = '',
-    bidAmount = '0',
-    acceptedBy = '',
-    isVerified = '',
-    verifyLink = '',
-    verifyNotes = '',
-    contractStatus = '',
-  } = req.body;
+export default async function updateContracts(req, res) {
+  const { id, gameTitle, acceptedBy, isVerified, verifyLink, verifyNotes, contractStatus } = req.body;
+  console.log(req.body);
 
   if (!id) {
     res.status(400).json({ error: 'Missing or invalid id' });
@@ -21,39 +13,34 @@ export default async function handler(req, res) {
   
   console.log('Received id:', id);
 
-  const updateExpressionItems = [
-    'acceptedBy = :acceptedBy',
-    'isVerified = :isVerified',
-    'verify = :verifyLink',
-    'verifyNotes = :verifyNotes',
-    'contractStatus = :contractStatus',
-  ];
+console.log(id, acceptedBy, isVerified, verifyLink, verifyNotes, contractStatus);
 
-  const expressionAttributeValues = {
-    ':acceptedBy': { S: acceptedBy },
-    ':isVerified': { BOOL: isVerified },
-    ':verifyLink': { S: verifyLink }, 
-    ':verifyNotes': { S: verifyNotes }, 
-    ':contractStatus': { S: contractStatus },
-  };
+const params = {
+  TableName: 'contractsDb',
+  Key: {
+  'id': { S: id },
+  'sortKey': { S: gameTitle }
+  },
+  UpdateExpression:
+    "SET #acceptedby = :acceptedBy, #verifyLink = :verifyLink, #isVerified = :isVerified, #verifyNotes = :verifyNotes, #contractStatus = :contractStatus",
+  ExpressionAttributeNames: {
+    "#acceptedby": "acceptedBy",
+    "#verifyLink": "verifyLink",
+    "#isVerified": "isVerified",
+    "#verifyNotes": "verifyNotes",
+    "#contractStatus": "contractStatus",
+  },
+  ExpressionAttributeValues: {
+    ":acceptedBy": {S: acceptedBy },
+    ":verifyLink": { S: verifyLink },
+    ":isVerified": { BOOL: isVerified },
+    ":verifyNotes": { S: verifyNotes },
+    ":contractStatus": { S: contractStatus },
+  },
+};
 
-  if (bidAmount) {
-    updateExpressionItems.push('bidAmount = :bidAmount');
-    expressionAttributeValues[':bidAmount'] = { N: bidAmount.toString() };
-    console.log(bidAmount);
-  }
-
-
-  const params = {
-    TableName: 'contractsDb',
-    Key: {
-      id: { S: id },
-    },
-    UpdateExpression: `SET ${updateExpressionItems.join(', ')}`,
-    ExpressionAttributeValues: expressionAttributeValues,
-    ReturnValues: 'ALL_NEW',
-  };
-
+console.log('params:', params);
+  
   try {
     const command = new UpdateItemCommand(params);
     const response = await dynamodbClient.send(command);
@@ -62,4 +49,5 @@ export default async function handler(req, res) {
     console.error('Error updating contract:', error);
     res.status(500).json({ error: 'Failed to update contract' });
   }
+
 }

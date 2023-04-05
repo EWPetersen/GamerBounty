@@ -4,7 +4,7 @@ import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
-function VerifyContractForm({ show, handleClose, setShow, selectedContract, setSelectedContract }) {
+function VerifyContractForm({ show, handleClose, selectedContract }) {
   const [verifyNotes, setVerifyNotes] = useState('');
   const [submitStatus, setSubmitStatus] = useState(null);
   const [verifyLink, setVerifyLink] = useState('');
@@ -15,33 +15,23 @@ function VerifyContractForm({ show, handleClose, setShow, selectedContract, setS
     return null;
   }
 
-async function submitVerification() {
-  try {
-    const response = await axios.post('/api/updateContracts', {
-      verifyLink: contract.verifyLink.S,
-      isVerified: 'true',
-      verifyNotes: contract.verifyNotes.S,
-      contractStatus: 'verified',
-    });
-    console.log(response.data.data);
-    const newContracts = contracts.map((contract) => {
-      if (contract.id.S === selectedContract.id.S) {
-        return { ...contract, contractStatus: { S: 'verified' } };
-      } else {
-        return contract;
-      }
-    });
-    setContracts(newContracts);
-    setSelectedContract(null);
-    setShow(false);
-    setSuccess(true);
-  } catch (error) {
-    console.error('Error updating contract', error);
-    setSelectedContract(null);
-    setShow(false);
-    setSuccess(false);
-  }
-};  
+  const submitVerification = async () => {
+    try {
+      await axios.post('/api/updateContracts', {
+        id: selectedContract?.id.S,
+        gameTitle: selectedContract?.gameTitle.S,
+        acceptedBy: selectedContract?.acceptedBy.S,
+        gameTitle: selectedContract?.gameTitle.S,
+        verifyLink: verifyLink,
+        isVerified: true,
+        verifyNotes: verifyNotes,
+        contractStatus: 'verified'
+      });
+      // Add any additional code to handle successful submission
+    } catch (error) {
+      console.error('Error updating contract', error);
+    }
+  };
   
 const handleFormSubmit = (event) => {
   event.preventDefault();
@@ -95,7 +85,7 @@ const handleFormSubmit = (event) => {
                 type="string"
                 required
                 placeholder="YouTube, Twitch, Vimeo - Upload date must be newer than contract date, and 60s or less."
-                value={verifyLink.S}
+                value={verifyLink}
                 onChange={(event) => setVerifyLink(event.target.value)}
               />
             </Form.Group>
@@ -104,7 +94,7 @@ const handleFormSubmit = (event) => {
               <Form.Control
                 type="string"
                 placeholder="Anything interesting about this contract? (under 100char)"
-                value={verifyNotes.S}
+                value={verifyNotes}
                 onChange={(event) => setVerifyNotes(event.target.value)}
               />
             </Form.Group>

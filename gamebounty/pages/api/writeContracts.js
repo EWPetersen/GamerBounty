@@ -3,7 +3,7 @@ import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
 const dynamoDBClient = new DynamoDBClient({ region: 'us-west-2' });
 
 export default async function writeContracts(req, res) {
-  const { gameTitle, targetPlayer, contractConditions, bidAmount, expDate, acceptedBy, isVerified, verifyLink, contractStatus } = req.body;
+  const { gameTitle, targetPlayer, contractConditions, bidAmount, expDate, acceptedBy, isVerified, verifyLink, verifyNotes, contractStatus } = req.body;
   const id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15); // generates a random id
 
   console.log('Request body:', req.body);
@@ -18,8 +18,9 @@ export default async function writeContracts(req, res) {
       bidAmount: { N: bidAmount.toString() },
       expDate: { S: expDate },
       acceptedBy: { S: 'create' },
-      verifyLink: { S: verifyLink },
+      verifyLink: { S: 'create' },
       isVerified: { BOOL: false },
+      verifyNotes: { S: 'create' },
       contractStatus: { S: contractStatus },
     },
   }; 
