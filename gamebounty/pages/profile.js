@@ -1,17 +1,25 @@
+// Import modules
 import React, { useEffect, useState } from 'react';
-import { Container, Table, Pagination, Modal, Form, Button } from 'react-bootstrap';
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-
 import axios from 'axios';
+
+// Import page styling 
+import { Container, Table, Pagination, Modal, Form, Button } from 'react-bootstrap';
+
+// Import CSS stuff
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+// Import my navbar
 import Navbar from '../components/Navbar';
 
+// Import all the forms the buttons need
 import ViewContractForm from '../components/ViewContractForm';
 import RejectContractForm from '../components/RejectContractForm';
 import VerifyContractForm from '../components/VerifyContractForm';
 
+// This is the main function, everything the 'return (' is using is in here somewhere. It is also what is being exported (very last line)  
 function Profile() {
   const [requestedContracts, setRequestedContracts] = useState([]);
   const [show, setShow] = useState(false);
@@ -27,28 +35,33 @@ function Profile() {
   const [selectedContract, setSelectedContract] = useState(null);
   const [showViewForm, setShowViewForm] = useState(false);
   const [showVerifyForm, setShowVerifyForm] = useState(false);
+  const [deleteStatus, setDeleteStatus] = useState(null);
  
-  
+  // Pagination code
   const requestedPagination = {
     current: 1,
     pageSize: 10,
   };
 
+  // Pagination code
   const acceptedPagination = {
     current: 1,
     pageSize: 10,
   };const [acceptedContracts, setAcceptedContracts] = useState([]);
-
+ 
+  // Theres a crapload of code for pagination, I don't know why
   const paginatedRequestedContracts = requestedContracts.slice(
     (requestedPagination.current - 1) * requestedPagination.pageSize,
     requestedPagination.current * requestedPagination.pageSize
   );
   
+  // More pagination code.
   const paginatedAcceptedContracts = acceptedContracts.slice(
     (acceptedPagination.current - 1) * acceptedPagination.pageSize,
     acceptedPagination.current * acceptedPagination.pageSize
   ); 
 
+  // This allows the table to show different buttons depending on the item status in the user created contracts table
   const renderActionButton = (contractStatus) => {
     if (contractStatus === 'open') {
       return (
@@ -63,17 +76,19 @@ function Profile() {
     }
   };
 
+  // These are button actions for marking a form as deleted.  The form itself is stored here in Profile.js down in the return statements -
+  // This button brings up the 'View Contract' form pop-up 
   const handleViewContractClick = (contract) => {
     setSelectedContract(contract);
     console.log('Selected contract:', contract);
     setShowViewForm(true);
   };
-
+  // This button closes the 'View Contract' form pop-up
   const handleCloseViewForm = () => {
-    setShowVerifyForm(false);
+    setShowViewForm(false);
     setSelectedContract(null);
   };
-
+   // This button sends an API call to updateContracts.js to write 'true' to the 'isDeleted' attribute in the db
   const handleDeleteClick = async () => {
     try {
       if (!selectedContract) return;
@@ -86,25 +101,41 @@ function Profile() {
   
       console.log('Delete contract response:', response.data);
   
-      // Close the modal and refresh the contracts data
-      handleCloseClick();
-      fetchData();
+      if (response.status === 200) {
+        setDeleteStatus('success');
+      } else {
+        setDeleteStatus('error');
+      }
     } catch (error) {
       console.error('Error deleting contract:', error);
+      setDeleteStatus('error');
+    }
+  
+    if (deleteStatus === 'success') {
+      // Close the modal and refresh the contracts data
+      handleCloseViewForm();
+      fetchData();
+    } else {
+      // Display a detailed error message
+      alert('Failed to delete contract. Please try again.');
     }
   };
-
-
+ 
+  // These are button actions for submitting verification links.  This form is from ViewContractForm.js -
+  
+  // This button brings up the 'Verify Contract' form pop-up 
   const handleVerifyClick = (contract) => {
     setSelectedContract(contract);
     setShowVerifyForm(true);
   };
 
+   // This button closes the 'Verify Contract' form pop-up
   const handleCloseVerifyForm = () => {
     setShowVerifyForm(false);
     setSelectedContract(null);
   };
 
+  // This is the API call that shows contract data to table displays inside the profile page
   useEffect(() => {
     if (session) {
       const fetchData = async () => {
@@ -112,7 +143,7 @@ function Profile() {
         try {
           const response = await axios.get('/api/readContracts');
           console.log('Contracts data:', response.data.data);
-  
+          // This table shows contracts that were created by the logged in user
           const requestedData = response.data.data.filter(
             (contract) => contract.requestedBy?.S === 'eric.p.mail@gmail.com'  &&
             !contract.hasOwnProperty('isDeleted') &&
@@ -120,7 +151,7 @@ function Profile() {
             contract.contractStatus?.S === 'verified'
           );
           setRequestedContracts(requestedData);
-  
+          // This table shows contracts that were accepted by the logged in user
           const acceptedData = response.data.data.filter(
             (contract) =>
               contract.acceptedBy?.S  === 'eric.p.mail@gmail.com'  &&
@@ -140,8 +171,8 @@ function Profile() {
     }
   }, [session]);
   
-
-if (loading) {
+// This tells the page to display a loading bar if the data fetch is taking too long.  No one should be seeing this except under outrageous load
+  if (loading) {
     return (
       <div className="bg-gray-900 min-h-screen text-white text-center">
         <Navbar />
@@ -149,7 +180,7 @@ if (loading) {
       </div>
     );
   };
-
+// This tells the user to sign in, and displays a sign in button if there session doesn't exist
   if (!session) {
     return (
       <div className="bg-gray-900 min-h-screen text-white text-center">
@@ -165,14 +196,15 @@ if (loading) {
     );
   };
 
+// I'm not sure what this does
    function handlePaginationChange(newPagination) {
     setPagination(newPagination);
   };
-
+// This is the search bar function
   function handleSearch(event) {
     setSearchTerm(event.target.value);
   };
-
+// This handles the sorting for the tables
   function handleSort(field) {
     if (sort.field === field) {
       setSort({ ...sort, order: sort.order === 'asc' ? 'desc' : 'asc' });
@@ -180,14 +212,13 @@ if (loading) {
       setSort({ field, order: 'asc' });
     }
   };
-
  
 const filteredContracts = contracts.filter((contract) =>
   contract &&
   contract.gameTitle.S.toLowerCase().includes(searchTerm.toLowerCase())
 );
 
-    
+// I have no idea what voodoo is going on here, but it has to do with allowing the fields to be sorted by alphabet or number (from the bid field)
 const sortedContracts = sort.field
 ? filteredContracts.sort((a, b) => {
     if (sort.field === 'bidAmount') {
@@ -212,6 +243,7 @@ const sortedContracts = sort.field
     pagination.current * pagination.pageSize
   );
 
+  // This tells the page to display the bidAmount as USD on the page.  It doesnt seem like it does anything though...
   function formatCurrency(amount) {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -219,6 +251,7 @@ const sortedContracts = sort.field
     }).format(amount);
   };
 
+  // This is where the page is drawn.  Whatever you see in the browser is in here somewhere.
   return (
     <div className="bg-gray-900 min-h-screen text-white">
     <Navbar />
