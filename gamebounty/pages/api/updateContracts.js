@@ -17,10 +17,7 @@ console.log(id, acceptedBy, isVerified, verifyLink, verifyNotes, contractStatus)
 
 const params = {
   TableName: 'contractsDb',
-  Key: {
-  'id': { S: id },
-  'sortKey': { S: gameTitle }
-  },
+  Key: { id: { S: id }, sortKey: { S: sortKey } },
   UpdateExpression:
     "SET #acceptedby = :acceptedBy, #verifyLink = :verifyLink, #isVerified = :isVerified, #verifyNotes = :verifyNotes, #contractStatus = :contractStatus",
   ExpressionAttributeNames: {
