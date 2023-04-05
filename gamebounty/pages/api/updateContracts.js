@@ -78,33 +78,22 @@ export default async function updateContracts(req, res) {
 
 console.log('Variable data - ','acceptedBy:',acceptedBy,'isVerified:',isVerified,'verifyLink:',verifyLink,'verifyNotes:',verifyNotes,'contractStatus:',contractStatus,'isDeleted:',isDeleted);
 
-const params = {
-  TableName: 'contractsDb',
-  Key: { id: { S: id }, gameTitle: { S: gameTitle } },
-  UpdateExpression:
-    "SET #acceptedby = :acceptedBy, #verifyLink = :verifyLink, #isVerified = :isVerified, #verifyNotes = :verifyNotes, #contractStatus = :contractStatus, #isDeleted = :isDeleted",
-  ExpressionAttributeNames: {
-    "#acceptedby": "acceptedBy",
-    "#verifyLink": "verifyLink",
-    "#isVerified": "isVerified",
-    "#verifyNotes": "verifyNotes",
-    "#contractStatus": "contractStatus",
-    "#isDeleted": "isDeleted",
-  },
-  ExpressionAttributeValues: {
-    ":isDeleted": { BOOL: isDeleted },
-    ":acceptedBy": {S: acceptedBy },
-    ":verifyLink": { S: verifyLink },
-    ":isVerified": { BOOL: isVerified },
-    ":verifyNotes": { S: verifyNotes },
-    ":contractStatus": { S: contractStatus },
-  },
-};
 
-console.log('these are the params from UpdateItemCommand:', params);
+console.log('these are the params from UpdateItemCommand:', {
+  TableName: 'contractsDb',
+  Key: {
+    id: { S: id },
+    gameTitle: { S: gameTitle },
+  },
+  UpdateExpression,
+  ExpressionAttributeNames,
+  ExpressionAttributeValues,
+});
+
+
   
   try {
-    const command = new UpdateItemCommand(params);
+    const command = updateContractCommand;
     const response = await dynamodbClient.send(command);
     res.status(200).json({ updatedContract: response.Attributes });
   } catch (error) {
