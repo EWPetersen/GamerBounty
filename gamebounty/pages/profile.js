@@ -35,9 +35,8 @@ function Profile() {
   const [selectedContract, setSelectedContract] = useState(null);
   const [showViewForm, setShowViewForm] = useState(false);
   const [showVerifyForm, setShowVerifyForm] = useState(false);
-  const [deleteStatus, setDeleteStatus] = useState(null);
   const [showReviewForm, setShowReviewForm] = useState(false);
-  
+  const [deleteStatus, setDeleteStatus] = useState(null);
  
   // Pagination code
   const requestedPagination = {
@@ -79,59 +78,12 @@ function Profile() {
   };
 
   // These are button actions for marking a form as deleted.  The form itself is stored here in Profile.js down in the return statements -
-  // This button brings up the 'View Contract' form pop-up 
-  const handleViewContractClick = (contract) => {
-    setSelectedContract(contract);
-    console.log('Selected contract:', contract);
-    setShowViewForm(true);
+  const handleShow = (setShowFunction) => {
+    setShowFunction(true);
   };
 
-  // This button closes the 'View Contract' form pop-up
-  const handleCloseViewForm = () => {
-    setShowViewForm(false);
-    setSelectedContract(null);
-  };
-
-   // This button sends an API call to updateContracts.js to write 'true' to the 'isDeleted' attribute in the db
-   const handleDeleteClick = async () => {
-    if (!selectedContract) return;
   
-    // Show a confirmation dialog
-    const confirmation = window.confirm("Are you sure you want to delete this?");
   
-    if (confirmation) {
-      try {
-        const response = await axios.post('/api/updateContracts', {
-          id: selectedContract.id.S,
-          gameTitle: selectedContract.gameTitle.S,
-          isDeleted: true,
-        });
-  
-        console.log('Delete contract response:', response.data);
-  
-        if (response.data.status === 'success') {
-          setDeleteStatus('success');
-          console.log('Contract marked deleted');
-  
-          // Close the modal and refresh the contracts data
-          handleCloseViewForm();
-          } else {
-          setDeleteStatus('error');
-  
-          // Display a detailed error message
-          alert('Failed to delete contract. Please try again.');
-        }
-      } catch (error) {
-        console.error('Error deleting contract:', error);
-        setDeleteStatus('error');
-  
-        // Display a detailed error message
-        alert('Failed to delete contract. Please try again.');
-      }
-    }
-  };
-  
- 
   // These are button actions for submitting verification links.  This form is from ViewContractForm.js -
   
   // This button brings up the 'Verify Contract' form pop-up 
@@ -145,6 +97,58 @@ function Profile() {
     setShowVerifyForm(false);
     setSelectedContract(null);
   };
+
+  // This button brings up the 'View Contract' form pop-up 
+  const handleViewContractClick = (contract) => {
+    setSelectedContract(contract);
+    console.log('Selected contract:', contract);
+    setShowViewForm(true);
+  };
+
+  // This button closes the 'View Contract' form pop-up
+  const handleCloseViewForm = () => {
+    setShowViewForm(false);
+    setSelectedContract(null);
+  };
+    
+ // This button sends an API call to updateContracts.js to write 'true' to the 'isDeleted' attribute in the db
+ const handleDeleteClick = async () => {
+  if (!selectedContract) return;
+
+  // Show a confirmation dialog
+  const confirmation = window.confirm("Are you sure you want to delete this?");
+
+  if (confirmation) {
+    try {
+      const response = await axios.post('/api/updateContracts', {
+        id: selectedContract.id.S,
+        gameTitle: selectedContract.gameTitle.S,
+        isDeleted: true,
+      });
+
+      console.log('Delete contract response:', response.data);
+
+      if (response.data.status === 'success') {
+        setDeleteStatus('success');
+        console.log('Contract marked deleted');
+
+        // Close the modal and refresh the contracts data
+        handleCloseViewForm();
+        } else {
+        setDeleteStatus('error');
+
+        // Display a detailed error message
+        alert('Failed to delete contract. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error deleting contract:', error);
+      setDeleteStatus('error');
+
+      // Display a detailed error message
+      alert('Failed to delete contract. Please try again.');
+    }
+  }
+};
 
   const handleReviewProofClick = (contract) => {
     setSelectedContract(contract);
@@ -287,6 +291,7 @@ const sortedContracts = sort.field
     <div className="bg-gray-900 min-h-screen text-white">
     <Navbar />
     <Container className="bg-gray-900">
+      {/*// This is the VIEW form pop-up for created contracts.  It's small enough to sit in here, but maybe it should be in a component.... */}
       <Modal show={showViewForm} onHide={() => setShowViewForm(false)}>
       <Modal.Header closeButton>
         <Modal.Title>View Contract</Modal.Title>
@@ -299,6 +304,7 @@ const sortedContracts = sort.field
         <Button variant="secondary" onClick={handleCloseViewForm}>Close</Button>
       </Modal.Footer>
       </Modal>
+      {/*// This is the VERIFY form pop-up for created contracts.  This is it's own component.... */}
       <Modal show={showVerifyForm} onHide={() => setShowVerifyForm(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Verify Contract</Modal.Title>
@@ -312,6 +318,7 @@ const sortedContracts = sort.field
         <h3 className="text-center"> Manage Contracts</h3>
       </div>
     <h1 className="text-3xl font-bold mb-8 text-left">My Contracts</h1>
+    {/*// Put some cool user profile stats here */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <div>
             <h3>Total Hits Completed</h3>
@@ -332,6 +339,7 @@ const sortedContracts = sort.field
           />
         </Form.Group>
       </Form>
+      {/*// This is the created contracts table */}
       <Table data={requestedContracts} responsive bordered hover variant="dark">
         <thead>
           <tr>
@@ -353,15 +361,21 @@ const sortedContracts = sort.field
               <td>{contract.expDate.S}</td>
               <td>
                 {contract.contractStatus.S === 'open' ? (
-                  <Button onClick={() => handleViewContractClick(contract)}>View Contract</Button>
+                  <Button variant="primary" onClick={() => handleShow(setShowViewForm)}>
+                  View Contract
+                </Button>
                 ) : contract.contractStatus.S === 'verified' ? (
-                  <Button onClick={() => handleReviewProofClick(contract)}>Review Proof</Button>
+                  <Button variant="primary" onClick={() => handleShowVerifyContract(contract)}>
+                    Review Proof
+                  </Button>
                 ) : null}
               </td>
               </tr>
           ))}
         </tbody>
       </Table>
+
+      {/* I'm not sure this is working */}
       <div className="d-flex justify-content-center">
         <Pagination className="my-4">
         <Pagination.Prev
@@ -440,12 +454,8 @@ const sortedContracts = sort.field
               <td>{contract.contractConditions.S}</td>
               <td>{contract.expDate.S}</td>
               <td>
-              <Button
-                variant="outline-primary"
-                className="mr-2"
-                onClick={() => handleVerifyClick(contract)}
-              >
-                Link Your Proof
+              <Button variant="primary" onClick={() => handleShow(setShowVerifyForm)}>
+                Link your Proof
               </Button>
               </td>
             </tr>
