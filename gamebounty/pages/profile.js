@@ -36,7 +36,8 @@ function Profile() {
   const [selectedReviewContract, setSelectedReviewContract] = useState(null);
   const [showVerifyForm, setShowVerifyForm] = useState(false);
   const [selectedVerifyContract, setSelectedVerifyContract] = useState(null);
- 
+  const [showModal, setShowModal] = useState(false);
+
   // Pagination code
   const requestedPagination = {
     current: 1,
@@ -61,12 +62,19 @@ function Profile() {
     acceptedPagination.current * acceptedPagination.pageSize
   ); 
 
-  const handleCloseRejectForm = () => {
-    setShowRejectForm(false);
+  const handleClose = () => {
+    setShowModal(false);
     setSelectedContract(null);
   };
 
-  const handleCloseReviewForm = () => {
+  const handleRejectClick = (contract) => {
+    console.log(contract);
+    setSelectedContract(contract);
+    setShowModal(true);
+  };
+  
+  const 
+  handleCloseReviewForm = () => {
     setShowReviewForm(false);
     setSelectedContract(null);
   };
@@ -366,13 +374,7 @@ const sortedContracts = sort.field
                     Submit Proof
                   </Button>
                 ) : contract.contractStatus.S === 'rejected' ? (
-                  <Button variant="danger"
-                  onClick={() => {
-                    setSelectedRejectedContract(contract);
-                    setShowRejectedForm(true);
-                    console.log('clicked this rejected contract to view:',contract)
-                  }}
-                >
+                  <Button variant="danger" onClick={() => handleRejectClick(contract)}>
                   Rejected!
                 </Button>
                 ) : null}
@@ -407,6 +409,19 @@ const sortedContracts = sort.field
         </Pagination>
         </div>
       </Container>
+      <Modal show={showModal} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Rejected Contract</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <p>{selectedContract?.rejectReason.S}</p>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>
+          Close
+        </Button>
+      </Modal.Footer>
+    </Modal>
           <style global jsx>{`
             .modal-content,
             .form-control {
