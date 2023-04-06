@@ -81,13 +81,12 @@ function Profile() {
   const handleShow = (setShowFunction) => {
     setShowFunction(true);
   };
-
-  
   
   // These are button actions for submitting verification links.  This form is from ViewContractForm.js -
   
   // This button brings up the 'Verify Contract' form pop-up 
   const handleVerifyClick = (contract) => {
+    console.log('clicked this contract to verify:',contract)
     setSelectedContract(contract);
     setShowVerifyForm(true);
   };
@@ -99,7 +98,8 @@ function Profile() {
   };
 
   // This button brings up the 'View Contract' form pop-up 
-  const handleViewContractClick = (contract) => {
+  const handleViewClick = (contract) => {
+    console.log('clicked this contract to view:',contract)
     setSelectedContract(contract);
     console.log('Selected contract:', contract);
     setShowViewForm(true);
@@ -149,24 +149,15 @@ function Profile() {
     }
   }
 };
-  const handleReviewProofClick = (contract) => {
-    setSelectedContract(contract);
+  const handleReviewClick = (contract) => {
+    console.log('clicked this contract to review:',contract)
     setShowReviewForm(true);
+    setSelectedContract(contract);
   };
 
   const handleCloseReviewForm = () => {
     setShowReviewForm(false);
     setSelectedContract(null);
-  };
-
-  const handleApprove = async () => {
-    console.log('Approve clicked');
-    // Your implementation for approving the contract
-  };
-  
-  const handleReject = async () => {
-    console.log('Reject clicked');
-    // Your implementation for rejecting the contract
   };
 
   // This is the API call that shows contract data to table displays inside the profile page
@@ -304,15 +295,7 @@ const sortedContracts = sort.field
       </Modal.Footer>
       </Modal>
       {/*// This is the VERIFY form pop-up for created contracts.  This is it's own component.... */}
-      <Modal show={showVerifyForm} onHide={() => setShowVerifyForm(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Verify Contract</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <VerifyContractForm selectedContract={selectedContract} />
-        </Modal.Body>
-      </Modal>
-    <h1 className="text-3xl font-bold mb-8 text-center">Profile</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center">Profile</h1>
       <div>
         <h3 className="text-center"> Manage Contracts</h3>
       </div>
@@ -360,11 +343,11 @@ const sortedContracts = sort.field
               <td>{contract.expDate.S}</td>
               <td>
                 {contract.contractStatus.S === 'open' ? (
-                  <Button variant="primary" onClick={() => handleViewContractClick(setShowViewForm)}>
+                  <Button variant="primary" onClick={() => handleViewClick(contract)}>
                   View Contract
                 </Button>
                 ) : contract.contractStatus.S === 'verified' ? (
-                  <Button variant="primary" onClick={() => handleShowVerifyContract(contract)}>
+                  <Button variant="primary" onClick={() => handleReviewClick(contract)}>
                     Review Proof
                   </Button>
                 ) : null}
@@ -453,7 +436,7 @@ const sortedContracts = sort.field
               <td>{contract.contractConditions.S}</td>
               <td>{contract.expDate.S}</td>
               <td>
-              <Button variant="primary" onClick={() => handleShow(setShowVerifyForm)}>
+              <Button variant="primary" onClick={() => handleVerifyClick(contract)}>
                 Link your Proof
               </Button>
               </td>
@@ -510,6 +493,13 @@ const sortedContracts = sort.field
               background-color: rgba(255, 255, 255, 0.1);
             }
           `}</style>
+        <ReviewContractForm
+          show={showReviewForm}
+          handleClose={handleCloseReviewForm}
+          setShowReviewForm={setShowReviewForm}
+          selectedContract={selectedContract} 
+          setSelectedContract={setSelectedContract}
+        />
         <VerifyContractForm
           show={showVerifyForm}
           handleClose={handleCloseVerifyForm}
@@ -517,20 +507,6 @@ const sortedContracts = sort.field
           selectedContract={selectedContract}
           setSelectedContract={setSelectedContract}
         />
-        <ViewContractForm
-          show={showViewForm}
-          handleClose={handleCloseViewForm}
-          setShowForm={setShowViewForm}
-          selectedContract={selectedContract}
-          setSelectedContract={setSelectedContract}
-        />
-        <ReviewContractForm
-        show={showReviewForm}
-        handleClose={handleCloseReviewForm}
-        setShowForm={setShowReviewForm}
-        selectedContract={selectedContract} 
-        setSelectedContract={setSelectedContract}
-      />
     </div>
   );
 
