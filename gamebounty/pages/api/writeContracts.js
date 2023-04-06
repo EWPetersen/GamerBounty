@@ -3,10 +3,11 @@ import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
 const dynamoDBClient = new DynamoDBClient({ region: 'us-west-2' });
 
 export default async function writeContracts(req, res) {
+  const data = req.body;
   const { gameTitle, targetPlayer, contractConditions, bidAmount, expDate, requestedBy, contractStatus } = req.body;
   const id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15); // generates a random id
 
-  console.log('Request body:', req.body);
+  console.log('Request body:', data);
 
   const params = {
     TableName: 'contractsDb', // Updated table name

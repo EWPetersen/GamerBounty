@@ -2,6 +2,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useState } from 'react';
+import { Container, Table, Pagination, Spinner, Modal, Form, Button } from 'react-bootstrap';
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -38,12 +39,11 @@ export default function Index() {
         </p>
         <div className="flex justify-center">
           {isAuthenticated && (
-            <button
+            <Button variant="primary"
               onClick={() => setShowCreateForm(true)}
-              className="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 ml-4 rounded"
             >
               Create Contract
-            </button>
+            </Button>
           )}
         </div>
       </div>

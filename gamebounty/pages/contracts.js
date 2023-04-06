@@ -63,13 +63,17 @@ function GetContracts() {
     }
   }
 
+  function handleCreateContract(newContract) {
+    console.log("New contract created:", newContract);
+  }
+
   const handleCloseAcceptForm = () => {
     setShowAcceptForm(false);
     setSelectedContract(null);
   };
 
   const handleCloseCreateForm = () => {
-    setShowReviewForm(false);
+    setShowCreateForm(false);
     setSelectedContract(null);
   };
 
@@ -210,17 +214,19 @@ const sortedContracts = sort.field
         />
         </div>
         <Form.Group>
-            <Button variant="primary"
-              onClick={() => {
-                setSelectedAcceptContract(contract);
-                setShowAcceptForm(true);
-                console.log('clicked this create a contract:')
-              }}
+        <Button variant="primary"
+              onClick={() => setShowCreateForm(true)}
             >
               Create Contract
             </Button>
           </Form.Group>
        </Container>
+       <CreateContractForm
+        show={showCreateForm}
+        handleClose={handleCloseCreateForm}
+        handleCreate={handleCreateContract}
+        setShowCreateForm={setShowCreateForm}
+      />
        <style global jsx>{`
             .modal-content,
             .form-control {
