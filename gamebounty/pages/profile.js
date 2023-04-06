@@ -37,7 +37,7 @@ function Profile() {
   const [showVerifyForm, setShowVerifyForm] = useState(false);
   const [deleteStatus, setDeleteStatus] = useState(null);
   const [showReviewForm, setShowReviewForm] = useState(false);
-  const [selectedReviewContract, setSelectedReviewContract] = useState(null);
+  
  
   // Pagination code
   const requestedPagination = {
@@ -147,7 +147,7 @@ function Profile() {
   };
 
   const handleReviewProofClick = (contract) => {
-    setSelectedReviewContract(contract);
+    setSelectedContract(contract);
     setShowReviewForm(true);
   };
 
@@ -518,13 +518,13 @@ const sortedContracts = sort.field
           setSelectedContract={setSelectedContract}
         />
         <ReviewContractForm
-          show={showReviewForm}
-          handleClose={handleCloseReviewForm}
-          setShow={setShow}
-          setShowReviewForm={setShowReviewForm}
-          selectedContract={selectedContract}
-          setSelectedContract={setSelectedContract}
-        />
+        show={showReviewForm}
+        handleClose={handleCloseReviewForm}
+        setShow={setShow}
+        setShowReviewForm={setShowReviewForm}
+        selectedContract={selectedContract} 
+        setSelectedContract={setSelectedContract}
+      />
     </div>
   );
 

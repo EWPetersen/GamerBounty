@@ -1,54 +1,78 @@
-import React from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Modal, Button, table } from 'react-bootstrap';
+import axios from "axios";
 
-const ReviewContractForm = ({ selectedContract, handleApprove, handleReject, handleClose, showReviewForm }) => {
+
+
+const getEmbedUrl = (url) => {
+  const ytRegExp = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#&?]*).*/;
+  const match = url.match(ytRegExp);
+  const videoId = match && match[1].length === 11 ? match[1] : null;
+
+  if (!videoId) {
+    return null;
+  }
+
+  const urlObj = new URL(url);
+  const startTime = urlObj.searchParams.get('t') || '';
+
+  let embedUrl = `https://www.youtube.com/embed/${videoId}`;
+  if (startTime) {
+    embedUrl += `?start=${startTime}`;
+  }
+
+  return embedUrl;
+};
+
+
+
+const ReviewContractForm = ({
+  show,
+  handleClose,
+  selectedContract,
+  setSelectedContract,
+}) => {
+  const [embedUrl, setEmbedUrl] = useState(null);
+
   return (
-    <div>
-      <Modal isOpen={showReviewForm} toggle={handleClose}>
-        <ModalHeader toggle={handleClose}>Review Proof</ModalHeader>
-        <ModalBody>
-          {selectedContract && (
-            <>
-              {/* Show contract details */}
-              {/* You can customize the contract detail display as needed */}
-              <div className="contract-details">
-                {/* Example of displaying contract details */}
-                <p>Game title: {selectedContract.gameTitle.S}</p>
-                <p>Player: {selectedContract.targetPlayer.S}</p>
-                <p>Bid amount: {selectedContract.bidAmount.N}</p>
-                <p>Requested by: {selectedContract.requestedBy.S}</p>
-                <p>Contract conditions: {selectedContract.contractConditions.S}</p>
-                <p>Status: {selectedContract.status.S}</p>
-              </div>
-              {/* iframe to show content from the verifyLink attribute */}
-              {selectedContract.verifyLink.S ? (
-                <iframe
-                  src={selectedContract.verifyLink.S}
-                  title="proof"
-                  width="100%"
-                  height="400"
-                  frameBorder="0"
-                ></iframe>
-              ) : (
-                <p>No verification link available.</p>
-              )}
-            </>
-          )}
-        </ModalBody>
-        <ModalFooter>
-          {/* Buttons for Approve, Reject, and Close */}
-          <Button color="success" onClick={handleApprove}>
-            Approve
-          </Button>
-          <Button color="danger" onClick={handleReject}>
-            Reject
-          </Button>
-          <Button color="secondary" onClick={handleClose}>
-            Close
-          </Button>
-        </ModalFooter>
-      </Modal>
-    </div>
+    <Modal show={show} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Review Proof</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {selectedContract && (
+          <>
+            <p>Game title: {selectedContract.gameTitle?.S}</p>
+            <p>Player: {selectedContract.targetPlayer?.S}</p>
+            <p>Bid Amount {selectedContract.bidAmount?.N}</p>
+            {selectedContract.verifyLink.S ? (
+              <iframe
+                src={getEmbedUrl(selectedContract.verifyLink.S)}
+                title="proof"
+                width="100%"
+                height="400"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            ) : (
+              <p>No verification link available.</p>
+            )}
+          </>
+        )}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="success" onClick={handleClose}>
+          Approve
+        </Button>
+        <Button variant="danger" onClick={handleClose}>
+          Reject
+        </Button>
+        <Button variant="secondary" onClick={handleClose}>
+          Close
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 
