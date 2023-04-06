@@ -12,7 +12,7 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
         await axios.post('/api/updateContracts', {
           id: selectedContract?.id.S,
           gameTitle: selectedContract?.gameTitle.S,
-          contractStatus: 'payment-pending',
+          contractStatus: 'closed',
         });
   
         setMessage('Contract status updated successfully.');
@@ -55,6 +55,10 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
         </Modal.Header>
       {selectedContract ? (
         <>
+        <Modal.Body>
+          <h4>Review the video in the player.  Does it satisfy the contract?</h4> 
+          <h6>Click approve to approve bids and pay the contractor.  Click reject to close and cancel the contract without pay.</h6>
+          </Modal.Body>
         <Modal.Body>
           <Form>
               <Form.Group controlId="gameTitle">

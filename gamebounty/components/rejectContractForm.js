@@ -34,6 +34,10 @@ const RejectContractForm = ({
         <Modal.Title>Reject Contract</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+          <h4>Enter a rejection reason to proceed.</h4> 
+          <h6>Rejecting this contract cancels the contract and refunds all bids.  Are you sure?</h6>
+          </Modal.Body>
+      <Modal.Body>
         <Form>
           <Form.Group>
             <Form.Label>Reason for Rejection</Form.Label>
@@ -47,11 +51,11 @@ const RejectContractForm = ({
         </Form>
       </Modal.Body>
       <Modal.Footer>
+      <Button variant="danger" onClick={handleRejectClick}>
+          Reject
+        </Button>
         <Button variant="secondary" onClick={handleClose}>
           Close
-        </Button>
-        <Button variant="danger" onClick={handleRejectClick}>
-          Reject
         </Button>
       </Modal.Footer>
     </Modal>

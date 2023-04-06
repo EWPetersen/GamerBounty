@@ -38,6 +38,8 @@ function Profile() {
   const [selectedReviewContract, setSelectedReviewContract] = useState(null);
   const [showVerifyForm, setShowVerifyForm] = useState(false);
   const [selectedVerifyContract, setSelectedVerifyContract] = useState(null);
+  const [showRejectForm, setShowRejectForm] = useState(false);
+  const [selectedRejectContract, setSelectedRejectContract] = useState(null);
  
  
   // Pagination code
@@ -64,19 +66,9 @@ function Profile() {
     acceptedPagination.current * acceptedPagination.pageSize
   ); 
 
-  // This allows the table to show different buttons depending on the item status in the user created contracts table
-  const renderActionButton = (contractStatus) => {
-    if (contractStatus === 'open') {
-      return (
-        <button className="your-button-class">View Contract</button>
-      );
-    } else if (contractStatus === 'verified') {
-      return (
-        <button className="your-button-class">Review Proof</button>
-      );
-    } else {
-      return null;
-    }
+  const handleCloseRejectForm = () => {
+    setShowRejectForm(false);
+    setSelectedContract(null);
   };
 
   const handleCloseReviewForm = () => {
@@ -95,9 +87,11 @@ function Profile() {
     setSelectedContract(null);
   };
 
+  
   // This is the API call that shows contract data to table displays inside the profile page
   useEffect(() => {
     if (session) {
+      console.log(session.user.email);
       const fetchData = async () => {
         setLoading(true);
         try {
@@ -105,7 +99,7 @@ function Profile() {
           console.log('Contracts data:', response.data.data);
           // This table shows contracts that were created by the logged in user
           const requestedData = response.data.data.filter(
-            (contract) => contract.requestedBy?.S === 'eric.p.mail@gmail.com'  &&
+            (contract) => contract.requestedBy?.S === session.user.email  &&
             !contract.hasOwnProperty('isDeleted') &&
             contract.contractStatus?.S === 'open' ||
             contract.contractStatus?.S === 'verified'
@@ -114,9 +108,10 @@ function Profile() {
           // This table shows contracts that were accepted by the logged in user
           const acceptedData = response.data.data.filter(
             (contract) =>
-              contract.acceptedBy?.S  === 'eric.p.mail@gmail.com'  &&
+              contract.acceptedBy?.S  === session.user.email  &&
               !contract.hasOwnProperty('isDeleted') &&
-              contract.contractStatus?.S === 'accepted'
+              contract.contractStatus?.S === 'accepted' ||
+              contract.contractStatus?.S === 'rejected'
           );
           setAcceptedContracts(acceptedData);
   
@@ -371,15 +366,27 @@ const sortedContracts = sort.field
               <td>{contract.contractConditions.S}</td>
               <td>{contract.expDate.S}</td>
               <td>
-              <Button variant="warning"
-                onClick={() => {
-                  setSelectedVerifyContract(contract);
-                  setShowVerifyForm(true);
-                  console.log('clicked this contract to submit proof',contract)
-                }}
-              >
-                Submit Proof
-              </Button>
+                {contract.contractStatus.S === 'accepted' ? (
+                    <Button variant="warning"
+                    onClick={() => {
+                      setSelectedVerifyContract(contract);
+                      setShowVerifyForm(true);
+                      console.log('clicked this contract to submit proof',contract)
+                    }}
+                  >
+                    Submit Proof
+                  </Button>
+                ) : contract.contractStatus.S === 'rejected' ? (
+                  <Button variant="danger"
+                  onClick={() => {
+                    setSelectedRejectedContract(contract);
+                    setShowRejectedForm(true);
+                    console.log('clicked this rejected contract to view:',contract)
+                  }}
+                >
+                  Rejected!
+                </Button>
+                ) : null}
               </td>
             </tr>
           ))}
@@ -453,6 +460,7 @@ const sortedContracts = sort.field
           handleClose={handleCloseViewForm}
           selectedContract={selectedViewContract}
         />
+
     </div>
   );
 

@@ -46,9 +46,13 @@ function VerifyContractForm({ show, handleClose, selectedContract }) {
     <>
       <Modal show={show} onHide={handleClose} className="bg-gray-900">
         <Modal.Header closeButton>
-          <Modal.Title>Verify Contract</Modal.Title>
+          <Modal.Title>Submit Proof</Modal.Title>
         </Modal.Header>
         <div className="bg-gray-900">
+        <Modal.Body>
+          <h4>Upload your clip to youtube. Make sure you are following the contract conditions!</h4> 
+          <h6>The length must be less than 60 seconds, and the upload date must be after the contract creation date.</h6>
+          </Modal.Body>
           <Modal.Body>
             {submitStatus === 'success' && (
               <Alert variant="success">Contract successfully verified!</Alert>
@@ -96,12 +100,12 @@ function VerifyContractForm({ show, handleClose, selectedContract }) {
           </Modal.Body>
         </div>
         <Modal.Footer>
-        <Button variant="success" type="submit" disabled={loading}>
-                {loading ? 'Verifying...' : 'Verify'}
-              </Button>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
+        <Button variant="success" onClick={submitVerification}>
+          Verify
+        </Button>
+        <Button variant="secondary" onClick={handleClose}>
+          Close
+        </Button> 
         </Modal.Footer>
       </Modal>
       <style jsx>{`

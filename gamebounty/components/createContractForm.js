@@ -3,7 +3,7 @@ import { Modal, Form, Button } from 'react-bootstrap';
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function CreateContractForm({ show, handleClose, handleCreate, setShowCreateForm }) {
+function CreateContractForm({ show, handleClose }) {
   const [gameTitle, setgameTitle] = useState('');
   const [targetPlayer, setTargetPlayer] = useState('');
   const [contractConditions, setContractConditions] = useState('');
@@ -14,30 +14,48 @@ function CreateContractForm({ show, handleClose, handleCreate, setShowCreateForm
     return null;
   }
 
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
-    handleCreate({
-      gameTitle,
-      targetPlayer,
-      contractConditions,
-      expDate,
-      bidAmount,
-      acceptedBy: 'create',
-      verifyLink: 'create',
-      verifyNotes: 'create',
-      isVerified: 'false',
-      contractStatus: 'open',
-    });
-    handleClose();
-  };
+  async function handleCreate(contract) {
+    try {
+      const response = await axios.post('/api/writeContracts', {
+        gameTitle: contract.gameTitle,
+        targetPlayer: contract.targetPlayer,
+        contractConditions: contract.contractConditions,
+        expDate: contract.expDate,
+        bidAmount: contract.bidAmount,
+        requestedby: contract.requestedBy,
+        contractStatus: contract.contractStatus
+      });
+
+      console.log(response.data.data);
+      setContracts([...contracts, response.data.data]);
+      setSuccess(true);
+    } catch (error) {
+      console.error('Error creating contract', error);
+      setSuccess(false);
+    }
+  }    
+      const handleFormSubmit = (event) => {
+        event.preventDefault();
+        console.log('handleFormSubmit called');
+        handleCreate({
+          gameTitle,
+          targetPlayer,
+          contractConditions,
+          expDate,
+          bidAmount,
+          requestedBy: 'eric.p.mail@gmail.com',
+          contractStatus: 'open',
+          });
+        setShowCreateForm(false);
+      };
 
   return (
     <>
-    <Modal show={show} onHide={handleClose} className="bg-gray-900">
-      <Modal.Header closeButton>
-        <Modal.Title>Create Contract</Modal.Title>
-      </Modal.Header>
-      <div className="bg-gray-900">
+    
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Create Contract</Modal.Title>
+        </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleFormSubmit}>
             <Form.Group controlId="gameTitle">
@@ -88,23 +106,17 @@ function CreateContractForm({ show, handleClose, handleCreate, setShowCreateForm
             <Form.Group>
               ---
             </Form.Group>
-            <Button variant="primary" type="submit">
+            <Button variant="success" type="submit">
               Create
             </Button>
           </Form>
         </Modal.Body>
-      </div>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-      </Modal.Footer>
-    </Modal>
-      <style jsx>{`
-        .modal-content {
-          --bs-modal-bg: #1f2937;
-        }
-      `}</style>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }

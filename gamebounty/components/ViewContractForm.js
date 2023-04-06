@@ -50,6 +50,9 @@ const ViewContractForm = ({ show, handleClose, selectedContract }) => {
         <Modal.Title>Contract Details</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+          <h4>Clicking the Delete button will remove the below contract from your profile and refund all bids. Are you sure?</h4>
+          </Modal.Body>
+      <Modal.Body>
           <Form>
               <Form.Group controlId="gameTitle">
               <Form.Label>Game</Form.Label>
@@ -73,6 +76,7 @@ const ViewContractForm = ({ show, handleClose, selectedContract }) => {
             </Form.Group>
             </Form>
           </Modal.Body>
+          
       <Modal.Footer>
       <Button variant="danger" onClick={() => handleDeleteClick(selectedContract, handleClose)}>Delete</Button>
       <Button variant="secondary" onClick={handleClose}>Close</Button>
