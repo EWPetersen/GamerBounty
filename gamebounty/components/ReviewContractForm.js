@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Button, table } from 'react-bootstrap';
+import { Modal, Button, table, Form } from 'react-bootstrap';
 import axios from "axios";
 import RejectContractForm from './RejectContractForm';
 
@@ -51,42 +51,64 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
   return (
     <Modal show={show} onHide={handleClose} className="bg-gray-900">
         <Modal.Header closeButton>
-          <Modal.Title>Review Proof</Modal.Title>
+          <Modal.Title>Approve Proof</Modal.Title>
         </Modal.Header>
       {selectedContract ? (
         <>
-          <div>
-            <p>Game title: {selectedContract.gameTitle.S}</p>
-            <p>Player: {selectedContract.targetPlayer.S}</p>
-          </div>
-          {selectedContract.verifyLink && selectedContract.verifyLink.S ? (
+        <Modal.Body>
+          <Form>
+              <Form.Group controlId="gameTitle">
+              <Form.Label>Game</Form.Label>
+              <p>{selectedContract?.gameTitle.S}</p>
+            </Form.Group>
+            <Form.Group controlId="targetPlayer">
+              <Form.Label>Target Player</Form.Label>
+              <p>{selectedContract?.targetPlayer.S}</p>
+            </Form.Group>
+             <Form.Group controlId="contractConditions">
+              <Form.Label>Conditions</Form.Label>
+              <p>{selectedContract?.contractConditions.S}</p>
+            </Form.Group>
+            <Form.Group controlId="bidAmount">
+              <Form.Label>Bid Amount</Form.Label>
+              <p>{selectedContract?.bidAmount.N}</p>
+            </Form.Group>
+            <Form.Group controlId="verifyLink">
+              <Form.Label>Proof Link </Form.Label>
+              <p>{selectedContract.verifyLink && selectedContract.verifyLink.S ? (
             <iframe
               src={getEmbedUrl(selectedContract.verifyLink.S)}
               title="proof"
               width="100%"
-              height="400"
-              frameBorder="0"
+              height="360"
               allowFullScreen
             ></iframe>
           ) : (
             <p>No verification link available.</p>
           )}
-          {message && <p>{message}</p>}
-          <RejectContractForm
-            show={showRejectForm}
-            handleClose={handleCloseRejectForm}
-            selectedContract={selectedContract}
-          />
-          <Button onClick={handleApproveClick} className="mt-3 mr-2">
+          {message && <p>{message}</p>}</p>
+            </Form.Group>
+            </Form>
+          </Modal.Body>
+           <Modal.Footer>
+          <Button variant="success" onClick={handleApproveClick}>
             Approve
           </Button>
           <Button variant="danger" onClick={handleShowRejectForm}>
             Reject
           </Button>
-          <Button onClick={handleClose} className="mt-3">
+          <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-        </>
+      </Modal.Footer>
+          
+          
+          <RejectContractForm
+            show={showRejectForm}
+            handleClose={handleCloseRejectForm}
+            selectedContract={selectedContract}
+          />
+         </>
       ) : (
         <p>Loading...</p>
       )}

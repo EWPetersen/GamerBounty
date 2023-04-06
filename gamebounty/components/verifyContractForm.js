@@ -97,13 +97,13 @@ function VerifyContractForm({ show, handleClose, selectedContract }) {
                 onChange={(event) => setVerifyNotes(event.target.value)}
               />
             </Form.Group>
-            <Button variant="primary" type="submit" disabled={loading}>
-                {loading ? 'Verifying...' : 'Verify'}
-              </Button>
             </Form>
           </Modal.Body>
         </div>
         <Modal.Footer>
+        <Button variant="success" type="submit" disabled={loading}>
+                {loading ? 'Verifying...' : 'Verify'}
+              </Button>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>

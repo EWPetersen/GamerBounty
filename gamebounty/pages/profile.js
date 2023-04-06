@@ -266,7 +266,7 @@ const sortedContracts = sort.field
               <td>{contract.expDate.S}</td>
               <td>
                 {contract.contractStatus.S === 'open' ? (
-                  <Button
+                  <Button variant="primary"
                   onClick={() => {
                     setSelectedViewContract(contract);
                     setShowViewForm(true);
@@ -276,14 +276,14 @@ const sortedContracts = sort.field
                   View Contract
                 </Button>
                 ) : contract.contractStatus.S === 'verified' ? (
-                  <Button
+                  <Button variant="success"
                     onClick={() => {
                       setSelectedReviewContract(contract);
                       setShowReviewForm(true);
                       console.log('clicked this contract to review:',contract)
                     }}
                   >
-                    Review Proof
+                    Approve Proof
                   </Button>
                 ) : null}
               </td>
@@ -359,7 +359,7 @@ const sortedContracts = sort.field
             <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Conditions {sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-            <th>Submit Proof</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -371,14 +371,14 @@ const sortedContracts = sort.field
               <td>{contract.contractConditions.S}</td>
               <td>{contract.expDate.S}</td>
               <td>
-              <Button
+              <Button variant="warning"
                 onClick={() => {
                   setSelectedVerifyContract(contract);
                   setShowVerifyForm(true);
                   console.log('clicked this contract to submit proof',contract)
                 }}
               >
-                Link your Proof
+                Submit Proof
               </Button>
               </td>
             </tr>
