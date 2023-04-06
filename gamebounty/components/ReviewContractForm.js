@@ -46,7 +46,8 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
   };
 
   return (
-    <Modal show={show} handleClose={handleClose}>
+    <Modal show={show} handleClose={handleClose} className="bg-gray-900">
+    <Modal.Header closeButton></Modal.Header>
       {selectedContract ? (
         <>
           <h2>Review Proof</h2>
@@ -68,16 +69,16 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
           )}
           {message && <p>{message}</p>}
           <RejectContractForm
-  show={showRejectForm}
-  handleClose={handleCloseRejectForm}
-  selectedContract={selectedContract}
-/>
+            show={showRejectForm}
+            handleClose={handleCloseRejectForm}
+            selectedContract={selectedContract}
+          />
           <Button onClick={handleApproveClick} className="mt-3 mr-2">
             Approve
           </Button>
           <Button variant="danger" onClick={handleShowRejectForm}>
-  Reject
-</Button>
+            Reject
+          </Button>
           <Button onClick={handleClose} className="mt-3">
             Close
           </Button>

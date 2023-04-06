@@ -23,4 +23,23 @@
                 <Button onClick={handleClose}>Close</Button>
             </div>
           </Modal.Footer>
-        </Modal> */
+        </Modal> 
+        
+        <ViewContractForm
+          show={showViewForm}
+          handleClose={handleCloseViewForm}
+          setShowForm={setShowViewForm}
+          selectedContract={selectedContract}
+          setSelectedContract={setSelectedContract}
+        />
+        <ReviewContractForm
+        show={showReviewForm}
+        handleClose={handleCloseReviewForm}
+        setShowReviewForm={setShowReviewForm}
+        selectedContract={selectedContract} 
+        setSelectedContract={setSelectedContract}
+      />
+        
+
+        
+        */
