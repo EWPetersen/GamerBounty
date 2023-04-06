@@ -22,7 +22,6 @@ function VerifyContractForm({ show, handleClose, selectedContract }) {
         gameTitle: selectedContract?.gameTitle.S,
         acceptedBy: selectedContract?.acceptedBy.S,
         verifyLink: verifyLink,
-        isVerified: true,
         verifyNotes: verifyNotes,
         contractStatus: 'verified'
       });
@@ -65,10 +64,6 @@ function VerifyContractForm({ show, handleClose, selectedContract }) {
             <Form.Group controlId="targetPlayer">
               <Form.Label>Target Player</Form.Label>
               <p>{selectedContract?.targetPlayer.S}</p>
-            </Form.Group>
-            <Form.Group controlId="expDate">
-              <Form.Label>Expiriation Date</Form.Label>
-              <p>{selectedContract?.expDate.S}</p>
             </Form.Group>
             <Form.Group controlId="contractConditions">
               <Form.Label>Conditions</Form.Label>

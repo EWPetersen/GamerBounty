@@ -13,7 +13,8 @@ const RejectContractForm = ({
     if (rejectReason.trim()) {
       try {
         await axios.post('/api/updateContracts', {
-          contractId: selectedContract.contractId.S,
+          id: selectedContract?.id.S,
+          gameTitle: selectedContract?.gameTitle.S,
           contractStatus: 'rejected',
           rejectReason,
         });

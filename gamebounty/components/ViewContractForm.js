@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import axios from 'axios'
 
+const ViewContractForm = ({ show, handleClose, selectedContract }) => {
+  const [deleteStatus, setDeleteStatus] = useState(false);
 
-const handleDeleteClick = async (selectedContract) => {
+  const handleDeleteClick = async (selectedContract) => {
   if (!selectedContract) return;
 
   // Show a confirmation dialog
   const confirmation = window.confirm("Are you sure you want to delete this?");
 
+  
   if (confirmation) {
     try {
       const response = await axios.post('/api/updateContracts', {
-        id: selectedContract.id.S,
-        gameTitle: selectedContract.gameTitle.S,
+        id: selectedContract?.id.S,
+        gameTitle: selectedContract?.gameTitle.S,
         isDeleted: true,
       });
 
@@ -23,7 +27,7 @@ const handleDeleteClick = async (selectedContract) => {
         console.log('Contract marked deleted');
 
         // Close the modal and refresh the contracts data
-        handleCloseViewForm();
+        handleClose();
         } else {
         setDeleteStatus('error');
 
@@ -31,7 +35,7 @@ const handleDeleteClick = async (selectedContract) => {
         alert('Failed to delete contract. Please try again.');
       }
     } catch (error) {
-      console.error('Error deleting contract:', error);
+      console.error('Error deleting contract:', error.message);
       setDeleteStatus('error');
 
       // Display a detailed error message
@@ -40,7 +44,6 @@ const handleDeleteClick = async (selectedContract) => {
   }
 };
 
-const ViewContractForm = ({ show, handleClose, selectedContract }) => {
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
@@ -71,7 +74,7 @@ const ViewContractForm = ({ show, handleClose, selectedContract }) => {
             </Form>
           </Modal.Body>
       <Modal.Footer>
-      <Button variant="danger" onClick={handleDeleteClick}>Delete</Button>
+      <Button variant="danger" onClick={() => handleDeleteClick(selectedContract, handleClose)}>Delete</Button>
       <Button variant="secondary" onClick={handleClose}>Close</Button>
       </Modal.Footer>
     </Modal>

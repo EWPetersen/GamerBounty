@@ -12,7 +12,7 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
         await axios.post('/api/updateContracts', {
           id: selectedContract?.id.S,
           gameTitle: selectedContract?.gameTitle.S,
-          contractStatus: 'payment',
+          contractStatus: 'payment-pending',
         });
   
         setMessage('Contract status updated successfully.');
