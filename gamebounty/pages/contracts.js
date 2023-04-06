@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { signIn, useSession } from "next-auth/react";
 import { Container, Table, Pagination, Spinner, Modal, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 
@@ -11,6 +12,7 @@ import CreateContractForm from '../components/CreateContractForm';
 import AcceptContractForm from '../components/AcceptContractForm';
 
 function GetContracts() {
+  const { data: session, status } = useSession();
   const [contracts, setContracts] = useState([]);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   const [loading, setLoading] = useState(false);
@@ -46,6 +48,31 @@ function GetContracts() {
     
     fetchData(); // Added this line
   }, []);
+
+  if (loading) {
+    return (
+      <div className="bg-gray-900 min-h-screen text-white text-center">
+        <Navbar />
+        <h1 className="text-3xl font-bold mt-8">Loading...</h1>
+      </div>
+    );
+  };
+// This tells the user to sign in, and displays a sign in button if there session doesn't exist
+  if (!session) {
+    return (
+      <div className="bg-gray-900 min-h-screen text-white text-center">
+        <Navbar />
+        <h1 className="text-3xl font-bold mt-8">Please sign in</h1>
+        <button
+          onClick={() => signIn()}
+          className="text-xl px-8 py-2 rounded-lg mt-4 bg-blue-600 text-white"
+        >
+          Sign In
+        </button>
+      </div>
+    );
+  };
+
 
    function handlePaginationChange(newPagination) {
     setPagination(newPagination);

@@ -117,12 +117,13 @@ function ClosedContracts() {
       <Container className="bg-gray-900">
           <Row gutter={16}>
       <Col span={12}>
-        <h2>Top Contractor</h2>
+        <h2>Top Contractors</h2>
+        <h6>by completion %</h6>
         <List
           dataSource={[
-            { name: 'Profile 1', rank: 1 },
-            { name: 'Profile 2', rank: 2 },
-            { name: 'Profile 3', rank: 3 },
+            { name: 'n00bman', rank: 1 },
+            { name: 'Assassin78', rank: 2 },
+            { name: 'MemeLord72', rank: 3 },
           ]}
           renderItem={item => (
             <List.Item>
@@ -134,11 +135,12 @@ function ClosedContracts() {
       <Col span={12}>
       <div style={{ textAlign: 'right' }}>
         <h2>Top Producer</h2>
+        <h6>by completion %</h6>
         <List
           dataSource={[
-            { name: 'Profile 1', rank: 1 },
-            { name: 'Profile 2', rank: 2 },
-            { name: 'Profile 3', rank: 3 },
+            { name: 'catpissqueen', rank: 1 },
+            { name: 'thundergunexpress', rank: 2 },
+            { name: 'l33t af', rank: 3 },
           ]}
           renderItem={item => (
             <List.Item style={{ justifyContent: 'flex-end', display: 'flex' }}> {/* Apply style to List.Item */}

@@ -210,16 +210,14 @@ const sortedContracts = sort.field
       <div>
         <h3 className="text-center"> Manage Contracts</h3>
       </div>
-    <h1 className="text-3xl font-bold mb-8 text-left">My Contracts</h1>
+    <h1 className="text-3xl font-bold mb-8 text-right">My Hits</h1>
     {/*// Put some cool user profile stats here */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <div>
-            <h3>Total Hits Completed</h3>
-                <p>0</p> {/* Replace with the actual amount when you have the database code */}
-        </div>
-        <div>
-            <h3>Contract rating</h3>
-                <p>0%</p> {/* Replace with the actual rating when you have the database code */}
+               <div>
+            <h6>Contract Creator Rating **</h6>
+                <p>Total Closed Contracts: 9</p>
+                <p>Completion % : 78</p> 
+                <p>Average Time to Payment: 18 hours</p>
                 </div>
         </div>
       <Form className="mb-4">
@@ -322,14 +320,12 @@ const sortedContracts = sort.field
       <Form className="mb-4">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <div>
-                <h3>Money made from hits</h3>
-                    <p>$0.00</p> {/* Replace with the actual amount when you have the database code */}
+            <h6>Contractor Rating **</h6>
+                <p>Total Closed Contracts: 12</p>
+                <p>Completion % : 56</p> 
+                <p>Average Time to Verified: 32 hours</p>
             </div>
-            <div>
-                <h3>Assassin rating</h3>
-                    <p>0%</p> {/* Replace with the actual rating when you have the database code */}
             </div>
-        </div>
       <Form.Group controlId="search">
       <Form.Control
               className="bg-gray-700 border-gray-600 focus:border-blue-500 focus:ring-blue-500 text-white"
