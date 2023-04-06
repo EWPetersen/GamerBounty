@@ -1,77 +1,90 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, table } from 'react-bootstrap';
 import axios from "axios";
+import RejectContractForm from './RejectContractForm';
 
+const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
+  const [message, setMessage] = useState('');
 
+  const handleApproveClick = async () => {
+    if (window.confirm('Are you sure you want to approve this contract?')) {
+      try {
+        await axios.post('/api/updateContracts', {
+          id: selectedContract?.id.S,
+          gameTitle: selectedContract?.gameTitle.S,
+          contractStatus: 'payment',
+        });
+  
+        setMessage('Contract status updated successfully.');
+        setTimeout(() => {
+          handleClose();
+        }, 2000);
+      } catch (error) {
+        setMessage(`Error updating contract status: ${error.message}`);
+      }
+    }
+  };
 
-const getEmbedUrl = (url) => {
-  const ytRegExp = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#&?]*).*/;
-  const match = url.match(ytRegExp);
-  const videoId = match && match[1].length === 11 ? match[1] : null;
+  const getEmbedUrl = (url) => {
+    if (!url) return '';
 
-  if (!videoId) {
-    return null;
-  }
+    const videoId = url.split('youtu.be/')[1].split('?')[0];
+    const startTime = url.split('t=')[1];
+    const embedUrl = `https://www.youtube.com/embed/${videoId}${startTime ? `?start=${startTime}` : ''}`;
 
-  const urlObj = new URL(url);
-  const startTime = urlObj.searchParams.get('t') || '';
+    return embedUrl;
+  };
 
-  let embedUrl = `https://www.youtube.com/embed/${videoId}`;
-  if (startTime) {
-    embedUrl += `?start=${startTime}`;
-  }
+  const [showRejectForm, setShowRejectForm] = useState(false);
 
-  return embedUrl;
-};
-
-
-
-const ReviewContractForm = ({
-  show,
-  handleClose,
-  selectedContract,
-  setSelectedContract,
-}) => {
-  const [embedUrl, setEmbedUrl] = useState(null);
+  const handleShowRejectForm = () => {
+    setShowRejectForm(true);
+  };
+  
+  const handleCloseRejectForm = () => {
+    setShowRejectForm(false);
+  };
 
   return (
-    <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>Review Proof</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {selectedContract && (
-          <>
-            <p>Game title: {selectedContract.gameTitle?.S}</p>
-            <p>Player: {selectedContract.targetPlayer?.S}</p>
-            <p>Bid Amount {selectedContract.bidAmount?.N}</p>
-            {selectedContract.verifyLink.S ? (
-              <iframe
-                src={getEmbedUrl(selectedContract.verifyLink.S)}
-                title="proof"
-                width="100%"
-                height="400"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            ) : (
-              <p>No verification link available.</p>
-            )}
-          </>
-        )}
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="success" onClick={handleClose}>
-          Approve
-        </Button>
-        <Button variant="danger" onClick={handleClose}>
-          Reject
-        </Button>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-      </Modal.Footer>
+    <Modal show={show} handleClose={handleClose}>
+      {selectedContract ? (
+        <>
+          <h2>Review Proof</h2>
+          <div>
+            <p>Game title: {selectedContract.gameTitle.S}</p>
+            <p>Player: {selectedContract.targetPlayer.S}</p>
+          </div>
+          {selectedContract.verifyLink && selectedContract.verifyLink.S ? (
+            <iframe
+              src={getEmbedUrl(selectedContract.verifyLink.S)}
+              title="proof"
+              width="100%"
+              height="400"
+              frameBorder="0"
+              allowFullScreen
+            ></iframe>
+          ) : (
+            <p>No verification link available.</p>
+          )}
+          {message && <p>{message}</p>}
+          <RejectContractForm
+  show={showRejectForm}
+  handleClose={handleCloseRejectForm}
+  selectedContract={selectedContract}
+/>
+          <Button onClick={handleApproveClick} className="mt-3 mr-2">
+            Approve
+          </Button>
+          <Button variant="danger" onClick={handleShowRejectForm}>
+  Reject
+</Button>
+          <Button onClick={handleClose} className="mt-3">
+            Close
+          </Button>
+        </>
+      ) : (
+        <p>Loading...</p>
+      )}
     </Modal>
   );
 };
