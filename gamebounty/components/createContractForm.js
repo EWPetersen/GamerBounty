@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
+import { useSession } from "next-auth/react";
+import axios from 'axios';
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -9,6 +11,9 @@ function CreateContractForm({ show, handleClose }) {
   const [contractConditions, setContractConditions] = useState('');
   const [expDate, setExpDate] = useState('');
   const [bidAmount, setBidAmount] = useState('');
+  const [submitStatus, setSubmitStatus] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const { data: session, status } = useSession();
 
   if (!show) {
     return null;
@@ -27,11 +32,15 @@ function CreateContractForm({ show, handleClose }) {
       });
 
       console.log(response.data.data);
-      setContracts([...contracts, response.data.data]);
-      setSuccess(true);
+      setLoading(false);
+      setSubmitStatus('success');
+      setTimeout(() => {
+        handleClose(); // Close the form after a short delay
+      }, 2000);
     } catch (error) {
+      setLoading(false);
+      setSubmitStatus('failure');
       console.error('Error creating contract', error);
-      setSuccess(false);
     }
   }    
       const handleFormSubmit = (event) => {
@@ -43,7 +52,7 @@ function CreateContractForm({ show, handleClose }) {
           contractConditions,
           expDate,
           bidAmount,
-          requestedBy: 'eric.p.mail@gmail.com',
+          requestedBy: session.user.email,
           contractStatus: 'open',
           });
         setShowCreateForm(false);
@@ -103,15 +112,13 @@ function CreateContractForm({ show, handleClose }) {
                 onChange={(event) => setBidAmount(event.target.value)}
               />
             </Form.Group>
-            <Form.Group>
-              ---
-            </Form.Group>
-            <Button variant="success" type="submit">
-              Create
-            </Button>
+                      
           </Form>
         </Modal.Body>
         <Modal.Footer>
+        <Button variant="success" onClick={handleCreate}>
+          Create
+        </Button>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>

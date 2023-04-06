@@ -192,9 +192,9 @@ function ClosedContracts() {
                 <td>{contract.targetPlayer.S}</td>
                 <td>{contract.contractConditions.S}</td>
                 <td>{formatCurrency(contract.bidAmount.N)}</td>
-                <td>
+                {/*<td>
                 <Button variant="info" onClick={() => handleViewContract(contract)}>View Contract</Button>
-                </td>
+                </td>*/}
               </tr>
             ))}
           </tbody>

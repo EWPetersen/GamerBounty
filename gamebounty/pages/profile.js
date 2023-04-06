@@ -1,4 +1,4 @@
-// Import modules
+// Import plugins
 import React, { useEffect, useState } from 'react';
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -7,11 +7,9 @@ import axios from 'axios';
 // Import page styling 
 import { Container, Table, Pagination, Modal, Form, Button } from 'react-bootstrap';
 
-// Import CSS stuff
+// Import CSS and Nav stuff
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-// Import my navbar
 import Navbar from '../components/Navbar';
 
 // Import all the forms the buttons need
@@ -38,9 +36,6 @@ function Profile() {
   const [selectedReviewContract, setSelectedReviewContract] = useState(null);
   const [showVerifyForm, setShowVerifyForm] = useState(false);
   const [selectedVerifyContract, setSelectedVerifyContract] = useState(null);
-  const [showRejectForm, setShowRejectForm] = useState(false);
-  const [selectedRejectContract, setSelectedRejectContract] = useState(null);
- 
  
   // Pagination code
   const requestedPagination = {
@@ -91,7 +86,6 @@ function Profile() {
   // This is the API call that shows contract data to table displays inside the profile page
   useEffect(() => {
     if (session) {
-      console.log(session.user.email);
       const fetchData = async () => {
         setLoading(true);
         try {
@@ -207,13 +201,12 @@ const sortedContracts = sort.field
     }).format(amount);
   };
 
-  // This is where the page is drawn.  Whatever you see in the browser is in here somewhere.
+ 
   return (
     <div className="bg-gray-900 min-h-screen text-white">
     <Navbar />
     <Container className="bg-gray-900">
-     {/*// This is the VERIFY form pop-up for created contracts.  This is it's own component.... */}
-      <h1 className="text-3xl font-bold mb-8 text-center">Profile</h1>
+     <h1 className="text-3xl font-bold mb-8 text-center">Profile</h1>
       <div>
         <h3 className="text-center"> Manage Contracts</h3>
       </div>

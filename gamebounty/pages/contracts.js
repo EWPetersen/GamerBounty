@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Container, Table, Pagination, Spinner, Modal, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
+
+
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from '../components/Navbar';
+
+import CreateContractForm from '../components/CreateContractForm';
+import AcceptContractForm from '../components/AcceptContractForm';
 
 function GetContracts() {
   const [contracts, setContracts] = useState([]);
@@ -14,9 +19,12 @@ function GetContracts() {
   const [show, setShow] = useState(false);
   const [selectedContract, setSelectedContract] = useState(null);
   const [success, setSuccess] = useState(false);
-  const [showCreateForm, setShowCreateForm] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [showAcceptForm, setShowAcceptForm] = useState(false);
+  const [selectedAcceptContract, setSelectedAcceptContract] = useState(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [selectedCreateContract, setSelectedCreateContract] = useState(null);
 
 
   useEffect(() => {
@@ -55,18 +63,15 @@ function GetContracts() {
     }
   }
 
-  function handleClose() {
+  const handleCloseAcceptForm = () => {
+    setShowAcceptForm(false);
     setSelectedContract(null);
-    setShow(false);
-    setSuccessMessage('');
-    setErrorMessage('');
-  }
+  };
 
-  function handleCloseCreateForm() {
-    setShowCreateForm(false);
-    setSuccessMessage('');
-    setErrorMessage('');
-  }
+  const handleCloseCreateForm = () => {
+    setShowReviewForm(false);
+    setSelectedContract(null);
+  };
 
   const filteredContracts = contracts.filter((contract) =>
   contract &&
@@ -131,6 +136,7 @@ const sortedContracts = sort.field
               onChange={handleSearch}
             />
           </Form.Group>
+          
         </Form>
         <Table responsive bordered hover variant="dark">
           <thead>
@@ -139,7 +145,7 @@ const sortedContracts = sort.field
               <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Conditions {sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th>Grab a Contract!</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -150,7 +156,15 @@ const sortedContracts = sort.field
                 <td> {formatCurrency(contract.bidAmount.N)}</td> {/* Changed this line */}
                 <td>{contract.contractConditions.S}</td>
                 <td>
-                  <h3>button here</h3>
+                <Button variant="success"
+                  onClick={() => {
+                    setSelectedAcceptContract(contract);
+                    setShowAcceptForm(true);
+                    console.log('clicked this contract to accepet:',contract)
+                  }}
+                >
+                  Accept Contract
+                </Button>
                 </td>
               </tr>
             ))}
@@ -182,39 +196,55 @@ const sortedContracts = sort.field
           </Pagination>
           </div>
         <div className="mt-4 mb-4 text-center">
-        <Button
-        variant="primary"
-        onClick={() => setShowCreateForm(!showCreateForm)}
-        className="text-xl px-8 py-2 rounded-lg" // Added classes for bigger and dynamic button
-      >
-        Create Contract
-      </Button>
+        <AcceptContractForm 
+          show={showAcceptForm}
+          handleClose={handleCloseAcceptForm}
+          setShowForm={setShowAcceptForm}
+          selectedContract={selectedAcceptContract}
+          setSelectedContract={setSelectedAcceptContract}
+        />
+         <CreateContractForm 
+          show={showCreateForm}
+          handleClose={handleCloseCreateForm}
+          setShowForm={setShowCreateForm}
+        />
         </div>
+        <Form.Group>
+            <Button variant="primary"
+              onClick={() => {
+                setSelectedAcceptContract(contract);
+                setShowAcceptForm(true);
+                console.log('clicked this create a contract:')
+              }}
+            >
+              Create Contract
+            </Button>
+          </Form.Group>
        </Container>
-      <style global jsx>{`
-        .modal-content,
-        .form-control {
-          background-color: #1f2937;
-          color: #ffffff;
-        }
-        .alert-success {
-          background-color: #10b981;
-          color: #ffffff;
-        }
-        .alert-danger {
-          background-color: #ef4444;
-          color: #ffffff;
-        }
-        table thead th {
-          cursor: pointer;
-          font-weight: 600;
-          text-transform: uppercase;
-        }
-        table tbody tr:hover {
-          background-color: rgba(255, 255, 255, 0.1);
-        }
-      `}</style>
-    </div>
+       <style global jsx>{`
+            .modal-content,
+            .form-control {
+              background-color: #1f2937;
+              color: #ffffff;
+            }
+            .alert-success {
+              background-color: #10b981;
+              color: #ffffff;
+            }
+            .alert-danger {
+              background-color: #ef4444;
+              color: #ffffff;
+            }
+            table thead th {
+              cursor: pointer;
+              font-weight: 600;
+              text-transform: uppercase;
+            }
+            table tbody tr:hover {
+              background-color: rgba(255, 255, 255, 0.1);
+            }
+          `}</style>
+      </div>
   );
 }
 

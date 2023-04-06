@@ -6,7 +6,7 @@ import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Navbar from '../components/Navbar';
-import CreateContractForm from '../components/createContractForm';
+import CreateContractForm from '../components/CreateContractForm';
 
 export default function Index() {
   const { data: session, status } = useSession();
@@ -53,6 +53,29 @@ export default function Index() {
         handleCreate={handleCreateContract}
         setShowCreateForm={setShowCreateForm}
       />
+      <style global jsx>{`
+            .modal-content,
+            .form-control {
+              background-color: #1f2937;
+              color: #ffffff;
+            }
+            .alert-success {
+              background-color: #10b981;
+              color: #ffffff;
+            }
+            .alert-danger {
+              background-color: #ef4444;
+              color: #ffffff;
+            }
+            table thead th {
+              cursor: pointer;
+              font-weight: 600;
+              text-transform: uppercase;
+            }
+            table tbody tr:hover {
+              background-color: rgba(255, 255, 255, 0.1);
+            }
+          `}</style>
     </div>
   );
 }

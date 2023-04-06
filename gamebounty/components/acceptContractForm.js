@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Form, Button, Alert } from 'react-bootstrap';
+import { useSession } from "next-auth/react";
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
@@ -7,6 +8,7 @@ import axios from 'axios';
 function AcceptContractForm({ show, handleClose, selectedContract }) {
   const [submitStatus, setSubmitStatus] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { data: session, status } = useSession();
 
   if (!show) {
     return null;
@@ -18,7 +20,7 @@ function AcceptContractForm({ show, handleClose, selectedContract }) {
       await axios.post('/api/updateContracts', {
         id: selectedContract?.id.S,
         gameTitle: selectedContract?.gameTitle.S,
-        acceptedBy: 'eric.p.mail@gmail.com',
+        acceptedBy: session.user.email,
         contractStatus: 'accepted'
       });
       setLoading(false);
@@ -73,13 +75,14 @@ function AcceptContractForm({ show, handleClose, selectedContract }) {
               <Form.Label>Bid Amount</Form.Label>
               <p>{selectedContract?.bidAmount.N}</p>
             </Form.Group>
-              <Button variant="primary" type="submit" disabled={loading}>
-                {loading ? 'Accepting...' : 'Accept'}
-              </Button>
+             
             </Form>
           </Modal.Body>
         </div>
         <Modal.Footer>
+        <Button variant="success" onClick={submitAccept}>
+            Approve
+          </Button>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
