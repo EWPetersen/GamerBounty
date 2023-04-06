@@ -26,7 +26,10 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
   };
 
   const getEmbedUrl = (url) => {
-    if (!url) return '';
+    if (!url) return "";
+    
+    const urlParts = url.split("/");
+    if (urlParts.length < 4) return "";
 
     const videoId = url.split('youtu.be/')[1].split('?')[0];
     const startTime = url.split('t=')[1];
@@ -46,11 +49,12 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
   };
 
   return (
-    <Modal show={show} handleClose={handleClose} className="bg-gray-900">
-    <Modal.Header closeButton></Modal.Header>
+    <Modal show={show} onHide={handleClose} className="bg-gray-900">
+        <Modal.Header closeButton>
+          <Modal.Title>Review Proof</Modal.Title>
+        </Modal.Header>
       {selectedContract ? (
         <>
-          <h2>Review Proof</h2>
           <div>
             <p>Game title: {selectedContract.gameTitle.S}</p>
             <p>Player: {selectedContract.targetPlayer.S}</p>

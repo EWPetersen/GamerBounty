@@ -1,17 +1,82 @@
-import React, { useContext } from 'react';
+import React, { useState } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
 
-const ViewContractForm = ({ contract }) => {
-  if (!contract) return null;
 
+const handleDeleteClick = async (selectedContract) => {
+  if (!selectedContract) return;
+
+  // Show a confirmation dialog
+  const confirmation = window.confirm("Are you sure you want to delete this?");
+
+  if (confirmation) {
+    try {
+      const response = await axios.post('/api/updateContracts', {
+        id: selectedContract.id.S,
+        gameTitle: selectedContract.gameTitle.S,
+        isDeleted: true,
+      });
+
+      console.log('Delete contract response:', response.data);
+
+      if (response.data.status === 'success') {
+        setDeleteStatus('success');
+        console.log('Contract marked deleted');
+
+        // Close the modal and refresh the contracts data
+        handleCloseViewForm();
+        } else {
+        setDeleteStatus('error');
+
+        // Display a detailed error message
+        alert('Failed to delete contract. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error deleting contract:', error);
+      setDeleteStatus('error');
+
+      // Display a detailed error message
+      alert('Failed to delete contract. Please try again.');
+    }
+  }
+};
+
+const ViewContractForm = ({ show, handleClose, selectedContract }) => {
   return (
-    <div>
-      <p><strong>Game Title:</strong> {contract.gameTitle.S}</p>
-      <p><strong>Target Player:</strong> {contract.targetPlayer.S}</p>
-      <p><strong>Contract Conditions:</strong> {contract.contractConditions.S}</p>
-      <p><strong>Bid Amount:</strong> {contract.bidAmount.N}</p>
-      <p><strong>Expiration Date:</strong> {contract.expDate.S}</p>
-    </div>
+    <Modal show={show} onHide={handleClose} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Contract Details</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+          <Form>
+              <Form.Group controlId="gameTitle">
+              <Form.Label>Game</Form.Label>
+              <p>{selectedContract?.gameTitle.S}</p>
+            </Form.Group>
+            <Form.Group controlId="targetPlayer">
+              <Form.Label>Target Player</Form.Label>
+              <p>{selectedContract?.targetPlayer.S}</p>
+            </Form.Group>
+            <Form.Group controlId="expDate">
+              <Form.Label>Expiriation Date</Form.Label>
+              <p>{selectedContract?.expDate.S}</p>
+            </Form.Group>
+            <Form.Group controlId="contractConditions">
+              <Form.Label>Conditions</Form.Label>
+              <p>{selectedContract?.contractConditions.S}</p>
+            </Form.Group>
+            <Form.Group controlId="bidAmount">
+              <Form.Label>Bid Amount</Form.Label>
+              <p>{selectedContract?.bidAmount.N}</p>
+            </Form.Group>
+            </Form>
+          </Modal.Body>
+      <Modal.Footer>
+      <Button variant="danger" onClick={handleDeleteClick}>Delete</Button>
+      <Button variant="secondary" onClick={handleClose}>Close</Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 
 export default ViewContractForm;
+

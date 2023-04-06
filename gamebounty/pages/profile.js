@@ -22,7 +22,6 @@ import VerifyContractForm from '../components/VerifyContractForm';
 // This is the main function, everything the 'return (' is using is in here somewhere. It is also what is being exported (very last line)  
 function Profile() {
   const [requestedContracts, setRequestedContracts] = useState([]);
-  const [show, setShow] = useState(false);
   const { data: session, status } = useSession();
   const router = useRouter();
   const [contracts, setContracts] = useState([]);
@@ -34,9 +33,12 @@ function Profile() {
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedContract, setSelectedContract] = useState(null);
   const [showViewForm, setShowViewForm] = useState(false);
-  const [showVerifyForm, setShowVerifyForm] = useState(false);
+  const [selectedViewContract, setSelectedViewContract] = useState(null);
   const [showReviewForm, setShowReviewForm] = useState(false);
-  const [deleteStatus, setDeleteStatus] = useState(null);
+  const [selectedReviewContract, setSelectedReviewContract] = useState(null);
+  const [showVerifyForm, setShowVerifyForm] = useState(false);
+  const [selectedVerifyContract, setSelectedVerifyContract] = useState(null);
+ 
  
   // Pagination code
   const requestedPagination = {
@@ -77,18 +79,9 @@ function Profile() {
     }
   };
 
-  // These are button actions for marking a form as deleted.  The form itself is stored here in Profile.js down in the return statements -
-  const handleShow = (setShowFunction) => {
-    setShowFunction(true);
-  };
-  
-  // These are button actions for submitting verification links.  This form is from ViewContractForm.js -
-  
-  // This button brings up the 'Verify Contract' form pop-up 
-  const handleVerifyClick = (contract) => {
-    console.log('clicked this contract to verify:',contract)
-    setSelectedContract(contract);
-    setShowVerifyForm(true);
+  const handleCloseReviewForm = () => {
+    setShowReviewForm(false);
+    setSelectedContract(null);
   };
 
    // This button closes the 'Verify Contract' form pop-up
@@ -96,67 +89,9 @@ function Profile() {
     setShowVerifyForm(false);
     setSelectedContract(null);
   };
-
-  // This button brings up the 'View Contract' form pop-up 
-  const handleViewClick = (contract) => {
-    console.log('clicked this contract to view:',contract)
-    setSelectedContract(contract);
-    console.log('Selected contract:', contract);
-    setShowViewForm(true);
-  };
-
-  // This button closes the 'View Contract' form pop-up
+  
   const handleCloseViewForm = () => {
     setShowViewForm(false);
-    setSelectedContract(null);
-  };
-    
- // This button sends an API call to updateContracts.js to write 'true' to the 'isDeleted' attribute in the db
- const handleDeleteClick = async () => {
-  if (!selectedContract) return;
-
-  // Show a confirmation dialog
-  const confirmation = window.confirm("Are you sure you want to delete this?");
-
-  if (confirmation) {
-    try {
-      const response = await axios.post('/api/updateContracts', {
-        id: selectedContract.id.S,
-        gameTitle: selectedContract.gameTitle.S,
-        isDeleted: true,
-      });
-
-      console.log('Delete contract response:', response.data);
-
-      if (response.data.status === 'success') {
-        setDeleteStatus('success');
-        console.log('Contract marked deleted');
-
-        // Close the modal and refresh the contracts data
-        handleCloseViewForm();
-        } else {
-        setDeleteStatus('error');
-
-        // Display a detailed error message
-        alert('Failed to delete contract. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error deleting contract:', error);
-      setDeleteStatus('error');
-
-      // Display a detailed error message
-      alert('Failed to delete contract. Please try again.');
-    }
-  }
-};
-  const handleReviewClick = (contract) => {
-    console.log('clicked this contract to review:',contract)
-    setShowReviewForm(true);
-    setSelectedContract(contract);
-  };
-
-  const handleCloseReviewForm = () => {
-    setShowReviewForm(false);
     setSelectedContract(null);
   };
 
@@ -225,6 +160,7 @@ function Profile() {
    function handlePaginationChange(newPagination) {
     setPagination(newPagination);
   };
+
 // This is the search bar function
   function handleSearch(event) {
     setSearchTerm(event.target.value);
@@ -281,20 +217,7 @@ const sortedContracts = sort.field
     <div className="bg-gray-900 min-h-screen text-white">
     <Navbar />
     <Container className="bg-gray-900">
-      {/*// This is the VIEW form pop-up for created contracts.  It's small enough to sit in here, but maybe it should be in a component.... */}
-      <Modal show={showViewForm} onHide={() => setShowViewForm(false)}>
-      <Modal.Header closeButton>
-        <Modal.Title>View Contract</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <ViewContractForm contract={selectedContract} />
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="danger" onClick={handleDeleteClick}>Delete</Button>
-        <Button variant="secondary" onClick={handleCloseViewForm}>Close</Button>
-      </Modal.Footer>
-      </Modal>
-      {/*// This is the VERIFY form pop-up for created contracts.  This is it's own component.... */}
+     {/*// This is the VERIFY form pop-up for created contracts.  This is it's own component.... */}
       <h1 className="text-3xl font-bold mb-8 text-center">Profile</h1>
       <div>
         <h3 className="text-center"> Manage Contracts</h3>
@@ -343,11 +266,23 @@ const sortedContracts = sort.field
               <td>{contract.expDate.S}</td>
               <td>
                 {contract.contractStatus.S === 'open' ? (
-                  <Button variant="primary" onClick={() => handleViewClick(contract)}>
+                  <Button
+                  onClick={() => {
+                    setSelectedViewContract(contract);
+                    setShowViewForm(true);
+                    console.log('clicked this contract to view:',contract)
+                  }}
+                >
                   View Contract
                 </Button>
                 ) : contract.contractStatus.S === 'verified' ? (
-                  <Button variant="primary" onClick={() => handleReviewClick(contract)}>
+                  <Button
+                    onClick={() => {
+                      setSelectedReviewContract(contract);
+                      setShowReviewForm(true);
+                      console.log('clicked this contract to review:',contract)
+                    }}
+                  >
                     Review Proof
                   </Button>
                 ) : null}
@@ -436,7 +371,13 @@ const sortedContracts = sort.field
               <td>{contract.contractConditions.S}</td>
               <td>{contract.expDate.S}</td>
               <td>
-              <Button variant="primary" onClick={() => handleVerifyClick(contract)}>
+              <Button
+                onClick={() => {
+                  setSelectedVerifyContract(contract);
+                  setShowVerifyForm(true);
+                  console.log('clicked this contract to submit proof',contract)
+                }}
+              >
                 Link your Proof
               </Button>
               </td>
@@ -497,15 +438,20 @@ const sortedContracts = sort.field
           show={showReviewForm}
           handleClose={handleCloseReviewForm}
           setShowReviewForm={setShowReviewForm}
-          selectedContract={selectedContract} 
-          setSelectedContract={setSelectedContract}
+          selectedContract={selectedReviewContract}
+          setSelectedContract={setSelectedReviewContract}
         />
         <VerifyContractForm
           show={showVerifyForm}
           handleClose={handleCloseVerifyForm}
           setShowForm={setShowVerifyForm}
-          selectedContract={selectedContract}
-          setSelectedContract={setSelectedContract}
+          selectedContract={selectedVerifyContract}
+          setSelectedContract={setSelectedVerifyContract}
+        />
+        <ViewContractForm
+          show={showViewForm}
+          handleClose={handleCloseViewForm}
+          selectedContract={selectedViewContract}
         />
     </div>
   );
