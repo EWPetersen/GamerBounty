@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 const ViewContractForm = ({ contract }) => {
   if (!contract) return null;

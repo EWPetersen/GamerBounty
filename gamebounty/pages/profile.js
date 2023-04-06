@@ -149,7 +149,6 @@ function Profile() {
     }
   }
 };
-
   const handleReviewProofClick = (contract) => {
     setSelectedContract(contract);
     setShowReviewForm(true);
@@ -361,7 +360,7 @@ const sortedContracts = sort.field
               <td>{contract.expDate.S}</td>
               <td>
                 {contract.contractStatus.S === 'open' ? (
-                  <Button variant="primary" onClick={() => handleShow(setShowViewForm)}>
+                  <Button variant="primary" onClick={() => handleViewContractClick(setShowViewForm)}>
                   View Contract
                 </Button>
                 ) : contract.contractStatus.S === 'verified' ? (
@@ -514,24 +513,21 @@ const sortedContracts = sort.field
         <VerifyContractForm
           show={showVerifyForm}
           handleClose={handleCloseVerifyForm}
-          setShow={setShow}
-          setShowVerifyForm={setShowVerifyForm}
+          setShowForm={setShowVerifyForm}
           selectedContract={selectedContract}
           setSelectedContract={setSelectedContract}
         />
         <ViewContractForm
           show={showViewForm}
           handleClose={handleCloseViewForm}
-          setShow={setShow}
-          setShowViewForm={setShowViewForm}
+          setShowForm={setShowViewForm}
           selectedContract={selectedContract}
           setSelectedContract={setSelectedContract}
         />
         <ReviewContractForm
         show={showReviewForm}
         handleClose={handleCloseReviewForm}
-        setShow={setShow}
-        setShowReviewForm={setShowReviewForm}
+        setShowForm={setShowReviewForm}
         selectedContract={selectedContract} 
         setSelectedContract={setSelectedContract}
       />
