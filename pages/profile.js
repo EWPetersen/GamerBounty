@@ -38,6 +38,8 @@ function Profile() {
   const [selectedVerifyContract, setSelectedVerifyContract] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [acceptedContracts, setAcceptedContracts] = useState([]);
+  const [createdSort, setCreatedSort] = useState({ field: '', order: 'asc' });
+  const [acceptedSort, setAcceptedSort] = useState({ field: '', order: 'asc' });
 
   const handleClose = () => {
     setShowModal(false);
@@ -142,20 +144,6 @@ const acceptedPagination = {
   pageSize: 10,
 };
 
-
-
-// Theres a crapload of code for pagination, I don't know why
-const paginatedRequestedContracts = requestedContracts.slice(
-  (requestedPagination.current - 1) * requestedPagination.pageSize,
-  requestedPagination.current * requestedPagination.pageSize
-);
-
-// More pagination code.
-const paginatedAcceptedContracts = acceptedContracts.slice(
-  (acceptedPagination.current - 1) * acceptedPagination.pageSize,
-  acceptedPagination.current * acceptedPagination.pageSize
-); 
-
 // I'm not sure what this does
    function handlePaginationChange(newPagination) {
     setPagination(newPagination);
@@ -165,44 +153,87 @@ const paginatedAcceptedContracts = acceptedContracts.slice(
   function handleSearch(event) {
     setSearchTerm(event.target.value);
   };
-// This handles the sorting for the tables
-  function handleSort(field) {
-    if (sort.field === field) {
-      setSort({ ...sort, order: sort.order === 'asc' ? 'desc' : 'asc' });
-    } else {
-      setSort({ field, order: 'asc' });
-    }
+
+  const handleCreatedSort = (field) => {
+    setCreatedSort({
+      field,
+      order: createdSort.field === field && createdSort.order === 'asc' ? 'desc' : 'asc',
+    });
   };
+  
+  const handleAcceptedSort = (field) => {
+    setAcceptedSort({
+      field,
+      order: acceptedSort.field === field && acceptedSort.order === 'asc' ? 'desc' : 'asc',
+    });
+  };
+
+  // For requested contracts:
+const filteredRequestedContracts = requestedContracts.filter((contract) =>
+contract &&
+contract.gameTitle.S.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
+const sortedRequestedContracts = createdSort.field
+  ? filteredRequestedContracts.sort((a, b) => {
+      if (createdSort.field === 'bidAmount') {
+        const fieldA = parseFloat(a[createdSort.field].N);
+        const fieldB = parseFloat(b[createdSort.field].N);
+        return createdSort.order === 'asc' ? fieldA - fieldB : fieldB - fieldA;
+      } else {
+        const fieldA = a[createdSort.field].S.toLowerCase();
+        const fieldB = b[createdSort.field].S.toLowerCase();
+        if (fieldA < fieldB) {
+          return createdSort.order === 'asc' ? -1 : 1;
+        }
+        if (fieldA > fieldB) {
+          return createdSort.order === 'asc' ? 1 : -1;
+        }
+        return 0;
+      }
+    })
+  : filteredRequestedContracts;
+
+const paginatedRequestedContracts = sortedRequestedContracts.slice(
+(requestedPagination.current - 1) * requestedPagination.pageSize,
+requestedPagination.current * requestedPagination.pageSize
+);
+
+// For accepted contracts:
+const filteredAcceptedContracts = acceptedContracts.filter((contract) =>
+contract &&
+contract.gameTitle.S.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
+const sortedAcceptedContracts = acceptedSort.field
+  ? filteredAcceptedContracts.sort((a, b) => {
+      if (acceptedSort.field === 'bidAmount') {
+        const fieldA = parseFloat(a[acceptedSort.field].N);
+        const fieldB = parseFloat(b[acceptedSort.field].N);
+        return acceptedSort.order === 'asc' ? fieldA - fieldB : fieldB - fieldA;
+      } else {
+        const fieldA = a[acceptedSort.field].S.toLowerCase();
+        const fieldB = b[acceptedSort.field].S.toLowerCase();
+        if (fieldA < fieldB) {
+          return acceptedSort.order === 'asc' ? -1 : 1;
+        }
+        if (fieldA > fieldB) {
+          return acceptedSort.order === 'asc' ? 1 : -1;
+        }
+        return 0;
+      }
+    })
+  : filteredAcceptedContracts;
+
+const paginatedAcceptedContracts = sortedAcceptedContracts.slice(
+(acceptedPagination.current - 1) * acceptedPagination.pageSize,
+acceptedPagination.current * acceptedPagination.pageSize
+);
  
 const filteredContracts = contracts.filter((contract) =>
   contract &&
   contract.gameTitle.S.toLowerCase().includes(searchTerm.toLowerCase())
 );
-
-// I have no idea what voodoo is going on here, but it has to do with allowing the fields to be sorted by alphabet or number (from the bid field)
-const sortedContracts = sort.field
-? filteredContracts.sort((a, b) => {
-    if (sort.field === 'bidAmount') {
-      const fieldA = parseFloat(a[sort.field].N);
-      const fieldB = parseFloat(b[sort.field].N);
-      return sort.order === 'asc' ? fieldA - fieldB : fieldB - fieldA;
-    } else {
-      const fieldA = a[sort.field].S.toLowerCase();
-      const fieldB = b[sort.field].S.toLowerCase();
-      if (fieldA < fieldB) {
-        return sort.order === 'asc' ? -1 : 1;
-      }
-      if (fieldA > fieldB) {
-        return sort.order === 'asc' ? 1 : -1;
-      }
-      return 0;
-    }
-  })
-: filteredContracts;
-  const paginatedContracts = sortedContracts.slice(
-    (pagination.current - 1) * pagination.pageSize,
-    pagination.current * pagination.pageSize
-  );
 
   // This tells the page to display the bidAmount as USD on the page.  It doesnt seem like it does anything though...
   function formatCurrency(amount) {
@@ -245,11 +276,11 @@ const sortedContracts = sort.field
       <Table data={requestedContracts} responsive bordered hover variant="dark">
         <thead>
           <tr>
-          <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-            <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-            <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Current Bid {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleCreatedSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleCreatedSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleCreatedSort('bidAmount')}>Current Bid {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             <th>Action</th>
-            <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleCreatedSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
           </tr>
         </thead>
         <tbody>
@@ -347,11 +378,11 @@ const sortedContracts = sort.field
       <Table data={acceptedContracts} responsive bordered hover variant="dark">
         <thead>
           <tr>
-            <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-            <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-            <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Current Bid {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleAcceptedSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleAcceptedSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleAcceptedSort('bidAmount')}>Current Bid {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             <th>Action</th>
-            <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleAcceptedSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             </tr>
         </thead>
         <tbody>
