@@ -1,6 +1,7 @@
 // components/Navbar.js
 import React from "react";
 import Link from "next/link";
+import { Modal, Form, Button, Alert } from 'react-bootstrap';
 import { useSession, signIn, signOut } from "next-auth/react";
 
 const NavbarLink = ({ href, children, extraClasses, onClick }) => (
@@ -31,10 +32,17 @@ const Navbar = () => {
     <nav className="bg-gray-800 text-white py-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex space-x-4">
+
+        
           <NavbarLink href="/">Main</NavbarLink>
           {session && (
             <>
-              <NavbarLink href="/dashboard">Dashboard</NavbarLink>
+            
+            <Button variant="primary"
+              onClick={() => setShowCreateForm(true)}
+            >
+              Create Contract
+            </Button>
               <NavbarLink href="/contracts">Contracts</NavbarLink>
               <NavbarLink href="/profile">Profile</NavbarLink>
               <NavbarLink
@@ -45,6 +53,7 @@ const Navbar = () => {
                 Sign Out
               </NavbarLink>
             </>
+            
           )}
           {!session && (
             <NavbarLink

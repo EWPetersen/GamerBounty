@@ -8,7 +8,7 @@ import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from '../components/Navbar';
 
-import CreateContractForm from '../components/CreateContractForm';
+
 import AcceptContractForm from '../components/AcceptContractForm';
 
 function GetContracts() {
@@ -25,8 +25,7 @@ function GetContracts() {
   const [errorMessage, setErrorMessage] = useState('');
   const [showAcceptForm, setShowAcceptForm] = useState(false);
   const [selectedAcceptContract, setSelectedAcceptContract] = useState(null);
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [selectedCreateContract, setSelectedCreateContract] = useState(null);
+ 
 
 
   useEffect(() => {
@@ -58,7 +57,7 @@ function GetContracts() {
       </div>
     );
   };
-// This tells the user to sign in, and displays a sign in button if there session doesn't exist
+  // This tells the user to sign in, and displays a sign in button if there session doesn't exist
   if (!session) {
     return (
       <div className="bg-gray-900 min-h-screen text-white text-center">
@@ -73,19 +72,13 @@ function GetContracts() {
       </div>
     );
   };
-  function handleCreateContract(newContract) {
-    console.log("New contract created:", newContract);
-  }
 
-  const handleCloseAcceptForm = () => {
+  function handleCloseAcceptForm() {
     setShowAcceptForm(false);
     setSelectedContract(null);
-  };
+  }
 
-  const handleCloseCreateForm = () => {
-    setShowCreateForm(false);
-    setSelectedContract(null);
-  };
+
 
   function handleSearch(event) {
     setSearchTerm(event.target.value);
@@ -102,6 +95,7 @@ function GetContracts() {
       setSort({ field, order: 'asc' });
     }
   }
+
 
   const filteredContracts = contracts.filter((contract) =>
   contract &&
@@ -232,26 +226,10 @@ const sortedContracts = sort.field
           selectedContract={selectedAcceptContract}
           setSelectedContract={setSelectedAcceptContract}
         />
-         <CreateContractForm 
-          show={showCreateForm}
-          handleClose={handleCloseCreateForm}
-          setShowForm={setShowCreateForm}
-        />
+        
         </div>
-        <Form.Group>
-        <Button variant="primary"
-              onClick={() => setShowCreateForm(true)}
-            >
-              Create Contract
-            </Button>
-          </Form.Group>
        </Container>
-       <CreateContractForm
-        show={showCreateForm}
-        handleClose={handleCloseCreateForm}
-        handleCreate={handleCreateContract}
-        setShowCreateForm={setShowCreateForm}
-      />
+       
        <style global jsx>{`
             .modal-content,
             .form-control {
@@ -277,6 +255,6 @@ const sortedContracts = sort.field
           `}</style>
       </div>
   );
-}
+          }
 
 export default GetContracts;
