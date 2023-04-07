@@ -7,7 +7,8 @@ const RejectContractForm = ({
   handleClose,
   selectedContract,
 }) => {
-  const [rejectReason, setRejectReason] = useState('');
+
+const [rejectReason, setRejectReason] = useState('');
 
   const handleRejectClick = async () => {
     if (rejectReason.trim()) {

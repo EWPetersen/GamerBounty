@@ -6,7 +6,7 @@ const dynamodbClient = new DynamoDBClient({ region: 'us-west-2' });
 
 
 export default async function updateContracts(req, res) {
-  const { id, gameTitle, acceptedBy, verifyLink, verifyNotes, contractStatus, isDeleted } = req.body;
+  const { id, gameTitle, acceptedBy, verifyLink, verifyNotes, contractStatus, isDeleted, rejectReason } = req.body;
   console.log('This is the request body:',req.body);
 
   function buildUpdateExpression(data) {
@@ -75,7 +75,7 @@ export default async function updateContracts(req, res) {
   
   console.log('Id and gameTitle are present:', id, gameTitle);
 
-console.log('Variable data - ','acceptedBy:',acceptedBy,'verifyLink:',verifyLink,'verifyNotes:',verifyNotes,'contractStatus:',contractStatus,'isDeleted:',isDeleted);
+console.log('Variable data - ','acceptedBy:',acceptedBy,'verifyLink:',verifyLink,'verifyNotes:',verifyNotes,'contractStatus:',contractStatus,'isDeleted:',isDeleted,'rejectReason:',rejectReason );
 
 
 console.log('these are the params from UpdateItemCommand:', {
