@@ -119,8 +119,7 @@ function CreateContractForm({ show, handleClose }) {
                 value={bidAmount}
                 onChange={(event) => setBidAmount(event.target.value)}
               />
-            </Form.Group>
-                      
+            </Form.Group>    
           </Form>
         </Modal.Body>
         <Modal.Footer>

@@ -166,7 +166,6 @@ const sortedContracts = sort.field
               onChange={handleSearch}
             />
           </Form.Group>
-          
         </Form>
         <Table responsive bordered hover variant="dark">
           <thead>
@@ -175,7 +174,7 @@ const sortedContracts = sort.field
               <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th>Action</th>
-              <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th> 
+              <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             </tr>
           </thead>
           <tbody>

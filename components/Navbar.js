@@ -3,9 +3,10 @@ import React from "react";
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
 
-const NavbarLink = ({ href, children, extraClasses }) => (
+const NavbarLink = ({ href, children, extraClasses, onClick }) => (
   <Link href={href}>
     <span
+      onClick={onClick}
       className={`cursor-pointer hover:text-blue-400 px-4 py-2 rounded-md ${extraClasses}`}
     >
       {children}
@@ -16,11 +17,13 @@ const NavbarLink = ({ href, children, extraClasses }) => (
 const Navbar = () => {
   const { data: session } = useSession();
 
-  const handleSignIn = () => {
+  const handleSignIn = (e) => {
+    e.preventDefault();
     signIn("google");
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = (e) => {
+    e.preventDefault();
     signOut();
   };
 
@@ -35,7 +38,7 @@ const Navbar = () => {
               <NavbarLink href="/contracts">Contracts</NavbarLink>
               <NavbarLink href="/profile">Profile</NavbarLink>
               <NavbarLink
-                href="#"
+                href="/"
                 onClick={handleSignOut}
                 extraClasses="text-red-500 hover:text-red-700"
               >
@@ -45,7 +48,7 @@ const Navbar = () => {
           )}
           {!session && (
             <NavbarLink
-              href="#"
+              href="/"
               onClick={handleSignIn}
               extraClasses=""
             >
