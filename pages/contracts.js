@@ -73,24 +73,6 @@ function GetContracts() {
       </div>
     );
   };
-
-
-   function handlePaginationChange(newPagination) {
-    setPagination(newPagination);
-  }
-
-  function handleSearch(event) {
-    setSearchTerm(event.target.value);
-  }
-
-  function handleSort(field) {
-    if (sort.field === field) {
-      setSort({ ...sort, order: sort.order === 'asc' ? 'desc' : 'asc' });
-    } else {
-      setSort({ field, order: 'asc' });
-    }
-  }
-
   function handleCreateContract(newContract) {
     console.log("New contract created:", newContract);
   }
@@ -105,6 +87,22 @@ function GetContracts() {
     setSelectedContract(null);
   };
 
+  function handleSearch(event) {
+    setSearchTerm(event.target.value);
+  }
+
+   function handlePaginationChange(newPagination) {
+    setPagination(newPagination);
+  }
+
+  function handleSort(field) {
+    if (sort.field === field) {
+      setSort({ ...sort, order: sort.order === 'asc' ? 'desc' : 'asc' });
+    } else {
+      setSort({ field, order: 'asc' });
+    }
+  }
+
   const filteredContracts = contracts.filter((contract) =>
   contract &&
   contract.gameTitle.S.toLowerCase().includes(searchTerm.toLowerCase())
@@ -114,8 +112,8 @@ function GetContracts() {
 const sortedContracts = sort.field
 ? filteredContracts.sort((a, b) => {
     if (sort.field === 'bidAmount') {
-      const fieldA = parseFloat(a[sort.field].S);
-      const fieldB = parseFloat(b[sort.field].S);
+      const fieldA = parseFloat(a[sort.field].N);
+      const fieldB = parseFloat(b[sort.field].N);
       return sort.order === 'asc' ? fieldA - fieldB : fieldB - fieldA;
     } else {
       const fieldA = a[sort.field].S.toLowerCase();
