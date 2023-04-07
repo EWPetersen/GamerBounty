@@ -8,7 +8,6 @@ import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from '../components/Navbar';
 
-
 import AcceptContractForm from '../components/AcceptContractForm';
 
 function GetContracts() {
@@ -20,12 +19,11 @@ function GetContracts() {
   const [sort, setSort] = useState({ field: '', order: '' });
   const [show, setShow] = useState(false);
   const [selectedContract, setSelectedContract] = useState(null);
-  const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [showAcceptForm, setShowAcceptForm] = useState(false);
   const [selectedAcceptContract, setSelectedAcceptContract] = useState(null);
- 
+
 
 
   useEffect(() => {
@@ -57,7 +55,7 @@ function GetContracts() {
       </div>
     );
   };
-  // This tells the user to sign in, and displays a sign in button if there session doesn't exist
+// This tells the user to sign in, and displays a sign in button if there session doesn't exist
   if (!session) {
     return (
       <div className="bg-gray-900 min-h-screen text-white text-center">
@@ -72,13 +70,11 @@ function GetContracts() {
       </div>
     );
   };
-
-  function handleCloseAcceptForm() {
+  
+  const handleCloseAcceptForm = () => {
     setShowAcceptForm(false);
     setSelectedContract(null);
-  }
-
-
+  };
 
   function handleSearch(event) {
     setSearchTerm(event.target.value);
@@ -95,7 +91,6 @@ function GetContracts() {
       setSort({ field, order: 'asc' });
     }
   }
-
 
   const filteredContracts = contracts.filter((contract) =>
   contract &&
@@ -226,10 +221,8 @@ const sortedContracts = sort.field
           selectedContract={selectedAcceptContract}
           setSelectedContract={setSelectedAcceptContract}
         />
-        
         </div>
        </Container>
-       
        <style global jsx>{`
             .modal-content,
             .form-control {
@@ -255,6 +248,6 @@ const sortedContracts = sort.field
           `}</style>
       </div>
   );
-          }
+}
 
 export default GetContracts;
