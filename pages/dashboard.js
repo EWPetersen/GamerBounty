@@ -102,13 +102,30 @@ function ClosedContracts() {
     return new Intl.DateTimeFormat('en-US').format(date);
   }
   
-  function getYoutubeEmbedUrl(url) {
-    const regex = /(?:https?:\/\/)?(?:www\.)?youtu(?:\.be\/|be\.com\/watch\?v=)([\w-]{11})/;
-    const match = url.match(regex);
+   function getEmbedUrl(url) {
+    // Use regex to extract YouTube video ID from the given URL
+    const videoIdRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?/;
+    const match = url.match(videoIdRegex);
+  
+    // Extract the timestamp parameter from the URL
+    const timestampRegex = /[?&]t=(\d+)/;
+    const timestampMatch = url.match(timestampRegex);
+    const timestamp = timestampMatch ? timestampMatch[1] : null;
+  
     if (match && match[1]) {
-      return `https://www.youtube.com/embed/${match[1]}`;
+      // If the video ID is found, return the embed URL
+      let embedUrl = 'https://www.youtube.com/embed/' + match[1];
+  
+      // Append the timestamp parameter if it exists
+      if (timestamp) {
+        embedUrl += '?start=' + timestamp;
+      }
+  
+      return embedUrl;
+    } else {
+      // If the video ID is not found, return the original URL (or an empty string if it's not a valid URL)
+      return url ? url : '';
     }
-    return null;
   }
 
   return (
@@ -183,7 +200,7 @@ function ClosedContracts() {
                       <iframe
                         width="100%"
                         height="100"
-                        src={getYoutubeEmbedUrl(contract.verifyLink.S)}
+                        src={getEmbedUrl(contract.verifyLink.S)}
                         title="YouTube video player"
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

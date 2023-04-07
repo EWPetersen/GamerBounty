@@ -25,18 +25,32 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
     }
   };
 
-  const getEmbedUrl = (url) => {
-    if (!url) return "";
-    
-    const urlParts = url.split("/");
-    if (urlParts.length < 4) return "";
-
-    const videoId = url.split('youtu.be/')[1].split('?')[0];
-    const startTime = url.split('t=')[1];
-    const embedUrl = `https://www.youtube.com/embed/${videoId}${startTime ? `?start=${startTime}` : ''}`;
-
-    return embedUrl;
-  };
+  function getEmbedUrl(url) {
+    // Use regex to extract YouTube video ID from the given URL
+    const videoIdRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?/;
+    const match = url.match(videoIdRegex);
+  
+    // Extract the timestamp parameter from the URL
+    const timestampRegex = /[?&]t=(\d+)/;
+    const timestampMatch = url.match(timestampRegex);
+    const timestamp = timestampMatch ? timestampMatch[1] : null;
+  
+    if (match && match[1]) {
+      // If the video ID is found, return the embed URL
+      let embedUrl = 'https://www.youtube.com/embed/' + match[1];
+  
+      // Append the timestamp parameter if it exists
+      if (timestamp) {
+        embedUrl += '?start=' + timestamp;
+      }
+  
+      return embedUrl;
+    } else {
+      // If the video ID is not found, return the original URL (or an empty string if it's not a valid URL)
+      return url ? url : '';
+    }
+  }
+  
 
   const [showRejectForm, setShowRejectForm] = useState(false);
 
