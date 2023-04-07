@@ -188,7 +188,6 @@ function Main() {
               <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark{sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Contract Conditions{sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-
             </tr>
           </thead>
           <tbody>
