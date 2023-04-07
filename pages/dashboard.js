@@ -183,37 +183,35 @@ function ClosedContracts() {
         <Table responsive bordered hover variant="dark">
           <thead>
             <tr>
-              <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('verifyLink')}>Proof of Hit{sort.field === 'verifyLink' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark{sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Contract Conditions{sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              
+              <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Contract Conditions{sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+
             </tr>
           </thead>
           <tbody>
             {paginatedContracts.map((contract) => (
               <tr key={contract.id.S}>
-                <td>{contract.gameTitle.S}</td>
                 <td>
-                    {contract.verifyLink && (
-                      <iframe
-                        width="100%"
-                        height="100"
-                        src={getEmbedUrl(contract.verifyLink.S)}
-                        title="YouTube video player"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      ></iframe>
-                    )}
-                  </td>
+                  {contract.verifyLink && (
+                    <iframe
+                      width="100%"
+                      height="100"
+                      src={getEmbedUrl(contract.verifyLink.S)}
+                      title="YouTube video player"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  )}
+                </td>
+                <td>{contract.gameTitle.S}</td>
+
                 <td>{contract.targetPlayer.S}</td>
-                <td>{contract.contractConditions.S}</td>
                 <td>{formatCurrency(contract.bidAmount.N)}</td>
-                {/*<td>
-                <Button variant="info" onClick={() => handleViewContract(contract)}>View Contract</Button>
-                </td>*/}
+                <td>{contract.contractConditions.S}</td>
               </tr>
             ))}
           </tbody>
