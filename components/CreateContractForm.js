@@ -19,6 +19,19 @@ function CreateContractForm({ show, handleClose }) {
   if (!show) {
     return null;
   }
+  
+  if (status === "loading") return null; // Do not render anything while the session is loading
+  if (!session) {
+    return (
+      <Alert variant="danger">
+        You must be signed in to create a contract.
+      </Alert>
+    );
+  }
+
+  if (!show) {
+    return null;
+  }
 
   async function handleCreate(contract) {
     try {

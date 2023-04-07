@@ -47,17 +47,11 @@ const Navbar = () => {
     <nav className="bg-gray-800 text-white py-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex space-x-4">
-          
-        {session && (
-            <>
             <Button variant="primary"
               onClick={() => setShowCreateForm(true)}
             >
               Create Contract
             </Button>
-            </>
-            )}
-            
           <NavbarLink href="/">Main</NavbarLink>
           {session && (
             <>
