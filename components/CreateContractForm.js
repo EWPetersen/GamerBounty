@@ -112,7 +112,7 @@ function CreateContractForm({ show, handleClose }) {
               />
             </Form.Group>
             <Form.Group controlId="bidAmount">
-              <Form.Label>Bid Amount</Form.Label>
+              <Form.Label>Opening Bid</Form.Label>
               <Form.Control
                 type="number"
                 placeholder="Enter bid amount"
