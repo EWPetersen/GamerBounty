@@ -47,17 +47,20 @@ const Navbar = () => {
     <nav className="bg-gray-800 text-white py-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex space-x-4">
-
-        
-          <NavbarLink href="/">Main</NavbarLink>
-          {session && (
+          
+        {session && (
             <>
-            
             <Button variant="primary"
               onClick={() => setShowCreateForm(true)}
             >
               Create Contract
             </Button>
+            </>
+            )}
+            
+          <NavbarLink href="/">Main</NavbarLink>
+          {session && (
+            <>
               <NavbarLink href="/contracts">Contracts</NavbarLink>
               <NavbarLink href="/profile">Profile</NavbarLink>
               <NavbarLink
@@ -68,7 +71,6 @@ const Navbar = () => {
                 Sign Out
               </NavbarLink>
             </>
-            
           )}
           {!session && (
             <NavbarLink
@@ -80,12 +82,12 @@ const Navbar = () => {
             </NavbarLink>
           )}
            <CreateContractForm
-        show={showCreateForm}
-        handleClose={handleCloseCreateForm}
-        handleCreate={handleCreateContract}
-        setShowCreateForm={setShowCreateForm}
-      />
-       <style global jsx>{`
+            show={showCreateForm}
+            handleClose={handleCloseCreateForm}
+            handleCreate={handleCreateContract}
+            setShowCreateForm={setShowCreateForm}
+          />
+          <style global jsx>{`
             .modal-content,
             .form-control {
               background-color: #1f2937;
