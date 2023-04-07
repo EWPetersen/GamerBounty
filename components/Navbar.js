@@ -34,21 +34,23 @@ const Navbar = () => {
               <NavbarLink href="/dashboard">Dashboard</NavbarLink>
               <NavbarLink href="/contracts">Contracts</NavbarLink>
               <NavbarLink href="/profile">Profile</NavbarLink>
-              <span
+              <NavbarLink
+                href="#"
                 onClick={handleSignOut}
-                className="cursor-pointer hover:text-blue-400 px-4 py-2 rounded-md text-red-500 hover:text-red-700"
+                extraClasses="text-red-500 hover:text-red-700"
               >
                 Sign Out
-              </span>
+              </NavbarLink>
             </>
           )}
           {!session && (
-            <span
+            <NavbarLink
+              href="#"
               onClick={handleSignIn}
-              className="cursor-pointer hover:text-blue-400 px-4 py-2 rounded-md"
+              extraClasses=""
             >
               Sign In
-            </span>
+            </NavbarLink>
           )}
         </div>
       </div>
