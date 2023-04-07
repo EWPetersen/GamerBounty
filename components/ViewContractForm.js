@@ -50,34 +50,32 @@ const ViewContractForm = ({ show, handleClose, selectedContract }) => {
         <Modal.Title>Contract Details</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-          <h4>Clicking the Delete button will remove the below contract from your profile and refund all bids. Are you sure?</h4>
-          </Modal.Body>
-      <Modal.Body>
           <Form>
               <Form.Group controlId="gameTitle">
               <Form.Label>Game</Form.Label>
-              <p>{selectedContract?.gameTitle.S}</p>
+              <h6>{selectedContract?.gameTitle.S}</h6>
             </Form.Group>
             <Form.Group controlId="targetPlayer">
               <Form.Label>Target Player</Form.Label>
-              <p>{selectedContract?.targetPlayer.S}</p>
+              <h6>{selectedContract?.targetPlayer.S}</h6>
             </Form.Group>
             <Form.Group controlId="expDate">
               <Form.Label>Expiriation Date</Form.Label>
-              <p>{selectedContract?.expDate.S}</p>
+              <h6>{selectedContract?.expDate.S}</h6>
             </Form.Group>
             <Form.Group controlId="contractConditions">
               <Form.Label>Conditions</Form.Label>
-              <p>{selectedContract?.contractConditions.S}</p>
+              <h6>{selectedContract?.contractConditions.S}</h6>
             </Form.Group>
             <Form.Group controlId="bidAmount">
               <Form.Label>Bid Amount</Form.Label>
-              <p>{selectedContract?.bidAmount.N}</p>
+              <h6>{selectedContract?.bidAmount.N}</h6>
             </Form.Group>
             </Form>
           </Modal.Body>
           
       <Modal.Footer>
+      <h6>Clicking the Delete button will remove the below contract from your profile and refund all bids. Are you sure?</h6>
       <Button variant="danger" onClick={() => handleDeleteClick(selectedContract, handleClose)}>Delete</Button>
       <Button variant="secondary" onClick={handleClose}>Close</Button>
       </Modal.Footer>

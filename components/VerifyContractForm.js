@@ -50,8 +50,7 @@ function VerifyContractForm({ show, handleClose, selectedContract }) {
         </Modal.Header>
         <div className="bg-gray-900">
         <Modal.Body>
-          <h4>Upload your clip to youtube. Make sure you are following the contract conditions!</h4> 
-          <h6>The length must be less than 60 seconds, and the upload date must be after the contract creation date.</h6>
+          <h6>Upload your clip to youtube. Make sure you are following the contract conditions!</h6> 
           </Modal.Body>
           <Modal.Body>
             {submitStatus === 'success' && (
@@ -63,19 +62,19 @@ function VerifyContractForm({ show, handleClose, selectedContract }) {
             <Form onSubmit={handleFormSubmit}>
             <Form.Group controlId="gameTitle">
               <Form.Label>Game</Form.Label>
-              <p>{selectedContract?.gameTitle.S}</p>
+              <h6>{selectedContract?.gameTitle.S}</h6>
             </Form.Group>
             <Form.Group controlId="targetPlayer">
               <Form.Label>Target Player</Form.Label>
-              <p>{selectedContract?.targetPlayer.S}</p>
+              <h6>{selectedContract?.targetPlayer.S}</h6>
             </Form.Group>
             <Form.Group controlId="contractConditions">
               <Form.Label>Conditions</Form.Label>
-              <p>{selectedContract?.contractConditions.S}</p>
+              <h6>{selectedContract?.contractConditions.S}</h6>
             </Form.Group>
             <Form.Group controlId="bidAmount">
               <Form.Label>Bid Amount</Form.Label>
-              <p>{selectedContract?.bidAmount.N}</p>
+              <h6>{selectedContract?.bidAmount.N}</h6>
             </Form.Group>
             <Form.Group controlId="verifyLink">
               <Form.Label>Proof Link</Form.Label>
@@ -100,6 +99,7 @@ function VerifyContractForm({ show, handleClose, selectedContract }) {
           </Modal.Body>
         </div>
         <Modal.Footer>
+        <h6>The length must be less than 60 seconds, and the upload date must be after the contract creation date.</h6>
         <Button variant="success" onClick={submitVerification}>
           Verify
         </Button>

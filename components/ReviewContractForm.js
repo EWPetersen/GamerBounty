@@ -56,26 +56,25 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
       {selectedContract ? (
         <>
         <Modal.Body>
-          <h4>Review the video in the player.  Does it satisfy the contract?</h4> 
-          <h6>Click approve to approve bids and pay the contractor.  Click reject to close and cancel the contract without pay.</h6>
+          <h6>Review the video in the player.  Does it satisfy the contract?</h6> 
           </Modal.Body>
         <Modal.Body>
           <Form>
               <Form.Group controlId="gameTitle">
               <Form.Label>Game</Form.Label>
-              <p>{selectedContract?.gameTitle.S}</p>
+              <h6>{selectedContract?.gameTitle.S}</h6>
             </Form.Group>
             <Form.Group controlId="targetPlayer">
               <Form.Label>Target Player</Form.Label>
-              <p>{selectedContract?.targetPlayer.S}</p>
+              <h6>{selectedContract?.targetPlayer.S}</h6>
             </Form.Group>
              <Form.Group controlId="contractConditions">
               <Form.Label>Conditions</Form.Label>
-              <p>{selectedContract?.contractConditions.S}</p>
+              <h6>{selectedContract?.contractConditions.S}</h6>
             </Form.Group>
             <Form.Group controlId="bidAmount">
               <Form.Label>Bid Amount</Form.Label>
-              <p>{selectedContract?.bidAmount.N}</p>
+              <h6>{selectedContract?.bidAmount.N}</h6>
             </Form.Group>
             <Form.Group controlId="verifyLink">
               <Form.Label>Proof Link </Form.Label>
@@ -95,6 +94,7 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
             </Form>
           </Modal.Body>
            <Modal.Footer>
+           <h6>Click approve to approve bids and pay the contractor.  Click reject to close and cancel the contract without pay.</h6>
           <Button variant="success" onClick={handleApproveClick}>
             Approve
           </Button>
