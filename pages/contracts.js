@@ -171,9 +171,8 @@ const sortedContracts = sort.field
               <tr key={contract.id.S}>
                 <td>{contract.gameTitle.S}</td>
                 <td>{contract.targetPlayer.S}</td>
-                <td> {formatCurrency(contract.bidAmount.N)}</td> {/* Changed this line */}
-                <td>
-                <Button variant="success"
+                <td>{formatCurrency(contract.bidAmount.N)}</td>
+                <td><Button variant="success"
                   onClick={() => {
                     setSelectedAcceptContract(contract);
                     setShowAcceptForm(true);
@@ -181,8 +180,7 @@ const sortedContracts = sort.field
                   }}
                 >
                   Accept Contract
-                </Button>
-                </td>
+                </Button></td>
                 <td>{contract.expDate.S}</td>
               </tr>
             ))}
