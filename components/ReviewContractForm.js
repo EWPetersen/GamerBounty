@@ -5,6 +5,7 @@ import RejectContractForm from './RejectContractForm';
 
 const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
   const [message, setMessage] = useState('');
+  const [submitStatus, setSubmitStatus] = useState(null);
 
   const handleApproveClick = async () => {
     if (window.confirm('Are you sure you want to approve this contract?')) {
@@ -14,13 +15,15 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
           gameTitle: selectedContract?.gameTitle.S,
           contractStatus: 'closed',
         });
-  
-        setMessage('Contract status updated successfully.');
+        setLoading(false);
+        setSubmitStatus('success');
         setTimeout(() => {
-          handleClose();
+          handleClose(); // Close the form after a short delay
         }, 2000);
       } catch (error) {
-        setMessage(`Error updating contract status: ${error.message}`);
+        setLoading(false);
+        setSubmitStatus('failure');
+        console.error('Error updating contract', error);
       }
     }
   };
@@ -70,6 +73,12 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
       {selectedContract ? (
         <>
         <Modal.Body>
+        {submitStatus === 'success' && (
+              <Alert variant="success">Contract successfully verified!</Alert>
+            )}
+            {submitStatus === 'failure' && (
+              <Alert variant="danger">Failed to verify contract. Please try again.</Alert>
+            )}
           <h6>Review the video in the player.  Does it satisfy the contract?</h6> 
           </Modal.Body>
         <Modal.Body>

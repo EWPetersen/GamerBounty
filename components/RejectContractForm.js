@@ -9,6 +9,7 @@ const RejectContractForm = ({
 }) => {
 
 const [rejectReason, setRejectReason] = useState('');
+const [submitStatus, setSubmitStatus] = useState(null);
 
   const handleRejectClick = async () => {
     if (rejectReason.trim()) {
@@ -19,10 +20,15 @@ const [rejectReason, setRejectReason] = useState('');
           contractStatus: 'rejected',
           rejectReason,
         });
-
-        handleClose();
+        setLoading(false);
+        setSubmitStatus('success');
+        setTimeout(() => {
+          handleClose(); // Close the form after a short delay
+        }, 2000);
       } catch (error) {
-        console.error(`Error updating contract status: ${error.message}`);
+        setLoading(false);
+        setSubmitStatus('failure');
+        console.error('Error updating contract', error);
       }
     } else {
       alert('Please provide a reason for rejecting the contract.');
@@ -35,6 +41,12 @@ const [rejectReason, setRejectReason] = useState('');
         <Modal.Title>Reject Contract</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+      {submitStatus === 'success' && (
+              <Alert variant="success">Contract successfully verified!</Alert>
+            )}
+            {submitStatus === 'failure' && (
+              <Alert variant="danger">Failed to verify contract. Please try again.</Alert>
+            )}
           <h4>Enter a rejection reason to proceed.</h4> 
           <h6>Rejecting this contract cancels the contract and refunds all bids.  Are you sure?</h6>
           </Modal.Body>
