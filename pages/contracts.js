@@ -176,7 +176,6 @@ const sortedContracts = sort.field
               <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Conditions {sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -186,7 +185,6 @@ const sortedContracts = sort.field
                 <td>{contract.gameTitle.S}</td>
                 <td>{contract.targetPlayer.S}</td>
                 <td> {formatCurrency(contract.bidAmount.N)}</td> {/* Changed this line */}
-                <td>{contract.contractConditions.S}</td>
                 <td>
                 <Button variant="success"
                   onClick={() => {

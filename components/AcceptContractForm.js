@@ -81,7 +81,7 @@ function AcceptContractForm({ show, handleClose, selectedContract }) {
         </div>
         <Modal.Footer>
         <Button variant="success" onClick={submitAccept}>
-            Approve
+            Accept
           </Button>
           <Button variant="secondary" onClick={handleClose}>
             Close
