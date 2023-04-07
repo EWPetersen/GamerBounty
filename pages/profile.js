@@ -37,6 +37,7 @@ function Profile() {
   const [showVerifyForm, setShowVerifyForm] = useState(false);
   const [selectedVerifyContract, setSelectedVerifyContract] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [acceptedContracts, setAcceptedContracts] = useState([]);
 
   const handleClose = () => {
     setShowModal(false);
@@ -139,7 +140,9 @@ const requestedPagination = {
 const acceptedPagination = {
   current: 1,
   pageSize: 10,
-};const [acceptedContracts, setAcceptedContracts] = useState([]);
+};
+
+
 
 // Theres a crapload of code for pagination, I don't know why
 const paginatedRequestedContracts = requestedContracts.slice(
