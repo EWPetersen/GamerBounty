@@ -80,22 +80,22 @@ function Profile() {
           console.log('Contracts data:', response.data.data);
           // This table shows contracts that were created by the logged in user
           const requestedData = response.data.data.filter(
-            (contract) => contract.requestedBy?.S === session.user.email  &&
-            !contract.hasOwnProperty('isDeleted') &&
-            contract.contractStatus?.S === 'open' ||
-            contract.contractStatus?.S === 'verified'
+            (contract) =>
+              contract.requestedBy?.S === session.user.email &&
+              !contract.hasOwnProperty('isDeleted') &&
+              (contract.contractStatus?.S === 'open' ||
+                contract.contractStatus?.S === 'verified')
           );
           setRequestedContracts(requestedData);
           // This table shows contracts that were accepted by the logged in user
           const acceptedData = response.data.data.filter(
             (contract) =>
-              contract.acceptedBy?.S  === session.user.email  &&
+              contract.acceptedBy?.S === session.user.email &&
               !contract.hasOwnProperty('isDeleted') &&
-              contract.contractStatus?.S === 'accepted' ||
-              contract.contractStatus?.S === 'rejected'
+              (contract.contractStatus?.S === 'accepted' ||
+                contract.contractStatus?.S === 'rejected')
           );
           setAcceptedContracts(acceptedData);
-  
         } catch (error) {
           console.error('Error fetching contracts', error);
         } finally {
@@ -106,6 +106,7 @@ function Profile() {
       fetchData();
     }
   }, [session]);
+  
   
 // This tells the page to display a loading bar if the data fetch is taking too long.  No one should be seeing this except under outrageous load
   if (loading) {
@@ -250,7 +251,7 @@ const filteredContracts = contracts.filter((contract) =>
     <Container className="bg-gray-900">
      <h1 className="text-3xl font-bold mb-8 text-center">Profile</h1>
       <div>
-        <h3 className="text-center"> Manage Contracts</h3>
+        <h3 className="text-center">{(session.user.email)}</h3>
       </div>
     <h1 className="text-3xl font-bold mb-8 text-right">My Hits</h1>
     {/*// Put some cool user profile stats here */}
