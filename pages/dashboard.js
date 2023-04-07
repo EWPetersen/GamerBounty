@@ -69,8 +69,8 @@ function ClosedContracts() {
   const sortedContracts = sort.field
     ? filteredContracts.sort((a, b) => {
         if (sort.field === 'bidAmount') {
-          const fieldA = parseFloat(a[sort.field].S);
-          const fieldB = parseFloat(b[sort.field].S);
+          const fieldA = parseFloat(a[sort.field].N);
+          const fieldB = parseFloat(b[sort.field].N);
           return sort.order === 'asc' ? fieldA - fieldB : fieldB - fieldA;
         } else {
           const fieldA = a[sort.field].S.toLowerCase();

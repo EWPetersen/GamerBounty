@@ -38,30 +38,6 @@ function Profile() {
   const [selectedVerifyContract, setSelectedVerifyContract] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // Pagination code
-  const requestedPagination = {
-    current: 1,
-    pageSize: 10,
-  };
-
-  // Pagination code
-  const acceptedPagination = {
-    current: 1,
-    pageSize: 10,
-  };const [acceptedContracts, setAcceptedContracts] = useState([]);
- 
-  // Theres a crapload of code for pagination, I don't know why
-  const paginatedRequestedContracts = requestedContracts.slice(
-    (requestedPagination.current - 1) * requestedPagination.pageSize,
-    requestedPagination.current * requestedPagination.pageSize
-  );
-  
-  // More pagination code.
-  const paginatedAcceptedContracts = acceptedContracts.slice(
-    (acceptedPagination.current - 1) * acceptedPagination.pageSize,
-    acceptedPagination.current * acceptedPagination.pageSize
-  ); 
-
   const handleClose = () => {
     setShowModal(false);
     setSelectedContract(null);
@@ -153,6 +129,30 @@ function Profile() {
     );
   };
 
+// Pagination code
+const requestedPagination = {
+  current: 1,
+  pageSize: 10,
+};
+
+// Pagination code
+const acceptedPagination = {
+  current: 1,
+  pageSize: 10,
+};const [acceptedContracts, setAcceptedContracts] = useState([]);
+
+// Theres a crapload of code for pagination, I don't know why
+const paginatedRequestedContracts = requestedContracts.slice(
+  (requestedPagination.current - 1) * requestedPagination.pageSize,
+  requestedPagination.current * requestedPagination.pageSize
+);
+
+// More pagination code.
+const paginatedAcceptedContracts = acceptedContracts.slice(
+  (acceptedPagination.current - 1) * acceptedPagination.pageSize,
+  acceptedPagination.current * acceptedPagination.pageSize
+); 
+
 // I'm not sure what this does
    function handlePaginationChange(newPagination) {
     setPagination(newPagination);
@@ -180,8 +180,8 @@ const filteredContracts = contracts.filter((contract) =>
 const sortedContracts = sort.field
 ? filteredContracts.sort((a, b) => {
     if (sort.field === 'bidAmount') {
-      const fieldA = parseFloat(a[sort.field].S);
-      const fieldB = parseFloat(b[sort.field].S);
+      const fieldA = parseFloat(a[sort.field].N);
+      const fieldB = parseFloat(b[sort.field].N);
       return sort.order === 'asc' ? fieldA - fieldB : fieldB - fieldA;
     } else {
       const fieldA = a[sort.field].S.toLowerCase();
