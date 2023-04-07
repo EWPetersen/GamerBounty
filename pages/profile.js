@@ -244,10 +244,9 @@ const sortedContracts = sort.field
           <tr>
           <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-            <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-            <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Conditions {sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-            <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Current Bid {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             <th>Action</th>
+            <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
           </tr>
         </thead>
         <tbody>
@@ -256,9 +255,7 @@ const sortedContracts = sort.field
               <td>{contract.gameTitle.S}</td>
               <td>{contract.targetPlayer.S}</td>
               <td>{(contract.bidAmount.N)}</td> 
-              <td>{contract.contractConditions.S}</td>
-              <td>{contract.expDate.S}</td>
-              <td>
+               <td>
                 {contract.contractStatus.S === 'open' ? (
                   <Button variant="primary"
                   onClick={() => {
@@ -281,6 +278,7 @@ const sortedContracts = sort.field
                   </Button>
                 ) : null}
               </td>
+              <td>{contract.expDate.S}</td>
               </tr>
           ))}
         </tbody>
@@ -348,11 +346,10 @@ const sortedContracts = sort.field
           <tr>
             <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-            <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-            <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Conditions {sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-            <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Current Bid {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             <th>Action</th>
-          </tr>
+            <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            </tr>
         </thead>
         <tbody>
           {paginatedAcceptedContracts.map((contract) => (
@@ -360,8 +357,6 @@ const sortedContracts = sort.field
               <td>{contract.gameTitle.S}</td>
               <td>{contract.targetPlayer.S}</td>
               <td>{(contract.bidAmount.N)}</td> 
-              <td>{contract.contractConditions.S}</td>
-              <td>{contract.expDate.S}</td>
               <td>
                 {contract.contractStatus.S === 'accepted' ? (
                     <Button variant="warning"
@@ -379,6 +374,7 @@ const sortedContracts = sort.field
                 </Button>
                 ) : null}
               </td>
+              <td>{contract.expDate.S}</td>
             </tr>
           ))}
         </tbody>

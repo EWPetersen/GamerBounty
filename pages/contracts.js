@@ -175,6 +175,7 @@ const sortedContracts = sort.field
               <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th>Action</th>
+              <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th> 
             </tr>
           </thead>
           <tbody>
@@ -194,6 +195,7 @@ const sortedContracts = sort.field
                   Accept Contract
                 </Button>
                 </td>
+                <td>{contract.expDate.S}</td>
               </tr>
             ))}
           </tbody>

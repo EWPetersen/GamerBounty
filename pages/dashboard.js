@@ -151,7 +151,7 @@ function ClosedContracts() {
         </div>
       </Col>
     </Row>
-        <h1 className="text-3xl font-bold mb-8 text-center">Contract Feed</h1>
+        <h1 className="text-3xl font-bold mb-8 text-center">Completed Hits</h1>
   
         <Form className="mb-4">
           <Form.Group controlId="search">

@@ -16,5 +16,8 @@ body {
     color: #0D8C61;
   }
   
+  h6 {
+    color: #ffc933; /* Replace with the desired color */
+  }
   /* Add any other global styles here */
   

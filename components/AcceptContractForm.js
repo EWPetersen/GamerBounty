@@ -57,23 +57,23 @@ function AcceptContractForm({ show, handleClose, selectedContract }) {
             <Form onSubmit={handleFormSubmit}>
             <Form.Group controlId="gameTitle">
               <Form.Label>Game</Form.Label>
-              <p>{selectedContract?.gameTitle.S}</p>
+              <h6>{selectedContract?.gameTitle.S}</h6>
             </Form.Group>
             <Form.Group controlId="targetPlayer">
               <Form.Label>Target Player</Form.Label>
-              <p>{selectedContract?.targetPlayer.S}</p>
+              <h6>{selectedContract?.targetPlayer.S}</h6>
             </Form.Group>
             <Form.Group controlId="expDate">
               <Form.Label>Expiriation Date</Form.Label>
-              <p>{selectedContract?.expDate.S}</p>
+              <h6>{selectedContract?.expDate.S}</h6>
             </Form.Group>
             <Form.Group controlId="contractConditions">
               <Form.Label>Conditions</Form.Label>
-              <p>{selectedContract?.contractConditions.S}</p>
+              <h6>{selectedContract?.contractConditions.S}</h6>
             </Form.Group>
             <Form.Group controlId="bidAmount">
               <Form.Label>Bid Amount</Form.Label>
-              <p>{selectedContract?.bidAmount.N}</p>
+              <h6>{selectedContract?.bidAmount.N}</h6>
             </Form.Group>
              
             </Form>

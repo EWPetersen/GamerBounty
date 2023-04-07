@@ -29,11 +29,11 @@ export default function Index() {
       <Navbar />
       <div className="container mx-auto">
         <h1 className="text-4xl font-bold mb-8 text-center pt-10">
-          The Hit List
+          Contract Exchange
         </h1>
         <p className="text-center mb-10">
           {isAuthenticated
-            ? "Do you have a mark? Create a contract and a bid amount. Check out the dashboard to see closed out marks."
+            ? "Do you have a mark? Create a contract and set a bid."
             : "Sign in to get started."}
         </p>
         <div className="flex justify-center">
