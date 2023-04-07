@@ -1,5 +1,4 @@
 import { signIn, signOut, useSession } from "next-auth/react";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useState } from 'react';
 import { Container, Table, Pagination, Spinner, Modal, Form, Button } from 'react-bootstrap';
@@ -30,7 +29,7 @@ export default function Index() {
       <Navbar />
       <div className="container mx-auto">
         <h1 className="text-4xl font-bold mb-8 text-center pt-10">
-          Bounty Board
+          The Hit List
         </h1>
         <p className="text-center mb-10">
           {isAuthenticated
