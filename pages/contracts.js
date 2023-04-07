@@ -36,7 +36,8 @@ function GetContracts() {
         const response = await axios.get('/api/readContracts');
         console.log('Contracts data:', response.data.data);
         const filteredData = response.data.data.filter(
-          (contract) => contract.contractStatus?.S === 'open'
+          (contract) => contract.contractStatus?.S === 'open' &&
+          !contract.hasOwnProperty('isDeleted')           
         );
         setContracts(filteredData);
       } catch (error) {
