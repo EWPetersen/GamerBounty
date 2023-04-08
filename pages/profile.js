@@ -278,10 +278,10 @@ const filteredContracts = contracts.filter((contract) =>
         <thead>
           <tr>
             <th className="cursor-pointer" onClick={() => handleCreatedSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-            <th className="cursor-pointer" onClick={() => handleCreatedSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleCreatedSort('targetPlayer')}>Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             <th className="cursor-pointer" onClick={() => handleCreatedSort('bidAmount')}>Current Bid {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             <th>Action</th>
-            <th className="cursor-pointer" onClick={() => handleCreatedSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleCreatedSort('expDate')}>Expiriation {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
           </tr>
         </thead>
         <tbody>
@@ -292,7 +292,7 @@ const filteredContracts = contracts.filter((contract) =>
               <td>{(contract.bidAmount.N)}</td> 
                <td>
                 {contract.contractStatus.S === 'open' ? (
-                  <Button variant="primary"
+                  <Button variant="info"
                   onClick={() => {
                     setSelectedViewContract(contract);
                     setShowViewForm(true);
@@ -380,10 +380,10 @@ const filteredContracts = contracts.filter((contract) =>
         <thead>
           <tr>
             <th className="cursor-pointer" onClick={() => handleAcceptedSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-            <th className="cursor-pointer" onClick={() => handleAcceptedSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleAcceptedSort('targetPlayer')}>Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             <th className="cursor-pointer" onClick={() => handleAcceptedSort('bidAmount')}>Current Bid {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             <th>Action</th>
-            <th className="cursor-pointer" onClick={() => handleAcceptedSort('expDate')}>Contract Expires {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+            <th className="cursor-pointer" onClick={() => handleAcceptedSort('expDate')}>Expiriation {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             </tr>
         </thead>
         <tbody>

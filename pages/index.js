@@ -168,7 +168,7 @@ function Main() {
         </div>
       </Col>
     </Row>
-        <h1 className="text-3xl font-bold mb-8 text-center">Completed Hits</h1>
+        <h1 className="text-3xl font-bold mb-8 text-center">Completed Hit Feed</h1>
   
         <Form className="mb-4">
           <Form.Group controlId="search">
@@ -183,11 +183,11 @@ function Main() {
         <Table responsive bordered hover variant="dark">
           <thead>
             <tr>
-              <th className="cursor-pointer" onClick={() => handleSort('verifyLink')}>Proof of Hit{sort.field === 'verifyLink' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th className="cursor-pointer" onClick={() => handleSort('verifyLink')}>The Hit{sort.field === 'verifyLink' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark{sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Contract Value {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Contract Conditions{sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>Mark{sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Payout{sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Conditions{sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             </tr>
           </thead>
           <tbody>
