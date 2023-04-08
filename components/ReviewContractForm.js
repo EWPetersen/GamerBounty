@@ -6,6 +6,7 @@ import RejectContractForm from './RejectContractForm';
 const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
   const [message, setMessage] = useState('');
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleApproveClick = async () => {
     if (window.confirm('Are you sure you want to approve this contract?')) {
@@ -16,17 +17,20 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
           contractStatus: 'closed',
         });
         setLoading(false);
+        setMessage('Contract successfully proofed!');
         setSubmitStatus('success');
         setTimeout(() => {
           handleClose(); // Close the form after a short delay
         }, 2000);
       } catch (error) {
         setLoading(false);
+        setMessage('Failed to proof contract. Please try again.');
         setSubmitStatus('failure');
         console.error('Error updating contract', error);
       }
     }
   };
+  
 
   function getEmbedUrl(url) {
     // Use regex to extract YouTube video ID from the given URL
@@ -91,6 +95,14 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
               <Form.Label>Target Player:</Form.Label>
               <h6>{selectedContract?.targetPlayer.S}</h6>
             </Form.Group>
+            <Form.Group controlId="contractConditions">
+              <Form.Label>Conditions:</Form.Label>
+              <h6>{selectedContract?.contractConditions.S}</h6>
+            </Form.Group>
+            </Form>
+            </Modal.Body>
+            <Modal.Body>
+            <Form>
              <Form.Group controlId="contractConditions">
               <Form.Label>Contractors Notes:</Form.Label>
               <h6>{selectedContract?.verifyNotes.S}</h6>
@@ -129,6 +141,9 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
             show={showRejectForm}
             handleClose={handleCloseRejectForm}
             selectedContract={selectedContract}
+            contract={selectedContract}
+            gameTitle={selectedContract?.gameTitle.S}
+            id={selectedContract?.id.S}
           />
          </>
       ) : (

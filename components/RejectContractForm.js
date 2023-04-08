@@ -12,6 +12,7 @@ function RejectContractForm({ show, handleClose, selectedContract }) {
   const [submitStatus, setSubmitStatus] = useState(null);
 
   const handleRejectClick = async () => {
+    if (window.confirm('Are you sure you want to reject this contract?')) {
     setLoading(true);
     try {
       await axios.post('/api/updateContracts', {
@@ -30,6 +31,7 @@ function RejectContractForm({ show, handleClose, selectedContract }) {
         setSubmitStatus('failure');
         console.error('Error updating contract', error);
       }
+    }
     };
 
   return (
