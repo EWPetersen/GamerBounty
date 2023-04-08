@@ -16,15 +16,35 @@ function CreateContractForm({ show, handleClose }) {
   const [bidAmount, setBidAmount] = useState('');
   const [submitStatus, setSubmitStatus] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [showCreateForm, setShowCreateForm] = useState(false);
   const { data: session, status } = useSession();
-  const [gameSuggestions, setGameSuggestions] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const gameTitleInputRef = useRef(null);
 
-  if (!show) {
-    return null;
-  }
+  useEffect(() => {
+    if (gameTitle.length <= 2) {
+      setShowSuggestions(false);
+      return;
+    }
+
+    const fetchSuggestions = async () => {
+      try {
+        const response = await axios.get(`/api/getTitleValidation?search=${gameTitle}`);
+        setSuggestions(response.data);
+        setShowSuggestions(true);
+      } catch (error) {
+        console.error('Error fetching suggestions:', error);
+      }
+    };
+
+    const timerId = setTimeout(() => {
+      fetchSuggestions();
+    }, 500);
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [gameTitle]);
 
   if (status === "loading") return null; // Do not render anything while the session is loading
   if (!session) {
@@ -39,22 +59,6 @@ function CreateContractForm({ show, handleClose }) {
     return null;
   }
 
-  useEffect(() => {
-    if (gameTitle.length <= 2) {
-      setShowSuggestions(false);
-      return;
-    }
-  
-    const fetchSuggestions = async () => {
-      const suggestions = await fetchGameSuggestions(gameTitle);
-      setGameSuggestions(suggestions);
-      setShowSuggestions(true);
-    };
-  
-    const timeoutId = setTimeout(fetchSuggestions, 300);
-    return () => clearTimeout(timeoutId);
-  }, [gameTitle]);
-  
   const handleSuggestionClick = (suggestedTitle) => {
     setGameTitle(suggestedTitle);
     setShowSuggestions(false);
@@ -130,22 +134,23 @@ function CreateContractForm({ show, handleClose }) {
       <Form onSubmit={handleFormSubmit}>
       <Form.Group controlId="gameTitle" ref={gameTitleInputRef}>
                 <Form.Label>Game:</Form.Label>
-                <Form.Control
+                
+                  <input
                   type="text"
-                  placeholder="Which game does their character live in?"
+                  placeholder="Search game title"
                   value={gameTitle}
-                  onChange={(event) => setGameTitle(event.target.value)}
+                  onChange={(e) => setGameTitle(e.target.value)}
                 />
                 {showSuggestions && (
-                  <div className="absolute mt-2 w-full bg-white border border-gray-300 rounded-md shadow z-10">
-                    {gameSuggestions.map((suggestion, index) => (
-                      <p
+                  <div className={styles.suggestions}>
+                    {suggestions.map((suggestion, index) => (
+                      <div
                         key={index}
-                        className="px-4 py-2 cursor-pointer hover:bg-gray-200"
-                        onClick={() => handleSuggestionClick(suggestion.name)}
+                        className={styles.suggestion}
+                        onClick={() => handleSuggestionClick(suggestion)}
                       >
                         {suggestion.name}
-                      </p>
+                      </div>
                     ))}
                   </div>
                 )}
