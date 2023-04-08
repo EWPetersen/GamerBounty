@@ -160,7 +160,7 @@ const sortedContracts = sort.field
           <thead>
             <tr>
               <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>The Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>Mark {sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Current Bid {sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th>Action</th>
               <th className="cursor-pointer" onClick={() => handleSort('expDate')}>Expiriation {sort.field === 'expDate' && (sort.order === 'asc' ? '↑' : '↓')}</th>
