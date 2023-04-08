@@ -6,7 +6,7 @@ import Navbar from '../components/Navbar';
 import { Button, Card, Grid, Input, Pagination, Table, Text, useToasts, Search } from '@nextui-org/react';
 
 
-function Main() {
+function NewIndex() {
     const [contracts, setContracts] = useState([]);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
     const [loading, setLoading] = useState(false);
@@ -200,4 +200,4 @@ function Main() {
     );
   }
   
-  export default Main;
+  export default NewIndex;
