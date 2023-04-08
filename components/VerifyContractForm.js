@@ -50,7 +50,7 @@ function VerifyContractForm({ show, handleClose, selectedContract }) {
         </Modal.Header>
         <div className="bg-gray-900">
         <Modal.Body>
-          <h6>Step 1. Execute the contract and it's conditions. Read them carefully.</h6>
+          <h6>Step 1. Execute the contract and its conditions. Read them carefully.</h6>
           <h6>Step 2. Record Proof using Shadowplay or similar, and trim to less than 60 seconds.</h6>
           <h6>Step 3. Upload your clip to youtube, set visibility to unlisted or public.</h6>
           </Modal.Body>
