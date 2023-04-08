@@ -250,9 +250,6 @@ const filteredContracts = contracts.filter((contract) =>
     <Navbar />
     <Container className="bg-gray-900">
      <h1 className="text-3xl font-bold mb-8 text-center">Profile</h1>
-      <div>
-        <h3 className="text-center">{(session.user.email)}</h3>
-      </div>
     <h1 className="text-3xl font-bold mb-8 text-right">My Hits</h1>
     {/*// Put some cool user profile stats here */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
