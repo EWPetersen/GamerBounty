@@ -1,26 +1,24 @@
 // gameTitleValidation.js
-import axios from 'axios';
+import axios from "axios";
 
 const apiKey = process.env.NEXT_PUBLIC_IGDB_API_KEY;
 const clientId = process.env.NEXT_PUBLIC_IGDB_CLIENT_ID;
 
-export async function isValidGameTitle(gameTitle) {
+export async function fetchGameSuggestions(gameTitle) {
   try {
     const response = await axios({
-      url: 'https://api.igdb.com/v4/games',
-      method: 'POST',
+      url: "https://api.igdb.com/v4/games",
+      method: "POST",
       headers: {
-        'Client-ID': clientId,
-        'Authorization': `Bearer ${apiKey}`,
+        "Client-ID": clientId,
+        Authorization: `Bearer ${apiKey}`,
       },
-      data: `search "${gameTitle}"; fields name; limit 1;`,
+      data: `search "${gameTitle}"; fields name; limit 5;`,
     });
 
-    if (response.data.length > 0 && response.data[0].name === gameTitle.trim()) {
-      return true;
-    }
+    return response.data;
   } catch (error) {
-    console.error('Error fetching game data:', error);
+    console.error("Error fetching game suggestions:", error);
+    return [];
   }
-  return false;
 }

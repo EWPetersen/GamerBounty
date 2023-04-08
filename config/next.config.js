@@ -1,4 +1,4 @@
-const withCSS = require('@zeit/next-css');
+const withCSS = require("@zeit/next-css");
 
 module.exports = withCSS({
   webpack(config, options) {
@@ -6,7 +6,7 @@ module.exports = withCSS({
       test: /\.less$/,
       use: [
         {
-          loader: 'less-loader',
+          loader: "less-loader",
           options: {
             javascriptEnabled: true,
           },
@@ -20,7 +20,7 @@ module.exports = withCSS({
   async rewrites() {
     return [
       {
-        source: '/api/:path*',
+        source: "/api/:path*",
         destination: `https://${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/:path*`,
       },
     ];

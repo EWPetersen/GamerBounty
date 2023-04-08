@@ -44,6 +44,7 @@ const Navbar = () => {
     };
 
   return (
+    <>
     <nav className="bg-gray-800 text-white py-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex space-x-4">
@@ -64,6 +65,7 @@ const Navbar = () => {
               >
                 Sign Out
               </NavbarLink>
+              
             </>
           )}
           {!session && (
@@ -78,7 +80,6 @@ const Navbar = () => {
            <CreateContractForm
             show={showCreateForm}
             handleClose={handleCloseCreateForm}
-            handleCreate={handleCreateContract}
             setShowCreateForm={setShowCreateForm}
           />
           <style global jsx>{`
@@ -107,6 +108,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
+    </>
   );
 };
 
