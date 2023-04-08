@@ -142,11 +142,11 @@ function CreateContractForm({ show, handleClose }) {
                   onChange={(e) => setGameTitle(e.target.value)}
                 />
                 {showSuggestions && (
-                  <div className={styles.suggestions}>
+                  <div className="bg-white border rounded shadow-md">
                     {suggestions.map((suggestion, index) => (
                       <div
                         key={index}
-                        className={styles.suggestion}
+                        className="p-2 hover:bg-gray-200 cursor-pointer"
                         onClick={() => handleSuggestionClick(suggestion)}
                       >
                         {suggestion.name}

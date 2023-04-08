@@ -22,9 +22,8 @@ const NavbarLink = ({ href, children, extraClasses, onClick }) => (
 );
 
 const Navbar = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [selectedCreateContract, setSelectedCreateContract] = useState(null);
 
   const handleSignIn = (e) => {
     e.preventDefault();
@@ -48,59 +47,18 @@ const Navbar = () => {
             <Button variant="primary" onClick={() => setShowCreateForm(true)}>
               Create Contract
             </Button>
-            <NavbarLink href="/">Main</NavbarLink>
-            {session && (
-              <>
-                <NavbarLink href="/contracts">Contracts</NavbarLink>
-                <NavbarLink href="/profile">Profile</NavbarLink>
-                <NavbarLink
-                  href="/"
-                  onClick={handleSignOut}
-                  extraClasses="text-red-500 hover:text-red-700"
-                >
-                  Sign Out
-                </NavbarLink>
-              </>
-            )}
-            {!session && (
-              <NavbarLink href="/" onClick={handleSignIn} extraClasses="">
-                Sign In
-              </NavbarLink>
-            )}
-            <CreateContractForm
-              show={showCreateForm}
-              handleClose={handleClose}
-              setShowCreateForm={setShowCreateForm}
-            />
-            <style global jsx>{`
-              .modal-content,
-              .form-control {
-                background-color: #1f2937;
-                color: #ffffff;
-              }
-              .alert-success {
-                background-color: #10b981;
-                color: #ffffff;
-              }
-              .alert-danger {
-                background-color: #ef4444;
-                color: #ffffff;
-              }
-              table thead th {
-                cursor: pointer;
-                font-weight: 600;
-                text-transform: uppercase;
-              }
-              table tbody tr:hover {
-                background-color: rgba(255, 255, 255, 0.1);
-              }
-            `}</style>
+            {/* Other NavbarLinks */}
+            {/* Remove CreateContractForm from here */}
           </div>
         </div>
       </nav>
-      {showCreateForm && (
-        <CreateContractForm show={showCreateForm} handleClose={handleClose} />
-      )}
+      {/* Keep this CreateContractForm component */}
+      <CreateContractForm
+        show={showCreateForm}
+        handleClose={handleClose}
+        session={session}
+        status={status}
+      />
     </>
   );
 };
