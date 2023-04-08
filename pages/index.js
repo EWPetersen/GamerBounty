@@ -211,54 +211,54 @@ function Main() {
           clearable
         />
           <Table responsive bordered hover variant="dark">
-          <thead>
-            <tr>
-              <th
+          <Table.Head>
+            <Table.Row>
+              <Table.Header
                 className="cursor-pointer"
                 onClick={() => handleSort("verifyLink")}
               >
                 The Hit
                 {sort.field === "verifyLink" &&
                   (sort.order === "asc" ? "↑" : "↓")}
-              </th>
-              <th
+              </Table.Header>
+              <Table.Header
                 className="cursor-pointer"
                 onClick={() => handleSort("contractConditions")}
               >
                 Conditions
                 {sort.field === "contractConditions" &&
                   (sort.order === "asc" ? "↑" : "↓")}
-              </th>
-              <th
+              </Table.Header>
+              <Table.Header
                 className="cursor-pointer"
                 onClick={() => handleSort("bidAmount")}
               >
                 Payout
                 {sort.field === "bidAmount" &&
                   (sort.order === "asc" ? "↑" : "↓")}
-              </th>
-              <th
+              </Table.Header>
+              <Table.Header
                 className="cursor-pointer"
                 onClick={() => handleSort("targetPlayer")}
               >
                 Mark
                 {sort.field === "targetPlayer" &&
                   (sort.order === "asc" ? "↑" : "↓")}
-              </th>
-              <th
+              </Table.Header>
+              <Table.Header
                 className="cursor-pointer"
                 onClick={() => handleSort("gameTitle")}
               >
                 Game{" "}
                 {sort.field === "gameTitle" &&
                   (sort.order === "asc" ? "↑" : "↓")}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
+              </Table.Header>
+            </Table.Row>
+          </Table.Head>
+          <Table.Body>
             {paginatedContracts.map((contract) => (
-              <tr key={contract.id.S}>
-                <td>
+              <Table.Row key={contract.id.S}>
+                <Table.Cell>
                   {contract.verifyLink && (
                     <iframe
                       width="100%"
@@ -270,14 +270,14 @@ function Main() {
                       allowFullScreen
                     ></iframe>
                   )}
-                </td>
-                <td>{contract.contractConditions.S}</td>
-                <td>{formatCurrency(contract.bidAmount.N)}</td>
-                <td>{contract.targetPlayer.S}</td>
-                <td>{contract.gameTitle.S}</td>
-              </tr>
+                </Table.Cell>
+                <Table.Cell>{contract.contractConditions.S}</Table.Cell>
+                <Table.Cell>{formatCurrency(contract.bidAmount.N)}</Table.Cell>
+                <Table.Cell>{contract.targetPlayer.S}</Table.Cell>
+                <Table.Cell>{contract.gameTitle.S}</Table.Cell>
+              </Table.Row>
             ))}
-          </tbody>
+          </Table.Body>
         </Table>
                 <div className="d-flex justify-content-center">
                   <Pagination className="my-4">
