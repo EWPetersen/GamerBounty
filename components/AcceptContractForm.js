@@ -15,6 +15,7 @@ function AcceptContractForm({ show, handleClose, selectedContract }) {
   }
 
   const submitAccept = async () => {
+    if (window.confirm('Are you sure you want to accept this contract?')) {
     setLoading(true);
     try {
       await axios.post('/api/updateContracts', {
@@ -33,6 +34,7 @@ function AcceptContractForm({ show, handleClose, selectedContract }) {
       setSubmitStatus('failure');
       console.error('Error updating contract', error);
     }
+  }
   };
 
   const handleFormSubmit = (event) => {

@@ -49,6 +49,7 @@ export default async function updateContracts(req, res) {
     verifyNotes,
     contractStatus,
     isDeleted,
+    rejectReason,
   });
   
 
