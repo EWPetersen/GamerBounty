@@ -74,33 +74,29 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
         <>
         <Modal.Body>
         {submitStatus === 'success' && (
-              <Alert variant="success">Contract successfully verified!</Alert>
+              <Alert variant="success">Contract successfully proofed!</Alert>
             )}
             {submitStatus === 'failure' && (
-              <Alert variant="danger">Failed to verify contract. Please try again.</Alert>
+              <Alert variant="danger">Failed to proof contract. Please try again.</Alert>
             )}
           <h6>Review the video in the player.  Does it satisfy the contract?</h6> 
           </Modal.Body>
         <Modal.Body>
           <Form>
               <Form.Group controlId="gameTitle">
-              <Form.Label>Game</Form.Label>
+              <Form.Label>Game:</Form.Label>
               <h6>{selectedContract?.gameTitle.S}</h6>
             </Form.Group>
             <Form.Group controlId="targetPlayer">
-              <Form.Label>Target Player</Form.Label>
+              <Form.Label>Target Player:</Form.Label>
               <h6>{selectedContract?.targetPlayer.S}</h6>
             </Form.Group>
              <Form.Group controlId="contractConditions">
-              <Form.Label>Conditions</Form.Label>
-              <h6>{selectedContract?.contractConditions.S}</h6>
-            </Form.Group>
-            <Form.Group controlId="bidAmount">
-              <Form.Label>Bid Amount</Form.Label>
-              <h6>{selectedContract?.bidAmount.N}</h6>
+              <Form.Label>Contractors Notes:</Form.Label>
+              <h6>{selectedContract?.verifyNotes.S}</h6>
             </Form.Group>
             <Form.Group controlId="verifyLink">
-              <Form.Label>Proof Link </Form.Label>
+              <Form.Label>Proof Link:</Form.Label>
               <p>{selectedContract.verifyLink && selectedContract.verifyLink.S ? (
             <iframe
               src={getEmbedUrl(selectedContract.verifyLink.S)}
@@ -117,8 +113,9 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
             </Form>
           </Modal.Body>
            <Modal.Footer>
-           <h6>Click approve to approve bids and pay the contractor.  Click reject to close and cancel the contract without pay.</h6>
-          <Button variant="success" onClick={handleApproveClick}>
+           <h6>Approve to approve bids and pay the contractor.</h6>
+           <h6>Reject to refund bids, do NOT pay the contractor, and cancel the contract.</h6>
+           <Button variant="success" onClick={handleApproveClick}>
             Approve
           </Button>
           <Button variant="danger" onClick={handleShowRejectForm}>
@@ -128,8 +125,6 @@ const ReviewContractForm = ({ show, handleClose, selectedContract }) => {
             Close
           </Button>
       </Modal.Footer>
-          
-          
           <RejectContractForm
             show={showRejectForm}
             handleClose={handleCloseRejectForm}

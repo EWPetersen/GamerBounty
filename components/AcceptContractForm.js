@@ -49,33 +49,32 @@ function AcceptContractForm({ show, handleClose, selectedContract }) {
         <div className="bg-gray-900">
           <Modal.Body>
             {submitStatus === 'success' && (
-              <Alert variant="success">Contract successfully verified!</Alert>
+              <Alert variant="success">Contract successfully accepted!</Alert>
             )}
             {submitStatus === 'failure' && (
               <Alert variant="danger">Failed to Accept contract. Please try again.</Alert>
             )}
             <Form onSubmit={handleFormSubmit}>
             <Form.Group controlId="gameTitle">
-              <Form.Label>Game</Form.Label>
+              <Form.Label>Game:</Form.Label>
               <h6>{selectedContract?.gameTitle.S}</h6>
             </Form.Group>
             <Form.Group controlId="targetPlayer">
-              <Form.Label>Target Player</Form.Label>
+              <Form.Label>The Mark:</Form.Label>
               <h6>{selectedContract?.targetPlayer.S}</h6>
             </Form.Group>
             <Form.Group controlId="expDate">
-              <Form.Label>Expiriation Date</Form.Label>
+              <Form.Label>Expiriation:</Form.Label>
               <h6>{selectedContract?.expDate.S}</h6>
             </Form.Group>
             <Form.Group controlId="contractConditions">
-              <Form.Label>Conditions</Form.Label>
+              <Form.Label>Conditions:</Form.Label>
               <h6>{selectedContract?.contractConditions.S}</h6>
             </Form.Group>
             <Form.Group controlId="bidAmount">
-              <Form.Label>Bid Amount</Form.Label>
+              <Form.Label>Current Bid:</Form.Label>
               <h6>{selectedContract?.bidAmount.N}</h6>
             </Form.Group>
-             
             </Form>
           </Modal.Body>
         </div>

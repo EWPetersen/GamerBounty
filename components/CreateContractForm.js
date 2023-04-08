@@ -5,6 +5,7 @@ import axios from 'axios';
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+
 function CreateContractForm({ show, handleClose }) {
   const [gameTitle, setgameTitle] = useState('');
   const [targetPlayer, setTargetPlayer] = useState('');
@@ -19,7 +20,7 @@ function CreateContractForm({ show, handleClose }) {
   if (!show) {
     return null;
   }
-  
+
   if (status === "loading") return null; // Do not render anything while the session is loading
   if (!session) {
     return (
@@ -89,7 +90,7 @@ function CreateContractForm({ show, handleClose }) {
             )}
           <Form onSubmit={handleFormSubmit}>
             <Form.Group controlId="gameTitle">
-              <Form.Label>Game Title</Form.Label>
+              <Form.Label>Game: </Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Which game does their character live in?"
@@ -98,16 +99,16 @@ function CreateContractForm({ show, handleClose }) {
               />
             </Form.Group>
             <Form.Group controlId="targetPlayer">
-              <Form.Label>Target Player</Form.Label>
+              <Form.Label>Mark:</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="What is the name of your target?"
+                placeholder="Who is your target?"
                 value={targetPlayer}
                 onChange={(event) => setTargetPlayer(event.target.value)}
               />
             </Form.Group>
             <Form.Group controlId="expDate">
-              <Form.Label>Expiriation Date</Form.Label>
+              <Form.Label>Expiriation:</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="When will this contract expire?"
@@ -116,7 +117,7 @@ function CreateContractForm({ show, handleClose }) {
               />
             </Form.Group>
             <Form.Group controlId="contractConditions">
-              <Form.Label>Conditions</Form.Label>
+              <Form.Label>Conditions:</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Are there any additional requirements? (under 100char)"
@@ -125,7 +126,7 @@ function CreateContractForm({ show, handleClose }) {
               />
             </Form.Group>
             <Form.Group controlId="bidAmount">
-              <Form.Label>Opening Bid</Form.Label>
+              <Form.Label>Opening Bid:</Form.Label>
               <Form.Control
                 type="number"
                 placeholder="Enter bid amount"
@@ -147,5 +148,6 @@ function CreateContractForm({ show, handleClose }) {
     </>
   );
 }
+
 
 export default CreateContractForm;

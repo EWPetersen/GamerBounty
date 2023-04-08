@@ -50,7 +50,9 @@ function VerifyContractForm({ show, handleClose, selectedContract }) {
         </Modal.Header>
         <div className="bg-gray-900">
         <Modal.Body>
-          <h6>Upload your clip to youtube. Make sure you are following the contract conditions!</h6> 
+          <h6>Step 1. Execute the contract and it's conditions. Read them carefully.</h6>
+          <h6>Step 2. Record Proof using Shadowplay or similar, and trim to less than 60 seconds.</h6>
+          <h6>Step 3. Upload your clip to youtube, set visibility to unlisted or public.</h6>
           </Modal.Body>
           <Modal.Body>
             {submitStatus === 'success' && (
@@ -61,27 +63,23 @@ function VerifyContractForm({ show, handleClose, selectedContract }) {
             )}
             <Form onSubmit={handleFormSubmit}>
             <Form.Group controlId="gameTitle">
-              <Form.Label>Game</Form.Label>
+              <Form.Label>Game:</Form.Label>
               <h6>{selectedContract?.gameTitle.S}</h6>
             </Form.Group>
             <Form.Group controlId="targetPlayer">
-              <Form.Label>Target Player</Form.Label>
+              <Form.Label>Mark:</Form.Label>
               <h6>{selectedContract?.targetPlayer.S}</h6>
             </Form.Group>
             <Form.Group controlId="contractConditions">
-              <Form.Label>Conditions</Form.Label>
+              <Form.Label>Conditions:</Form.Label>
               <h6>{selectedContract?.contractConditions.S}</h6>
             </Form.Group>
-            <Form.Group controlId="bidAmount">
-              <Form.Label>Bid Amount</Form.Label>
-              <h6>{selectedContract?.bidAmount.N}</h6>
-            </Form.Group>
             <Form.Group controlId="verifyLink">
-              <Form.Label>Proof Link</Form.Label>
+              <Form.Label>Proof Link:</Form.Label>
               <Form.Control
                 type="string"
                 required
-                placeholder="YouTube, Twitch, Vimeo - Upload date must be newer than contract date, and 60s or less."
+                placeholder="YouTube links only for now"
                 value={verifyLink}
                 onChange={(event) => setVerifyLink(event.target.value)}
               />
@@ -90,7 +88,7 @@ function VerifyContractForm({ show, handleClose, selectedContract }) {
               <Form.Label>Job Notes</Form.Label>
               <Form.Control
                 type="string"
-                placeholder="Anything interesting about this contract? (under 100char)"
+                placeholder="Anything interesting about this contract? (under 140char)"
                 value={verifyNotes}
                 onChange={(event) => setVerifyNotes(event.target.value)}
               />

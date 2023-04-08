@@ -52,23 +52,23 @@ const ViewContractForm = ({ show, handleClose, selectedContract }) => {
       <Modal.Body>
           <Form>
               <Form.Group controlId="gameTitle">
-              <Form.Label>Game</Form.Label>
+              <Form.Label>Game: </Form.Label>
               <h6>{selectedContract?.gameTitle.S}</h6>
             </Form.Group>
             <Form.Group controlId="targetPlayer">
-              <Form.Label>Target Player</Form.Label>
+              <Form.Label>Mark: </Form.Label>
               <h6>{selectedContract?.targetPlayer.S}</h6>
             </Form.Group>
             <Form.Group controlId="expDate">
-              <Form.Label>Expiriation Date</Form.Label>
+              <Form.Label>Expiriation:</Form.Label>
               <h6>{selectedContract?.expDate.S}</h6>
             </Form.Group>
             <Form.Group controlId="contractConditions">
-              <Form.Label>Conditions</Form.Label>
+              <Form.Label>Conditions:</Form.Label>
               <h6>{selectedContract?.contractConditions.S}</h6>
             </Form.Group>
             <Form.Group controlId="bidAmount">
-              <Form.Label>Bid Amount</Form.Label>
+              <Form.Label>Current Bid:</Form.Label>
               <h6>{selectedContract?.bidAmount.N}</h6>
             </Form.Group>
             </Form>
