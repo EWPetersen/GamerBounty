@@ -184,10 +184,10 @@ function Main() {
           <thead>
             <tr>
               <th className="cursor-pointer" onClick={() => handleSort('verifyLink')}>The Hit{sort.field === 'verifyLink' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>Mark{sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Payout{sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Conditions{sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Payout{sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>Mark{sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             </tr>
           </thead>
           <tbody>
@@ -206,11 +206,10 @@ function Main() {
                     ></iframe>
                   )}
                 </td>
-                <td>{contract.gameTitle.S}</td>
-
-                <td>{contract.targetPlayer.S}</td>
-                <td>{formatCurrency(contract.bidAmount.N)}</td>
                 <td>{contract.contractConditions.S}</td>
+                <td>{formatCurrency(contract.bidAmount.N)}</td>
+                <td>{contract.targetPlayer.S}</td>
+                <td>{contract.gameTitle.S}</td>
               </tr>
             ))}
           </tbody>
