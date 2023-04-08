@@ -4,9 +4,6 @@ import { useSession } from "next-auth/react";
 import axios from 'axios';
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-
 
 
 function CreateContractForm({ show, handleClose }) {
@@ -112,15 +109,12 @@ function CreateContractForm({ show, handleClose }) {
             </Form.Group>
             <Form.Group controlId="expDate">
               <Form.Label>Expiriation:</Form.Label>
-                <DatePicker
-                  id="expDate"
-                  name="expirationDate"
-                  selected={expDate}
-                  onChange={date => setExpDate(date)}
-                  className="form-control"
-                  calendarClassName="dark-calendar"
-                  minDate={new Date()}
-                />
+              <Form.Control
+                type="text"
+                placeholder="When will this contract expire?"
+                value={expDate}
+                onChange={(event) => setExpDate(event.target.value)}
+              />
             </Form.Group>
             <Form.Group controlId="contractConditions">
               <Form.Label>Conditions:</Form.Label>

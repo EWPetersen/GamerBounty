@@ -1,16 +1,10 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
+import 'tailwindcss/tailwind.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from '../components/Navbar';
-import { Row, Col, List } from 'antd';
-import {
-  Container,
-  Button,
-  Input,
-  Card,
-  Spacer,
-  Table,
-  Text,
-  Modal,
-} from '@nextui-org/react';
+import { Button, Card, Grid, Input, Pagination, Table, Text, useToasts, Search } from '@nextui-org/react';
+
 
 function Main() {
     const [contracts, setContracts] = useState([]);
@@ -40,16 +34,24 @@ function Main() {
   
       fetchData();
     }, []);
-  
+    const columns = [
+      { title: 'Game', key: 'gameTitle', dataIndex: 'gameTitle.S', sorter: () => handleSort('gameTitle') },
+      { title: 'Mark', key: 'targetPlayer', dataIndex: 'targetPlayer.S', sorter: () => handleSort('targetPlayer') },
+      // Add more columns as needed
+    ];
+
     function handlePaginationChange(newPagination) {
+      console.log('handlePaginationChange - newPagination:', newPagination);
       setPagination(newPagination);
     }
   
     function handleSearch(event) {
+      console.log('handleSearch - searchTerm:', event.target.value);
       setSearchTerm(event.target.value);
     }
   
     function handleSort(field) {
+      console.log('handleSort - field:', field);
       if (sort.field === field) {
         setSort({ ...sort, order: sort.order === 'asc' ? 'desc' : 'asc' });
       } else {
@@ -58,15 +60,17 @@ function Main() {
     }
   
     function handleViewContract(contract) {
+      console.log('handleViewContract - contract:', contract);
       setSelectedContract(contract);
       setShow(true);
     }
   
     function handleClose() {
+      console.log('handleClose');
       setSelectedContract(null);
       setShow(false);
     }
-  
+
     const filteredContracts = contracts.filter((contract) =>
       contract &&
       contract.gameTitle.S.toLowerCase().includes(searchTerm.toLowerCase())
@@ -134,110 +138,66 @@ function Main() {
       }
     }
   
-
-  return (
-    <div className="bg-gray-900 min-h-screen text-white">
-      <Navbar />
-      <Container className="bg-gray-900">
-      <Row gutter={16}>
-      <Col span={12}>
-        <h2>Top Contractors</h2>
-        <h6>by completion %</h6>
-        <List
-          dataSource={[
-            { name: 'n00bman', rank: 1 },
-            { name: 'Assassin78', rank: 2 },
-            { name: 'MemeLord72', rank: 3 },
-          ]}
-          renderItem={item => (
-            <List.Item>
-              <span>{item.rank}. {item.name}</span>
-            </List.Item>
-          )}
-        />
-      </Col>
-      <Col span={12}>
-      <div style={{ textAlign: 'right' }}>
-        <h2>Top Producer</h2>
-        <h6>by completion %</h6>
-        <List
-          dataSource={[
-            { name: 'catpissqueen', rank: 1 },
-            { name: 'thundergunexpress', rank: 2 },
-            { name: 'l33t af', rank: 3 },
-          ]}
-          renderItem={item => (
-            <List.Item style={{ justifyContent: 'flex-end', display: 'flex' }}> {/* Apply style to List.Item */}
-              <span>{item.rank}. {item.name}</span>
-            </List.Item>
-          )}
-        />
-        </div>
-      </Col>
-    </Row>
-        <h1 className="text-3xl font-bold mb-8 text-center">Completed Hit Feed</h1>
-
-        <div className="mb-4">
-          <Input
-            className="bg-gray-700 border-gray-600 focus:border-blue-500 focus:ring-blue-500 text-white"
-            placeholder="Search by game name"
-            onChange={handleSearch}
-          />
-        </div>
-        <Table
-          data={paginatedContracts.map((contract) => ({
-            ...contract,
-            bidAmount: formatCurrency(contract.bidAmount.N),
-          }))}
-          columns={[
-            { title: 'The Hit', dataIndex: 'verifyLink', sorter: true, render: (src) => <iframe
+    return (
+      <div className="bg-gray-900 min-h-screen text-white">
+        <Navbar />
+        <div className="container mx-auto px-4">
+          <Grid.Container gap={2} alignItems="center" justifyContent="center">
+            <Grid xs={12} md={6}>
+              <Card hoverable className="w-full">
+                <Text h3>Top Contractors</Text>
+                <Text h5>by completion %</Text>
+                <ul>
+                  <li>1. n00bman</li>
+                  <li>2. Assassin78</li>
+                  <li>3. MemeLord72</li>
+                </ul>
+              </Card>
+            </Grid>
+            <Grid xs={12} md={6}>
+              <Card hoverable className="w-full">
+                <Text h3>Top Producer</Text>
+                <Text h5>by completion %</Text>
+                <ul className="text-right">
+                  <li>1. catpissqueen</li>
+                  <li>2. thundergunexpress</li>
+                  <li>3. l33t af</li>
+                </ul>
+              </Card>
+            </Grid>
+          </Grid.Container>
+          <div className="text-center mt-10">
+            <Text h2 className="font-bold mb-8">Completed Hit Feed</Text>
+          </div>
+          <div className="mb-4">
+            <Input
+              className="bg-gray-700 text-white"
+              placeholder="Search by game name"
+              onChange={handleSearch}
+              iconRight={<Search />}
               width="100%"
-              height="100"
-              src={getEmbedUrl(src.S)}
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe> },
-            { title: 'Conditions', dataIndex: 'contractConditions', sorter: true },
-            { title: 'Payout', dataIndex: 'bidAmount', sorter: true },
-            { title: 'Mark', dataIndex: 'targetPlayer', sorter: true },
-            { title: 'Game', dataIndex: 'gameTitle', sorter: true },
-          ]}
-          onRow={(record) => ({ onClick: () => handleViewContract(record) })}
-          pagination={{
-            pageSize: pagination.pageSize,
-            total: filteredContracts.length,
-            current: pagination.current,
-            onChange: handlePaginationChange,
-          }}
-          sort={sort}
-          onSortChange={(newSort) => setSort(newSort)}
-        />
-        <Spacer y={2} />
-        <Modal open={show} onClose={handleClose} size="large">
-          <Modal.Title>Contract Details</Modal.Title>
-          <Modal.Content>
-            <Text h5>Game Name:</Text>
-            <Text>{selectedContract?.gameTitle?.S}</Text>
-            <Text h5>Target Player:</Text>
-            <Text>{selectedContract?.targetPlayer?.S}</Text>
-            <Text h5>Contract Conditions</Text>
-            <Text>{selectedContract?.contractConditions?.S}</Text>
-            <Text h5>Proof of Hit</Text>
-            <Text>{selectedContract?.verifyLink?.S}</Text>
-            <Text h5>Bid Amount:</Text>
-            <Text>{selectedContract && formatCurrency(selectedContract.bidAmount?.N)}</Text>
-            <Text h5>Expiration Date:</Text>
-            <Text>{selectedContract && formatDate(selectedContract.expDate?.S)}</Text>
-          </Modal.Content>
-          <Modal.Action passive onClick={handleClose}>
-            Close
-          </Modal.Action>
-        </Modal>
-      </Container>
-    </div>
-     );
-    }
+            />
+          </div>
+          <Table
+            data={paginatedContracts.map(contract => ({
+              ...contract,
+              bidAmount: formatCurrency(contract.bidAmount.N),
+            }))}
+            columns={columns}
+            striped
+            hover
+          />
+          <div className="d-flex justify-content-center mt-4">
+            <Pagination
+              total={filteredContracts.length}
+              pageSize={pagination.pageSize}
+              initialPage={pagination.current}
+              onChange={handlePaginationChange}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
   
-    export default Main;
+  export default Main;
