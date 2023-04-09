@@ -128,13 +128,6 @@ function GetContracts() {
     pagination.current * pagination.pageSize
   );
 
-  function formatCurrency(amount) {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
-  }
-
   return (
     <div className="bg-gray-900 min-h-screen text-white">
       <Navbar />
@@ -155,7 +148,7 @@ function GetContracts() {
         <Form className="mb-4">
           <Form.Group controlId="search">
             <Form.Control
-              className="bg-gray-700 border-gray-600 focus:border-blue-500 focus:ring-blue-500 text-white"
+              className="bg-gray-700 border-gray-600 focus:border-blue-500 focus:ring-blue-500 text-black"
               type="text"
               placeholder="Search by game title"
               onChange={handleSearch}
@@ -185,8 +178,8 @@ function GetContracts() {
                 className="cursor-pointer"
                 onClick={() => handleSort("bidAmount")}
               >
-                Current Bid{" "}
-                {sort.field === "bidAmount" &&
+                Payout{" "}
+                {sort.field === "gameCurrencyAmount" &&
                   (sort.order === "asc" ? "↑" : "↓")}
               </th>
               <th>Action</th>
@@ -211,7 +204,7 @@ function GetContracts() {
               <tr key={contract.id.S}>
                 <td>{contract.gameTitle.S}</td>
                 <td>{contract.targetPlayer.S}</td>
-                <td>{formatCurrency(contract.bidAmount.N)}</td>
+                <td>{contract.gameCurrencyAmount?.N}<h6>{contract.gameCurrencyDenom?.S}</h6></td>
                 <td>
                   <Button
                     variant="success"

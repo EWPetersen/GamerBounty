@@ -139,8 +139,7 @@ function Main() {
         <List
           dataSource={[
             { name: 'n00bman', rank: 1 },
-            { name: 'Assassin78', rank: 2 },
-            { name: 'MemeLord72', rank: 3 },
+
           ]}
           renderItem={item => (
             <List.Item>
@@ -156,8 +155,7 @@ function Main() {
         <List
           dataSource={[
             { name: 'catpissqueen', rank: 1 },
-            { name: 'thundergunexpress', rank: 2 },
-            { name: 'l33t af', rank: 3 },
+           
           ]}
           renderItem={item => (
             <List.Item style={{ justifyContent: 'flex-end', display: 'flex' }}> {/* Apply style to List.Item */}
@@ -185,7 +183,7 @@ function Main() {
             <tr>
               <th className="cursor-pointer" onClick={() => handleSort('verifyLink')}>The Hit{sort.field === 'verifyLink' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('contractConditions')}>Conditions{sort.field === 'contractConditions' && (sort.order === 'asc' ? '↑' : '↓')}</th>
-              <th className="cursor-pointer" onClick={() => handleSort('bidAmount')}>Payout{sort.field === 'bidAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
+              <th className="cursor-pointer" onClick={() => handleSort('gameCurrencyAmount')}>Payout{sort.field === 'gameCurrencyAmount' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('targetPlayer')}>Mark{sort.field === 'targetPlayer' && (sort.order === 'asc' ? '↑' : '↓')}</th>
               <th className="cursor-pointer" onClick={() => handleSort('gameTitle')}>Game {sort.field === 'gameTitle' && (sort.order === 'asc' ? '↑' : '↓')}</th>
             </tr>
@@ -207,7 +205,7 @@ function Main() {
                   )}
                 </td>
                 <td>{contract.contractConditions.S}</td>
-                <td>{formatCurrency(contract.bidAmount.N)}</td>
+                <td>{contract.gameCurrencyAmount?.N}<h6>{contract.gameCurrencyDenom?.S}</h6></td>
                 <td>{contract.targetPlayer.S}</td>
                 <td>{contract.gameTitle.S}</td>
               </tr>
