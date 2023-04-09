@@ -11,7 +11,6 @@ export default async function writeContracts(req, res) {
     expDate,
     requestedBy,
     contractStatus,
-    ingameCurrency,
     gameCurrencyDenom,
     gameCurrencyAmount,
   } = req.body;
@@ -31,7 +30,6 @@ export default async function writeContracts(req, res) {
       expDate: { S: expDate },
       requestedBy: { S: requestedBy },
       contractStatus: { S: contractStatus },
-      gameCurrency: { BOOL: ingameCurrency },
       gameCurrencyDenom: { S: gameCurrencyDenom },
       gameCurrencyAmount: { N: gameCurrencyAmount },
     },

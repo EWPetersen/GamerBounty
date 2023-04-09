@@ -182,20 +182,21 @@ function GetContracts() {
                 {sort.field === "gameCurrencyAmount" &&
                   (sort.order === "asc" ? "↑" : "↓")}
               </th>
+              <th
+                className="cursor-pointer"
+                onClick={() => handleSort("expDate")}
+              >
+                Days Left{" "}
+                {sort.field === "expDate" && (sort.order === "asc" ? "↑" : "↓")}
+              </th>
               <th>Action</th>
               <th
                 className="cursor-pointer"
                 onClick={() => handleSort("contractConditions")}
               >
                 Conditions{" "}
-                {sort.field === "contractConditions" && (sort.order === "asc" ? "↑" : "↓")}
-              </th>
-              <th
-                className="cursor-pointer"
-                onClick={() => handleSort("expDate")}
-              >
-                Expiriation{" "}
-                {sort.field === "expDate" && (sort.order === "asc" ? "↑" : "↓")}
+                {sort.field === "contractConditions" &&
+                  (sort.order === "asc" ? "↑" : "↓")}
               </th>
             </tr>
           </thead>
@@ -204,24 +205,30 @@ function GetContracts() {
               <tr key={contract.id.S}>
                 <td>{contract.gameTitle.S}</td>
                 <td>{contract.targetPlayer.S}</td>
-                <td>{contract.gameCurrencyAmount?.N}<h6>{contract.gameCurrencyDenom?.S}</h6></td>
+                <td>
+                  {contract.gameCurrencyAmount?.N}
+                  <h6>{contract.gameCurrencyDenom?.S}</h6>
+                </td>
+                <td>
+                  {Math.ceil(
+                    (new Date(contract.expDate.S).getTime() -
+                      new Date().getTime()) /
+                      (1000 * 3600 * 24)
+                  )}
+                </td>
                 <td>
                   <Button
                     variant="success"
                     onClick={() => {
                       setSelectedAcceptContract(contract);
                       setShowAcceptForm(true);
-                      console.log(
-                        "clicked this contract to accepet:",
-                        contract
-                      );
+                      console.log("clicked this contract to accept:", contract);
                     }}
                   >
                     Accept Contract
                   </Button>
                 </td>
                 <td>{contract.contractConditions.S}</td>
-                <td>{contract.expDate.S}</td>
               </tr>
             ))}
           </tbody>
