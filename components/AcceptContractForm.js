@@ -60,25 +60,35 @@ function AcceptContractForm({ show, handleClose, selectedContract }) {
             )}
             <Form onSubmit={handleFormSubmit}>
               <Form.Group controlId="gameTitle">
-                <Form.Label>Game:<h6>{selectedContract?.gameTitle.S}</h6></Form.Label>
-                
+                <Form.Label>
+                  Game:<h6>{selectedContract?.gameTitle.S}</h6>
+                </Form.Label>
               </Form.Group>
               <Form.Group controlId="targetPlayer">
-                <Form.Label>The Mark:<h6>{selectedContract?.targetPlayer.S}</h6></Form.Label>
-                
+                <Form.Label>
+                  The Mark:<h6>{selectedContract?.targetPlayer.S}</h6>
+                </Form.Label>
               </Form.Group>
               <Form.Group controlId="expDate">
-                <Form.Label>Expiriation:<h6>{selectedContract?.expDate.S}</h6></Form.Label>
-                
+                <Form.Label>
+                  Expiriation:<h6>{selectedContract?.expDate.S}</h6>
+                </Form.Label>
               </Form.Group>
               <Form.Group controlId="contractConditions">
-                <Form.Label>Conditions:<h6>{selectedContract?.contractConditions.S}</h6></Form.Label>
-                
+                <Form.Label>
+                  Conditions:<h6>{selectedContract?.contractConditions.S}</h6>
+                </Form.Label>
               </Form.Group>
               <Form.Group controlId="bidAmount">
-                <Form.Label>Current Bid:
-                <h6>{selectedContract.gameCurrencyAmount?.N}  {selectedContract.gameCurrencyDenom?.S}</h6>
-                  </Form.Label>
+                <Form.Label>
+                  Current Bid:
+                  <h6>
+                    {new Intl.NumberFormat().format(
+                      selectedContract?.gameCurrencyAmount?.N
+                    )}{" "}
+                    {selectedContract?.gameCurrencyDenom?.S}
+                  </h6>
+                </Form.Label>
               </Form.Group>
             </Form>
           </Modal.Body>

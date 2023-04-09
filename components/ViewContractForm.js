@@ -69,9 +69,15 @@ const ViewContractForm = ({ show, handleClose, selectedContract }) => {
             <h6>{selectedContract?.contractConditions.S}</h6>
           </Form.Group>
           <Form.Group controlId="gameCurrencyAmount">
-            <Form.Label>Current Bid:
-                <h6>{selectedContract?.gameCurrencyAmount?.N}  {selectedContract?.gameCurrencyDenom?.S}</h6>
-                  </Form.Label>
+            <Form.Label>
+              Current Bid:
+              <h6>
+                {new Intl.NumberFormat().format(
+                  selectedContract?.gameCurrencyAmount?.N
+                )}{" "}
+                {selectedContract?.gameCurrencyDenom?.S}
+              </h6>
+            </Form.Label>
           </Form.Group>
         </Form>
       </Modal.Body>

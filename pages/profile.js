@@ -342,7 +342,12 @@ function Profile() {
               <tr key={contract.id.S}>
                 <td>{contract.gameTitle.S}</td>
                 <td>{contract.targetPlayer.S}</td>
-                <td>{contract.gameCurrencyAmount?.N}<h6>{contract.gameCurrencyDenom?.S}</h6></td>
+                <td>
+                  {new Intl.NumberFormat().format(
+                    contract.gameCurrencyAmount?.N
+                  )}
+                  <h6>{contract.gameCurrencyDenom?.S}</h6>
+                </td>
                 <td>
                   {contract.contractStatus.S === "open" ? (
                     <Button
@@ -509,7 +514,12 @@ function Profile() {
               <tr key={contract.id.S}>
                 <td>{contract.gameTitle.S}</td>
                 <td>{contract.targetPlayer.S}</td>
-                <td>{contract.gameCurrencyAmount?.N}<h6>{contract.gameCurrencyDenom?.S}</h6></td>
+                <td>
+                  {new Intl.NumberFormat().format(
+                    contract.gameCurrencyAmount?.N
+                  )}
+                  <h6>{contract.gameCurrencyDenom?.S}</h6>
+                </td>
                 <td>
                   {contract.contractStatus.S === "accepted" ? (
                     <Button

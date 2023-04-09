@@ -205,7 +205,12 @@ function Main() {
                   )}
                 </td>
                 <td>{contract.contractConditions.S}</td>
-                <td>{contract.gameCurrencyAmount?.N}<h6>{contract.gameCurrencyDenom?.S}</h6></td>
+                <td>
+                  {new Intl.NumberFormat().format(
+                    contract.gameCurrencyAmount?.N
+                  )}
+                  <h6>{contract.gameCurrencyDenom?.S}</h6>
+                </td>
                 <td>{contract.targetPlayer.S}</td>
                 <td>{contract.gameTitle.S}</td>
               </tr>
