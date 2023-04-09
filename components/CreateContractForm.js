@@ -2,17 +2,18 @@ import React, { useState } from "react";
 import { Modal, Form, Button, Alert } from "react-bootstrap";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import "tailwindcss/tailwind.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import numeral from "numeral";
+import { debounce } from 'lodash';
+
 
 function CreateContractForm({ show, handleClose }) {
-  const [gameTitle, setgameTitle] = useState("");
+  const [gameTitle, setGameTitle] = useState("");
   const [targetPlayer, setTargetPlayer] = useState("");
   const [contractConditions, setContractConditions] = useState("");
-  const [expDate, setExpDate] = useState("");
+  const [expDate, setExpDate] = useState(new Date());
   const [ingameCurrency, setIngameCurrency] = useState(true);
   const [gameCurrencyDenom, setGameCurrencyDenom] = useState("");
   const [gameCurrencyAmount, setGameCurrencyAmount] = useState("");
@@ -20,6 +21,8 @@ function CreateContractForm({ show, handleClose }) {
   const [loading, setLoading] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const { data: session, status } = useSession();
+  const [gameTitleValid, setGameTitleValid] = useState(false);
+  const [gameTitleValidationMessage, setGameTitleValidationMessage] = useState('');
 
   if (!show) {
     return null;
@@ -34,9 +37,40 @@ function CreateContractForm({ show, handleClose }) {
     );
   }
 
-  if (!show) {
-    return null;
-  }
+  const fetchGameTitlesFromAPI = async (searchTerm) => {
+    try {
+      const response = await axios.get(`/api/getTitleValidation?search=${encodeURIComponent(searchTerm)}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching game titles from API:', error);
+      throw error;
+    }
+  };
+
+  const validateGameTitle = debounce(async (title) => {
+    if (!title) {
+      setGameTitleValid(false);
+      setGameTitleValidationMessage('Game title cannot be empty.');
+      return;
+    }
+  
+    try {
+      const gameTitles = await fetchGameTitlesFromAPI(title);
+      const matchingTitles = gameTitles.filter((game) => game.name.toLowerCase() === title.toLowerCase());
+  
+      if (matchingTitles.length > 0) {
+        setGameTitleValid(true);
+        setGameTitleValidationMessage('');
+      } else {
+        setGameTitleValid(false);
+        setGameTitleValidationMessage('Invalid game title. Please enter a valid game title.');
+      }
+    } catch (error) {
+      console.error('Error validating game title:', error);
+      setGameTitleValid(false);
+      setGameTitleValidationMessage('Error validating game title. Please try again.');
+    }
+  }, 300);
 
   const handleGameCurrencyAmountChange = (event) => {
     const value = event.target.value;
@@ -107,15 +141,22 @@ function CreateContractForm({ show, handleClose }) {
               Failed to create contract. Please try again.
             </Alert>
           )}
-          <Form onSubmit={handleFormSubmit}>
+           <Form onSubmit={handleFormSubmit}>
             <Form.Group controlId="gameTitle">
               <Form.Label>Game: </Form.Label>
               <Form.Control
                 type="text"
+                maxLength="50"
                 placeholder="Which game is your Mark playing?"
-                value={gameTitle}
-                onChange={(event) => setgameTitle(event.target.value)}
+                value={gameTitle || ""}
+                onChange={(event) => setGameTitle(event.target.value)}
+                onBlur={() => validateGameTitle(gameTitle)}
               />
+              {!gameTitleValid && gameTitleValidationMessage && (
+                <Form.Text className="text-danger">
+                  {gameTitleValidationMessage}
+                </Form.Text>
+              )}
             </Form.Group>
             <Form.Group controlId="targetPlayer">
               <Form.Label>The Mark:</Form.Label>
@@ -123,7 +164,7 @@ function CreateContractForm({ show, handleClose }) {
                 type="text"
                 maxLength="20"
                 placeholder="Who is your target? (20char)"
-                value={targetPlayer}
+                value={targetPlayer || ""}
                 onChange={(event) => setTargetPlayer(event.target.value)}
               />
             </Form.Group>

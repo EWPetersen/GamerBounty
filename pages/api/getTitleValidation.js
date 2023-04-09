@@ -6,14 +6,12 @@ export default async function getTitleValidation(req, res) {
   try {
     const response = await axios.post(
       "https://api.igdb.com/v4/games",
-      {
-        fields: "name",
-        search: search,
-      },
+      `fields name; search "${search}";`, // Use query format instead of JSON
       {
         headers: {
           "Client-ID": process.env.IGDB_CLIENT_ID,
           Authorization: `Bearer ${process.env.IGDB_ACCESS_TOKEN}`,
+          "Content-Type": "text/plain", // Add content type
         },
       }
     );
