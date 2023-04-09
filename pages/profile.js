@@ -332,7 +332,7 @@ function Profile() {
                 className="cursor-pointer"
                 onClick={() => handleCreatedSort("expDate")}
               >
-                Expiriation{" "}
+                Days Left{" "}
                 {sort.field === "expDate" && (sort.order === "asc" ? "↑" : "↓")}
               </th>
             </tr>
@@ -376,7 +376,13 @@ function Profile() {
                     </Button>
                   ) : null}
                 </td>
-                <td>{contract.expDate.S}</td>
+                <td>
+                  {Math.ceil(
+                    (new Date(contract.expDate.S).getTime() -
+                      new Date().getTime()) /
+                      (1000 * 3600 * 24)
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -504,7 +510,7 @@ function Profile() {
                 className="cursor-pointer"
                 onClick={() => handleAcceptedSort("expDate")}
               >
-                Expiriation{" "}
+                Days Left{" "}
                 {sort.field === "expDate" && (sort.order === "asc" ? "↑" : "↓")}
               </th>
             </tr>
@@ -544,7 +550,13 @@ function Profile() {
                     </Button>
                   ) : null}
                 </td>
-                <td>{contract.expDate.S}</td>
+                <td>
+                  {Math.ceil(
+                    (new Date(contract.expDate.S).getTime() -
+                      new Date().getTime()) /
+                      (1000 * 3600 * 24)
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
