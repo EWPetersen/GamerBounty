@@ -182,7 +182,6 @@ function GetContracts() {
                 {sort.field === "gameCurrencyAmount" &&
                   (sort.order === "asc" ? "↑" : "↓")}
               </th>
-
               <th>Action</th>
               <th
                 className="cursor-pointer"
@@ -191,6 +190,13 @@ function GetContracts() {
                 Conditions{" "}
                 {sort.field === "contractConditions" &&
                   (sort.order === "asc" ? "↑" : "↓")}
+              </th>
+              <th
+                className="cursor-pointer"
+                onClick={() => handleSort("expDate")}
+              >
+                Days Left{" "}
+                {sort.field === "expDate" && (sort.order === "asc" ? "↑" : "↓")}
               </th>
             </tr>
           </thead>
