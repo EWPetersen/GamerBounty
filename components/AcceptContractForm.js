@@ -76,8 +76,9 @@ function AcceptContractForm({ show, handleClose, selectedContract }) {
                 
               </Form.Group>
               <Form.Group controlId="bidAmount">
-                <Form.Label>Current Bid:<h6>{selectedContract?.bidAmount.N}</h6></Form.Label>
-                
+                <Form.Label>Current Bid:
+                <h6>{selectedContract.gameCurrencyAmount?.N}  {selectedContract.gameCurrencyDenom?.S}</h6>
+                  </Form.Label>
               </Form.Group>
             </Form>
           </Modal.Body>

@@ -68,9 +68,10 @@ const ViewContractForm = ({ show, handleClose, selectedContract }) => {
             <Form.Label>Conditions:</Form.Label>
             <h6>{selectedContract?.contractConditions.S}</h6>
           </Form.Group>
-          <Form.Group controlId="bidAmount">
-            <Form.Label>Current Bid:</Form.Label>
-            <h6>{selectedContract?.bidAmount.N}</h6>
+          <Form.Group controlId="gameCurrencyAmount">
+            <Form.Label>Current Bid:
+                <h6>{selectedContract?.gameCurrencyAmount?.N}  {selectedContract?.gameCurrencyDenom?.S}</h6>
+                  </Form.Label>
           </Form.Group>
         </Form>
       </Modal.Body>

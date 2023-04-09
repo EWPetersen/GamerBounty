@@ -6,8 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import numeral from "numeral";
-import { debounce } from 'lodash';
-
+import { debounce } from "lodash";
 
 function CreateContractForm({ show, handleClose }) {
   const [gameTitle, setGameTitle] = useState("");
@@ -22,7 +21,8 @@ function CreateContractForm({ show, handleClose }) {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const { data: session, status } = useSession();
   const [gameTitleValid, setGameTitleValid] = useState(false);
-  const [gameTitleValidationMessage, setGameTitleValidationMessage] = useState('');
+  const [gameTitleValidationMessage, setGameTitleValidationMessage] =
+    useState("");
 
   if (!show) {
     return null;
@@ -39,10 +39,12 @@ function CreateContractForm({ show, handleClose }) {
 
   const fetchGameTitlesFromAPI = async (searchTerm) => {
     try {
-      const response = await axios.get(`/api/getTitleValidation?search=${encodeURIComponent(searchTerm)}`);
+      const response = await axios.get(
+        `/api/getTitleValidation?search=${encodeURIComponent(searchTerm)}`
+      );
       return response.data;
     } catch (error) {
-      console.error('Error fetching game titles from API:', error);
+      console.error("Error fetching game titles from API:", error);
       throw error;
     }
   };
@@ -50,25 +52,31 @@ function CreateContractForm({ show, handleClose }) {
   const validateGameTitle = debounce(async (title) => {
     if (!title) {
       setGameTitleValid(false);
-      setGameTitleValidationMessage('Game title cannot be empty.');
+      setGameTitleValidationMessage("Game title cannot be empty.");
       return;
     }
-  
+
     try {
       const gameTitles = await fetchGameTitlesFromAPI(title);
-      const matchingTitles = gameTitles.filter((game) => game.name.toLowerCase() === title.toLowerCase());
-  
+      const matchingTitles = gameTitles.filter(
+        (game) => game.name.toLowerCase() === title.toLowerCase()
+      );
+
       if (matchingTitles.length > 0) {
         setGameTitleValid(true);
-        setGameTitleValidationMessage('');
+        setGameTitleValidationMessage("");
       } else {
         setGameTitleValid(false);
-        setGameTitleValidationMessage('Invalid game title. Please enter a valid game title.');
+        setGameTitleValidationMessage(
+          "Invalid game title. Please enter a valid game title."
+        );
       }
     } catch (error) {
-      console.error('Error validating game title:', error);
+      console.error("Error validating game title:", error);
       setGameTitleValid(false);
-      setGameTitleValidationMessage('Error validating game title. Please try again.');
+      setGameTitleValidationMessage(
+        "Error validating game title. Please try again."
+      );
     }
   }, 300);
 
@@ -141,7 +149,7 @@ function CreateContractForm({ show, handleClose }) {
               Failed to create contract. Please try again.
             </Alert>
           )}
-           <Form onSubmit={handleFormSubmit}>
+          <Form onSubmit={handleFormSubmit}>
             <Form.Group controlId="gameTitle">
               <Form.Label>Game: </Form.Label>
               <Form.Control
@@ -166,6 +174,7 @@ function CreateContractForm({ show, handleClose }) {
                 placeholder="Who is your target? (20char)"
                 value={targetPlayer || ""}
                 onChange={(event) => setTargetPlayer(event.target.value)}
+                required // Added required attribute
               />
             </Form.Group>
             <Form.Group controlId="expDate">
