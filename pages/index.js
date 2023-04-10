@@ -176,8 +176,9 @@ function Main() {
           </Form.Group>
         </Form>
         <Row gutter={[16, 16]}>
-          {paginatedContracts.map((contract, index) => (
-            <Col xs={24} sm={12} md={8} lg={6} key={contract.id.S}>
+          
+            {paginatedContracts.map((contract, index) => (
+              <Col xs={24} sm={12} md={8} lg={6} key={`${contract.id.S}-${index}`}>
               <Card
                 className="bg-gray-800" // Change the card theme to be dark
                 title={contract.gameTitle.S}

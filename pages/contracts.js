@@ -176,7 +176,7 @@ function GetContracts() {
               </th>
               <th
                 className="cursor-pointer"
-                onClick={() => handleSort("bidAmount")}
+                onClick={() => handleSort("gameCurrencyAmount")}
               >
                 Payout{" "}
                 {sort.field === "gameCurrencyAmount" &&

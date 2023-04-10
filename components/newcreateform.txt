@@ -1,39 +1,42 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Form, Button, Alert } from "react-bootstrap";
+import React, { useState } from "react";
+import { Modal } from "react-bootstrap";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import "tailwindcss/tailwind.css";
-import "bootstrap/dist/css/bootstrap.min.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Autosuggest from "react-autosuggest";
+import numeral from "numeral";
+import { debounce } from "lodash";
+import {
+  Button,
+  Text,
+  Radio,
+  Input,
+  Textarea,
+  Alert,
+  useToasts,
+} from '@nextui-org/react';
+
 
 function CreateContractForm({ show, handleClose }) {
   const [gameTitle, setGameTitle] = useState("");
   const [targetPlayer, setTargetPlayer] = useState("");
   const [contractConditions, setContractConditions] = useState("");
-  const [expDate, setExpDate] = useState("");
-  const [bidAmount, setBidAmount] = useState("");
+  const [expDate, setExpDate] = useState(new Date());
+  const [ingameCurrency, setIngameCurrency] = useState(true);
+  const [gameCurrencyDenom, setGameCurrencyDenom] = useState("");
+  const [gameCurrencyAmount, setGameCurrencyAmount] = useState("");
   const [submitStatus, setSubmitStatus] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const { data: session, status } = useSession();
-  const [suggestions, setSuggestions] = useState([]);
+  const [gameTitleValid, setGameTitleValid] = useState(false);
+  const [gameTitleValidationMessage, setGameTitleValidationMessage] =
+    useState("");
+  
 
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-    console.log("handleFormSubmit called");
-    handleCreate({
-      gameTitle,
-      targetPlayer,
-      contractConditions,
-      expDate,
-      bidAmount,
-      requestedBy: session.user.email,
-      contractStatus: "open",
-    });
-    setShowCreateForm(false);
-  };
+  if (!show) {
+    return null;
+  }
 
   if (status === "loading") return null; // Do not render anything while the session is loading
   if (!session) {
@@ -44,75 +47,74 @@ function CreateContractForm({ show, handleClose }) {
     );
   }
 
-  if (!show) {
-    return null;
-  }
-
-  const handleGameTitleChange = (event, { newValue }) => {
-    setGameTitle(newValue);
-  };
-
-  const fetchSuggestions = async (value) => {
-    const response = await axios.get(`/api/getTitleValidation?search=${value}`);
-    const data = response.data;
-    return data;
-  };
-
-  const getSuggestionValue = (suggestion) => suggestion.name;
-
-  const renderSuggestion = (suggestion) => <div>{suggestion.name}</div>;
-
-  const onSuggestionsFetchRequested = async ({ value }) => {
-    if (value.trim().length > 0) {
-      const fetchedSuggestions = await fetchSuggestions(value);
-      setSuggestions(fetchedSuggestions);
-    } else {
-      setSuggestions([]);
+  const fetchGameTitlesFromAPI = async (searchTerm) => {
+    try {
+      const response = await axios.get(
+        `/api/getTitleValidation?search=${encodeURIComponent(searchTerm)}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching game titles from API:", error);
+      throw error;
     }
   };
 
-  const onSuggestionsClearRequested = () => {
-    setSuggestions([]);
-  };
+  const validateGameTitle = debounce(async (title) => {
+    if (!title) {
+      setGameTitleValid(false);
+      setGameTitleValidationMessage("Game title cannot be empty.");
+      return;
+    }
 
-  useEffect(() => {
-    let isMounted = true;
-    const fetchSuggestions = async (value) => {
-      const response = await axios.get(
-        `/api/getTitleValidation?search=${value}`
+    try {
+      const gameTitles = await fetchGameTitlesFromAPI(title);
+      const matchingTitles = gameTitles.filter(
+        (game) => game.name.toLowerCase() === title.toLowerCase()
       );
 
-      const data = response.data;
-      if (isMounted) {
-        setSuggestions(data.map((game) => ({ name: game.name })));
+      if (matchingTitles.length > 0) {
+        setGameTitleValid(true);
+        setGameTitleValidationMessage("");
+      } else {
+        setGameTitleValid(false);
+        setGameTitleValidationMessage(
+          "Invalid game title. Please enter a valid game title."
+        );
       }
-      console.log(data);
-    };
-    if (gameTitle.trim().length > 0) {
-      fetchSuggestions(gameTitle);
-    } else {
-      setSuggestions([]);
+    } catch (error) {
+      console.error("Error validating game title:", error);
+      setGameTitleValid(false);
+      setGameTitleValidationMessage(
+        "Error validating game title. Please try again."
+      );
     }
-    return () => {
-      isMounted = false;
-    };
-  }, [gameTitle]);
+  }, 300);
+
+  const handleGameCurrencyAmountChange = (event) => {
+    const value = event.target.value;
+    const formattedValue = numeral(value).format("0,0");
+
+    setGameCurrencyAmount(formattedValue);
+  };
 
   async function handleCreate(contract) {
-    setLoading(true);
-    setSubmitStatus(null);
-  
     try {
+      const gameCurrencyAmountNumber = numeral(
+        contract.gameCurrencyAmount
+      ).value();
+
+      console.log("Request data:", contract); // Log the request data
       const response = await axios.post("/api/writeContracts", {
         gameTitle: contract.gameTitle,
         targetPlayer: contract.targetPlayer,
         contractConditions: contract.contractConditions,
         expDate: contract.expDate,
-        bidAmount: contract.bidAmount,
+        gameCurrencyDenom: contract.gameCurrencyDenom,
+        gameCurrencyAmount: String(gameCurrencyAmountNumber),
         requestedBy: contract.requestedBy,
         contractStatus: contract.contractStatus,
       });
-  
+
       console.log(response.data.data);
       setLoading(false);
       setSubmitStatus("success");
@@ -126,6 +128,22 @@ function CreateContractForm({ show, handleClose }) {
     }
   }
 
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    console.log("handleFormSubmit called");
+    handleCreate({
+      gameTitle,
+      targetPlayer,
+      contractConditions,
+      expDate,
+      gameCurrencyDenom,
+      gameCurrencyAmount,
+      requestedBy: session.user.email,
+      contractStatus: "open",
+    });
+    setShowCreateForm(false);
+  };
+
   return (
     <>
       <Modal show={show} onHide={handleClose}>
@@ -133,96 +151,119 @@ function CreateContractForm({ show, handleClose }) {
           <Modal.Title>Create Contract</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {submitStatus === "success" && (
-            <Alert variant="success">Contract successfully created!</Alert>
-          )}
-          {submitStatus === "failure" && (
-            <Alert variant="danger">
-              Failed to create contract. Please try again.
-            </Alert>
-          )}
-          <Form onSubmit={handleFormSubmit}>
-            <Form.Group controlId="gameTitle">
-              <Form.Label>Game: </Form.Label>
-              <Form>
-                <Autosuggest
-                  suggestions={suggestions}
-                  onSuggestionsFetchRequested={onSuggestionsFetchRequested}
-                  onSuggestionsClearRequested={onSuggestionsClearRequested}
-                  getSuggestionValue={getSuggestionValue}
-                  renderSuggestion={renderSuggestion}
-                  inputProps={{
-                    name: "gameTitle",
-                    value: gameTitle,
-                    onChange: handleGameTitleChange,
-                    placeholder: "Enter a game title",
-                  }}
+          {submitStatus === "success" &&
+            setToast({
+              text: "Contract successfully created!",
+              type: "success",
+              delay: 2000,
+            })}
+          {submitStatus === "failure" &&
+            setToast({
+              text: "Failed to create contract. Please try again.",
+              type: "error",
+              delay: 2000,
+            })}
+          <form onSubmit={handleFormSubmit}>
+            <text level={4} mt={0}>
+              Game:
+            </text>
+            <Input
+              id="gameTitle"
+              placeholder="Which game is your Mark playing?"
+              value={gameTitle || ""}
+              onChange={(event) => setGameTitle(event.target.value)}
+              onBlur={() => validateGameTitle(gameTitle)}
+              width="100%"
+            />
+            {!gameTitleValid && gameTitleValidationMessage && (
+              <Typography.Text size="small" color="error">
+                {gameTitleValidationMessage}
+              </Typography.Text>
+            )}
+            <text level={4} mt={2}>
+              The Mark:
+            </text>
+            <Input
+              id="targetPlayer"
+              placeholder="Who is your target? (20char)"
+              value={targetPlayer || ""}
+              onChange={(event) => setTargetPlayer(event.target.value)}
+              required // Added required attribute
+              width="100%"
+            />
+            <text level={4} mt={2}>
+              Contract Expires:
+            </text>
+            <DatePicker
+              id="expDate"
+              selected={expDate}
+              onChange={(date) => setExpDate(date)}
+              className="react-datepicker-wrapper"
+              calendarClassName="dark-calendar"
+              minDate={new Date()}
+              dateFormat="yyyy-MM-dd"
+            />
+            <text level={4} mt={2}>
+              Additional Contract Conditions:
+            </text>
+            <Textarea
+              id="contractConditions"
+              placeholder="Are there any additional requirements? (140char)"
+              value={contractConditions}
+              onChange={(event) => setContractConditions(event.target.value)}
+              width="100%"
+            />
+            <text level={4} mt={2}>
+              USD or In-Game Currency for your opening bid?
+            </text>
+            <Radio.Group
+              value={ingameCurrency ? "In-Game Currency" : "PayPal"}
+              onChange={(value) =>
+                setIngameCurrency(value === "In-Game Currency")
+              }
+            >
+              <Radio value="In-Game Currency">In-Game Currency</Radio>
+              <Radio value="PayPal" disabled>
+                PayPal
+              </Radio>
+            </Radio.Group>
+            {ingameCurrency && (
+              <>
+                <text level={4} mt={2}>
+                  Currency Denomination:
+                </text>
+                <Input
+                  id="gameCurrencyDenom"
+                  placeholder="Enter In-Game currency type (8char)"
+                  value={gameCurrencyDenom}
+                  onChange={(event) =>
+                    setGameCurrencyDenom(event.target.value)
+                  }
+                  width="100%"
                 />
-                <button type="submit">Submit</button>
-              </Form>
-            </Form.Group>
-            <Form.Group controlId="targetPlayer">
-              <Form.Label>Mark:</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Who is your target?"
-                value={targetPlayer}
-                onChange={(event) => setTargetPlayer(event.target.value)}
-              />
-            </Form.Group>
-            <Form.Group controlId="expDate">
-              <Form.Label>Expiriation:</Form.Label>
-              <DatePicker
-                id="expDate"
-                name="expirationDate"
-                selected={expDate}
-                onChange={(date) => setExpDate(date)}
-                className="form-control"
-                calendarClassName="dark-calendar"
-                minDate={new Date()}
-              />
-            </Form.Group>
-            <Form.Group controlId="contractConditions">
-              <Form.Label>Conditions:</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Are there any additional requirements? (under 100char)"
-                value={contractConditions}
-                onChange={(event) => setContractConditions(event.target.value)}
-              />
-            </Form.Group>
-            <Form.Group controlId="bidAmount">
-              <Form.Label>Opening Bid:</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Enter bid amount"
-                value={bidAmount}
-                onChange={(event) => setBidAmount(event.target.value)}
-              />
-            </Form.Group>
-            <Button variant="success" type="submit">
-              Create
-            </Button>{" "}
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-          </Form>
+                <text level={4} mt={2}>
+                  Bid Amount:
+                </text>
+                <Input
+                  id="gameCurrencyAmount"
+                  placeholder="Enter bid amount (16char)"
+                  value={gameCurrencyAmount}
+                  onChange={handleGameCurrencyAmountChange}
+                  width="100%"
+                />
+              </>
+            )}
+          </form>
         </Modal.Body>
+        <Modal.Footer>
+          <Button color="primary" auto onClick={handleFormSubmit}>
+            Create
+          </Button>
+          <Button color="secondary" auto onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
       </Modal>
-      <style jsx global>{`
-        .react-autosuggest__suggestions-list {
-          margin: 0;
-          padding: 0;
-          list-style-type: none;
-        }
-        .react-autosuggest__suggestion {
-          cursor: pointer;
-          padding: 10px;
-        }
-        .react-autosuggest__suggestion--highlighted {
-          background-color: #ddd;
-        }
-      `}</style>
     </>
   );
 }

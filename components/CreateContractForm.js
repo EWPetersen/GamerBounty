@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { Modal, Form, Button, Alert } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import numeral from "numeral";
 import { debounce } from "lodash";
+import { Button, Text, Input, Textarea, Alert } from "@nextui-org/react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function CreateContractForm({ show, handleClose }) {
   const [gameTitle, setGameTitle] = useState("");
@@ -23,6 +25,7 @@ function CreateContractForm({ show, handleClose }) {
   const [gameTitleValid, setGameTitleValid] = useState(false);
   const [gameTitleValidationMessage, setGameTitleValidationMessage] =
     useState("");
+  const showToast = (message, type) => toast(message, { type });
 
   if (!show) {
     return null;
@@ -111,7 +114,9 @@ function CreateContractForm({ show, handleClose }) {
       setTimeout(() => {
         handleClose(); // Close the form after a short delay
       }, 2000);
+      showToast("Contract created successfully!", "success");
     } catch (error) {
+      showToast("Error creating contract: " + error.message, "error");
       setLoading(false);
       setSubmitStatus("failure");
       console.error("Error creating contract", error);
@@ -138,129 +143,116 @@ function CreateContractForm({ show, handleClose }) {
     <>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Create Contract</Modal.Title>
+          <Modal.Title style={{ color: "white" }}>Create Contract</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {submitStatus === "success" && (
-            <Alert variant="success">Contract successfully created!</Alert>
-          )}
-          {submitStatus === "failure" && (
-            <Alert variant="danger">
-              Failed to create contract. Please try again.
-            </Alert>
-          )}
-          <Form onSubmit={handleFormSubmit}>
-            <Form.Group controlId="gameTitle">
-              <Form.Label>Game: </Form.Label>
-              <Form.Control
-                type="text"
-                maxLength="50"
-                placeholder="Which game is your Mark playing?"
-                value={gameTitle || ""}
-                onChange={(event) => setGameTitle(event.target.value)}
-                onBlur={() => validateGameTitle(gameTitle)}
-              />
-              {!gameTitleValid && gameTitleValidationMessage && (
-                <Form.Text className="text-danger">
-                  {gameTitleValidationMessage}
-                </Form.Text>
-              )}
-            </Form.Group>
-            <Form.Group controlId="targetPlayer">
-              <Form.Label>The Mark:</Form.Label>
-              <Form.Control
-                type="text"
-                maxLength="20"
-                placeholder="Who is your target? (20char)"
-                value={targetPlayer || ""}
-                onChange={(event) => setTargetPlayer(event.target.value)}
-                required // Added required attribute
-              />
-            </Form.Group>
-            <Form.Group controlId="expDate">
-              <Form.Label>Contract Expires:</Form.Label>
-              <div className="d-flex align-items-center">
-                <Button
-                  variant="primary"
-                  onClick={() => {
-                    document.getElementById("expDate").click();
-                  }}
-                >
-                  Select Date
-                </Button>
-                <DatePicker
-                  id="expDate"
-                  name="expirationDate"
-                  selected={expDate}
-                  onChange={(date) => setExpDate(date)}
-                  className="form-control ml-2 d-none"
-                  calendarClassName="dark-calendar"
-                  minDate={new Date()}
-                  dateFormat="yyyy-MM-dd"
-                />
-              </div>
-            </Form.Group>
-            <Form.Group controlId="contractConditions">
-              <Form.Label>Additional Contract Conditions:</Form.Label>
-              <Form.Control
-                type="text"
-                maxLength="140"
-                placeholder="Are there any additional requirements? (140char)"
-                value={contractConditions}
-                onChange={(event) => setContractConditions(event.target.value)}
-              />
-            </Form.Group>
-            <Form.Group controlId="bidType">
-              <Form.Label>
-                USD or In-Game Currency for your opening bid?
-              </Form.Label>
-              <Form.Check
-                type="radio"
-                label="In-Game Currency"
-                checked={ingameCurrency}
-                onChange={() => setIngameCurrency(true)}
-              />
-              <Form.Check
-                type="radio"
-                label="PayPal"
-                checked={!ingameCurrency}
-                readOnly
-                disabled
-              />
-            </Form.Group>
+          {submitStatus === "success" &&
+            setToast({
+              Text: "Contract successfully created!",
+              type: "success",
+              delay: 2000,
+            })}
+          {submitStatus === "failure" &&
+            setToast({
+              Text: "Failed to create contract. Please try again.",
+              type: "error",
+              delay: 2000,
+            })}
+          <form onSubmit={handleFormSubmit}>
+            <Text color="white" level={4} mt={0}>
+              Game:
+            </Text>
+            <Input
+              id="gameTitle"
+              placeholder="Which game is your Mark playing?"
+              value={gameTitle || ""}
+              onChange={(event) => setGameTitle(event.target.value)}
+              onBlur={() => validateGameTitle(gameTitle)}
+              width="100%"
+            />
+            {!gameTitleValid && gameTitleValidationMessage && (
+              <p style={{ fontSize: "small", color: "red" }}>
+                {gameTitleValidationMessage}
+              </p>
+            )}
+            <Text color="white" level={4} mt={0}>
+              The Mark:
+            </Text>
+            <Input
+              id="targetPlayer"
+              placeholder="Who is your target? (20char)"
+              value={targetPlayer || ""}
+              onChange={(event) => setTargetPlayer(event.target.value)}
+              required // Added required attribute
+              width="100%"
+            />
+            <Text color="white" level={4} mt={0}>
+              Contract Expires:
+            </Text>
+            <DatePicker
+              id="expDate"
+              selected={expDate}
+              onChange={(date) => setExpDate(date)}
+              className="react-datepicker-wrapper"
+              calendarClassName="dark-calendar"
+              minDate={new Date()}
+              dateFormat="yyyy-MM-dd"
+            />
+            <Text color="white" level={4} mt={0}>
+              Additional Contract Conditions:
+            </Text>
+            <Textarea
+              id="contractConditions"
+              placeholder="Are there any additional requirements? (140char)"
+              value={contractConditions}
+              onChange={(event) => setContractConditions(event.target.value)}
+              width="100%"
+            />
+            <Text color="white" level={4} mt={0}>
+              USD or In-Game Currency for your opening bid?
+            </Text>
+            <select
+              value={ingameCurrency ? "In-Game Currency" : "PayPal"}
+              onChange={(event) =>
+                setIngameCurrency(event.target.value === "In-Game Currency")
+              }
+            >
+              <option value="In-Game Currency">In-Game Currency</option>
+              <option value="PayPal" disabled>
+                PayPal
+              </option>
+            </select>
             {ingameCurrency && (
               <>
-                <Form.Group controlId="gameCurrencyDenom">
-                  <Form.Label> Currency Denomination:</Form.Label>
-                  <Form.Control
-                    type="text"
-                    maxLength="6"
-                    placeholder="Enter In-Game currency type  (8char)"
-                    value={gameCurrencyDenom}
-                    onChange={(event) =>
-                      setGameCurrencyDenom(event.target.value)
-                    }
-                  />
-                </Form.Group>
-                <Form.Group controlId="gameCurrencyAmount">
-                  <Form.Label>Bid Amount:</Form.Label>
-                  <Form.Control
-                    type="text"
-                    maxLength="16"
-                    placeholder="Enter bid amount (16char)"
-                    value={gameCurrencyAmount}
-                    onChange={handleGameCurrencyAmountChange}
-                  />
-                </Form.Group>
+                <Text color="white" level={4} mt={0}>
+                  Currency Denomination:
+                </Text>
+                <Input
+                  id="gameCurrencyDenom"
+                  placeholder="Enter In-Game currency type (8char)"
+                  value={gameCurrencyDenom}
+                  onChange={(event) => setGameCurrencyDenom(event.target.value)}
+                  width="100%"
+                />
+                <Text color="white" level={4} mt={0}>
+                  Bid Amount:
+                </Text>
+                <Input
+                  id="gameCurrencyAmount"
+                  placeholder="Enter bid amount (16char)"
+                  value={gameCurrencyAmount}
+                  onChange={handleGameCurrencyAmountChange}
+                  width="100%"
+                />
               </>
             )}
-          </Form>
+          </form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success" onClick={handleFormSubmit}>
+          <Button color="primary" auto onPress={handleFormSubmit}>
             Create
           </Button>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button color="secondary" auto onPress={handleClose}>
             Close
           </Button>
         </Modal.Footer>
