@@ -2,10 +2,13 @@ import "tailwindcss/tailwind.css";
 import "../styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 
+
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <SessionProvider session={session}>
+    
       <Component {...pageProps} />
+
       <style jsx global>{`
         body {
           background-color: #1f2937;
